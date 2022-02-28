@@ -1,6 +1,6 @@
 using System;
 using Unity.Multiplayer.Tools.MetricTypes;
-using Unity.Multiplayer.Tools.NetworkProfiler.Runtime;
+using Unity.Multiplayer.Tools.NetStats;
 
 namespace Unity.Multiplayer.Tools.NetworkProfiler.Editor
 {

@@ -1,18 +1,21 @@
 using System;
 using System.Linq;
 using NUnit.Framework;
+using Unity.Multiplayer.Tools.MetricTypes;
+using UnityEngine;
+using UnityEngine.TestTools;
 
 namespace Unity.Multiplayer.Tools.NetStats.Tests
 {
     sealed class MetricDispatcherTests
     {
-        private readonly string MetricName = Guid.NewGuid().ToString();
+        readonly MetricId MetricId = MetricId.Create(DirectedMetricType.RpcSent);
 
         [Test]
         public void Dispatch_WhenCounterIsRegistered_DispatchesCounterValueToObservers()
         {
             // Arrange
-            var counter = new Counter(MetricName);
+            var counter = new Counter(MetricId);
             var metricDispatcher = new MetricDispatcherBuilder()
                 .WithCounters(counter)
                 .Build();
@@ -20,7 +23,7 @@ namespace Unity.Multiplayer.Tools.NetStats.Tests
             metricDispatcher.RegisterObserver(new TestObserver(snapshot =>
             {
                 // Assert
-                var found = snapshot.TryGetCounter(MetricName, out var metric);
+                var found = snapshot.TryGetCounter(MetricId, out var metric);
                 Assert.IsTrue(found);
                 Assert.NotNull(metric);
                 Assert.AreEqual(10, metric.Value);
@@ -36,7 +39,7 @@ namespace Unity.Multiplayer.Tools.NetStats.Tests
         public void Dispatch_WhenGaugeIsRegistered_DispatchesGaugeValueToObservers()
         {
             // Arrange
-            var gauge = new Gauge(MetricName);
+            var gauge = new Gauge(MetricId);
             var metricDispatcher = new MetricDispatcherBuilder()
                 .WithGauges(gauge)
                 .Build();
@@ -44,7 +47,7 @@ namespace Unity.Multiplayer.Tools.NetStats.Tests
             metricDispatcher.RegisterObserver(new TestObserver(snapshot =>
             {
                 // Assert
-                var found = snapshot.TryGetGauge(MetricName, out var metric);
+                var found = snapshot.TryGetGauge(MetricId, out var metric);
                 Assert.IsTrue(found);
                 Assert.NotNull(metric);
                 Assert.AreEqual(10, metric.Value);
@@ -60,7 +63,7 @@ namespace Unity.Multiplayer.Tools.NetStats.Tests
         public void Dispatch_WhenTimerIsRegistered_DispatchesTimerValueToObservers()
         {
             // Arrange
-            var timer = new Timer(MetricName);
+            var timer = new Timer(MetricId);
             var metricDispatcher = new MetricDispatcherBuilder()
                 .WithTimers(timer)
                 .Build();
@@ -68,7 +71,7 @@ namespace Unity.Multiplayer.Tools.NetStats.Tests
             metricDispatcher.RegisterObserver(new TestObserver(snapshot =>
             {
                 // Assert
-                var found = snapshot.TryGetTimer(MetricName, out var metric);
+                var found = snapshot.TryGetTimer(MetricId, out var metric);
                 Assert.IsTrue(found);
                 Assert.NotNull(metric);
                 Assert.AreEqual(TimeSpan.FromHours(1), metric.Value);
@@ -84,17 +87,17 @@ namespace Unity.Multiplayer.Tools.NetStats.Tests
         public void Dispatch_WhenEventIsRegistered_DispatchesEventValueToObservers()
         {
             // Arrange
-            var metricEvent = new EventMetric(MetricName);
+            var metricEvent = new EventMetric<int>(MetricId);
             var metricDispatcher = new MetricDispatcherBuilder()
                 .WithMetricEvents(metricEvent)
                 .Build();
 
-            var value = Guid.NewGuid().ToString();
+            var value = 1234;
 
             metricDispatcher.RegisterObserver(new TestObserver(snapshot =>
             {
                 // Assert
-                var found = snapshot.TryGetEvent(MetricName, out var metric);
+                var found = snapshot.TryGetEvent<int>(MetricId, out var metric);
                 Assert.IsTrue(found);
                 Assert.NotNull(metric);
                 Assert.NotNull(metric.Values);
@@ -112,17 +115,17 @@ namespace Unity.Multiplayer.Tools.NetStats.Tests
         public void Dispatch_WhenTypedEventIsRegistered_DispatchesEventValueToObservers()
         {
             // Arrange
-            var metricEvent = new EventMetric<TestMetricEvent>(MetricName);
+            var metricEvent = new EventMetric<TestMetricEvent>(MetricId);
             var metricDispatcher = new MetricDispatcherBuilder()
                 .WithMetricEvents(metricEvent)
                 .Build();
 
-            var value = Guid.NewGuid().ToString();
+            var value = 1234;
 
             metricDispatcher.RegisterObserver(new TestObserver(snapshot =>
             {
                 // Assert
-                var found = snapshot.TryGetEvent<TestMetricEvent>(MetricName, out var metric);
+                var found = snapshot.TryGetEvent<TestMetricEvent>(MetricId, out var metric);
                 Assert.IsTrue(found);
                 Assert.NotNull(metric);
                 Assert.NotNull(metric.Values);
@@ -141,7 +144,7 @@ namespace Unity.Multiplayer.Tools.NetStats.Tests
         public void Dispatch_WhenMetricIsResetOnDispatch_ResetsMetric()
         {
             // Arrange
-            var counter = new Counter(MetricName)
+            var counter = new Counter(MetricId)
             {
                 ShouldResetOnDispatch = true,
             };
@@ -163,7 +166,7 @@ namespace Unity.Multiplayer.Tools.NetStats.Tests
         public void Dispatch_WhenMetricIsNotResetOnDispatch_DoesNotResetMetric()
         {
             // Arrange
-            var counter = new Counter(MetricName)
+            var counter = new Counter(MetricId)
             {
                 ShouldResetOnDispatch = false,
             };
@@ -181,15 +184,36 @@ namespace Unity.Multiplayer.Tools.NetStats.Tests
             Assert.AreEqual(10, counter.Value);
         }
 
+        [Test]
+        public void Dispatch_WhenMetricWentOverLimit_LogsWarning()
+        {
+            // Arrange
+            var id = MetricId.Create(DirectedMetricType.RpcReceived);
+            var metric = new EventMetric<int>(id)
+            {
+                MaxNumberOfValues = 0,
+            };
+
+            var metricDispatcher = new MetricDispatcherBuilder()
+                .WithMetricEvents(metric)
+                .Build();
+
+            metric.Mark(1234);
+
+            // Act & Assert
+            LogAssert.Expect(LogType.Warning, MetricDispatcher.k_ThrottlingWarning);
+            metricDispatcher.Dispatch();
+        }
+
         [Serializable]
         public struct TestMetricEvent
         {
-            public TestMetricEvent(string value)
+            public TestMetricEvent(int value)
             {
                 Value = value;
             }
 
-            public string Value { get; }
+            public int Value { get; }
         }
 
         private class TestObserver : IMetricObserver

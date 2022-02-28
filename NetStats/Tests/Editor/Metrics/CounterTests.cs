@@ -1,5 +1,6 @@
 using System;
 using NUnit.Framework;
+using Unity.Multiplayer.Tools.MetricTypes;
 
 namespace Unity.Multiplayer.Tools.NetStats.Tests
 {
@@ -9,12 +10,14 @@ namespace Unity.Multiplayer.Tools.NetStats.Tests
         public void Increment_Always_IncrementsUnderlyingValue()
         {
             // Arrange
-            var counter = new Counter(Guid.NewGuid().ToString(), 10);
+            var id = MetricId.Create(DirectedMetricType.RpcSent);
+            var counter = new Counter(id, 10);
 
             // Act
             counter.Increment();
 
             // Assert
+            Assert.AreEqual(id, counter.Id);
             Assert.AreEqual(11, counter.Value);
         }
 
@@ -23,12 +26,14 @@ namespace Unity.Multiplayer.Tools.NetStats.Tests
         public void Increment_Always_IncrementsUnderlyingValueBySpecifiedAmount(long initial, long increment, long expected)
         {
             // Arrange
-            var counter = new Counter(Guid.NewGuid().ToString(), initial);
+            var id = MetricId.Create(DirectedMetricType.UnnamedMessageSent);
+            var counter = new Counter(id, initial);
 
             // Act
             counter.Increment(increment);
 
             // Assert
+            Assert.AreEqual(id, counter.Id);
             Assert.AreEqual(expected, counter.Value);
         }
     }

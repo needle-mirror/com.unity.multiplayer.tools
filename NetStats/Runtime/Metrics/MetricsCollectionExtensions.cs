@@ -5,9 +5,11 @@ namespace Unity.Multiplayer.Tools.NetStats
 {
     static class MetricsCollectionExtensions
     {
-        public static IReadOnlyList<TMetric> GetEventValues<TMetric>(this MetricCollection collection, string metricName)
+        public static IReadOnlyList<TMetric> GetEventValues<TMetric>(
+            this MetricCollection collection,
+            MetricId metricId)
         {
-            return collection.TryGetEvent<TMetric>(metricName, out var metric)
+            return collection.TryGetEvent<TMetric>(metricId, out var metric)
                 ? metric.Values
                 : Array.Empty<TMetric>();
         }

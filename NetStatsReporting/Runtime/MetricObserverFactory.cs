@@ -5,6 +5,15 @@ namespace Unity.Multiplayer.Tools
 {
     static class MetricObserverFactory
     {
-        internal static IMetricObserver Construct() => ProfilerMetricObserverFactory.Construct();
+        internal static IMetricObserver Construct() => new MetricObserver();
+    }
+
+    class MetricObserver : IMetricObserver
+    {
+        private IMetricObserver m_profilerMetricObserver = ProfilerMetricObserverFactory.Construct();
+        public void Observe(MetricCollection collection)
+        {
+            m_profilerMetricObserver.Observe(collection);
+        }
     }
 }

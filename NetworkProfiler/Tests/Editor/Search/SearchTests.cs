@@ -291,7 +291,7 @@ namespace Unity.Multiplayer.Tools.NetworkProfiler.Tests.Editor
             ParsedFilters.PotentialCommandAndLastTokenIndex? potentialCommand =
                 ParsedFilters.TryFindPotentialCommand(tokens, index);
 
-            Assert.AreEqual(potentialCommand?.lastTokenIndex, lastIndex);
+            Assert.AreEqual(potentialCommand?.LastTokenIndex, lastIndex);
         }
     }
 }

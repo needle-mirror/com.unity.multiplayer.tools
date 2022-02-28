@@ -3,13 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Collections.ObjectModel;
-using Unity.Multiplayer.Tools.NetworkProfiler.Runtime;
 
 namespace Unity.Multiplayer.Tools.NetworkProfiler.Editor
 {
-    internal delegate List<IRowData> SearchListFilter(
-        IEnumerable<IRowData> searchListEntries,
-        string queryString);
+    internal delegate List<IRowData> SearchListFilter(IEnumerable<IRowData> searchListEntries, string queryString);
 
     internal static class Filters
     {
@@ -47,26 +44,28 @@ namespace Unity.Multiplayer.Tools.NetworkProfiler.Editor
         delegate Filter ArgumentParser(string argument);
         class FilterType
         {
-            public string keyword;
-            public List<string> operators;
-            public ArgumentParser argumentParser;
             public FilterType(
                 string keyword,
                 string @operator,
                 ArgumentParser argumentParser,
-                string additionalOperator = null
-                )
+                string additionalOperator = null)
             {
-                this.keyword = keyword;
+                Keyword = keyword;
 
-                this.operators = new List<string>{@operator};
+                Operators = new List<string>{@operator};
                 if (additionalOperator != null)
                 {
-                    this.operators.Add(additionalOperator);
+                    Operators.Add(additionalOperator);
                 }
 
-                this.argumentParser = argumentParser;
+                ArgumentParser = argumentParser;
             }
+
+            public string Keyword { get; }
+
+            public List<string> Operators { get; }
+
+            public ArgumentParser ArgumentParser { get; }
         }
 
         /// List of all filter commands, including their keyword, operator(s), parsing logic, and filtering logic
@@ -141,13 +140,13 @@ namespace Unity.Multiplayer.Tools.NetworkProfiler.Editor
 
             k_Keywords = new ReadOnlyCollection<string>(
                 k_FilterTypes
-                    .Select(t => t.keyword)
+                    .Select(t => t.Keyword)
                     .Distinct()
                     .ToList());
 
             k_Operators = new ReadOnlyCollection<string>(
                 k_FilterTypes
-                    .SelectMany(t => t.operators)
+                    .SelectMany(t => t.Operators)
                     .Distinct()
                     .OrderByDescending(s => s.Length)
                     .ToList());
@@ -155,8 +154,8 @@ namespace Unity.Multiplayer.Tools.NetworkProfiler.Editor
             k_ParseTable =
                 k_FilterTypes
                     .SelectMany(t =>
-                        t.operators.Select(@operator =>
-                            new Tuple<string, ArgumentParser>(t.keyword + @operator, t.argumentParser)))
+                        t.Operators.Select(@operator =>
+                            new Tuple<string, ArgumentParser>(t.Keyword + @operator, t.ArgumentParser)))
                     .ToDictionary(t => t.Item1, t => t.Item2);
         }
 
@@ -164,27 +163,32 @@ namespace Unity.Multiplayer.Tools.NetworkProfiler.Editor
         /// must have all three
         internal readonly struct PotentialCommand
         {
-            public string keyword { get; }
-            public string @operator { get; }
-            public string argument { get; }
             public PotentialCommand(string keyword, string @operator, string argument)
             {
-                this.keyword = keyword;
-                this.@operator = @operator;
-                this.argument = argument;
+                Keyword = keyword;
+                Operator = @operator;
+                Argument = argument;
             }
+
+            public string Keyword { get; }
+
+            public string Operator { get; }
+
+            public string Argument { get; }
         }
 
         /// A potential command and the index of its last token
         internal readonly struct PotentialCommandAndLastTokenIndex
         {
-            public PotentialCommand potentialCommand { get; }
-            public int lastTokenIndex { get; }
             public PotentialCommandAndLastTokenIndex(PotentialCommand potentialCommand, int lastTokenIndex)
             {
-                this.potentialCommand = potentialCommand;
-                this.lastTokenIndex = lastTokenIndex;
+                PotentialCommand = potentialCommand;
+                LastTokenIndex = lastTokenIndex;
             }
+
+            public PotentialCommand PotentialCommand { get; }
+
+            public int LastTokenIndex { get; }
         }
 
         static bool IsNotWhiteSpace(string s) => !string.IsNullOrWhiteSpace(s);
@@ -208,7 +212,7 @@ namespace Unity.Multiplayer.Tools.NetworkProfiler.Editor
                     currentSimpleSearchString += tokens[i];
                     continue;
                 }
-                if (!TryParsePotentialCommand(potentialCommandAndLastIndex.Value.potentialCommand))
+                if (!TryParsePotentialCommand(potentialCommandAndLastIndex.Value.PotentialCommand))
                 {
                     currentSimpleSearchString += tokens[i];
                     continue;
@@ -216,7 +220,7 @@ namespace Unity.Multiplayer.Tools.NetworkProfiler.Editor
 
                 // We've found a valid command with a keyword, operator, and argument: advance the input stream and
                 // add a new simple search string (if needed) for the next iteration of the loop
-                i = potentialCommandAndLastIndex.Value.lastTokenIndex;
+                i = potentialCommandAndLastIndex.Value.LastTokenIndex;
                 if (IsNotWhiteSpace(currentSimpleSearchString))
                 {
                     m_SimpleSearchStringsLower.Add(currentSimpleSearchString.Trim().ToLower());
@@ -247,19 +251,19 @@ namespace Unity.Multiplayer.Tools.NetworkProfiler.Editor
 
             // The first non-whitespace string after the keyword is our prospective operator for a command,
             // such as `<`, `>=`, or `:`
-            var opIndex = FindNextNonWhitespaceToken(tokens, index + 1);
-            if (opIndex == -1)
+            var operatorIndex = FindNextNonWhitespaceToken(tokens, index + 1);
+            if (operatorIndex == -1)
             {
                 return null;
             }
-            var opString = tokens[opIndex];
+            var opString = tokens[operatorIndex];
             if (!k_Operators.Contains(opString))
             {
                 return null;
             }
 
             // The non-whitespace string after the operator is our prospective right-hand operand
-            var argumentIndex = FindNextNonWhitespaceToken(tokens, opIndex + 1);
+            var argumentIndex = FindNextNonWhitespaceToken(tokens, operatorIndex + 1);
             if (argumentIndex == -1)
             {
                 return null;
@@ -273,10 +277,10 @@ namespace Unity.Multiplayer.Tools.NetworkProfiler.Editor
 
         bool TryParsePotentialCommand(PotentialCommand command)
         {
-            var searchCommand = command.keyword + command.@operator;
-            if (k_ParseTable.TryGetValue(searchCommand, out ArgumentParser argumentParser))
+            var searchCommand = command.Keyword + command.Operator;
+            if (k_ParseTable.TryGetValue(searchCommand, out var argumentParser))
             {
-                var filter = argumentParser(command.argument);
+                var filter = argumentParser(command.Argument);
                 if (filter != null)
                 {
                     m_Filters.Add(filter);

@@ -1,5 +1,6 @@
 ﻿using System;
 using Unity.Multiplayer.Tools.MetricTypes;
+using Unity.Multiplayer.Tools.NetStats;
 using Unity.Multiplayer.Tools.NetworkProfiler.Runtime;
 
 namespace Unity.Multiplayer.Tools.NetworkProfiler.Editor
@@ -80,6 +81,7 @@ namespace Unity.Multiplayer.Tools.NetworkProfiler.Editor
         public BytesSentAndReceived Bytes { get; set; }
 
         public ConnectionInfo Connection { get; }
+
         public ConnectionInfo LocalConnection { get; }
 
         public bool SentOverLocalConnection => Connection == LocalConnection;

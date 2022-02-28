@@ -1,50 +1,78 @@
-using System.IO;
-using System.Runtime.Serialization.Formatters.Binary;
+﻿using System;
+using System.Collections.Generic;
 using Unity.Collections;
 
 namespace Unity.Multiplayer.Tools.NetStats
 {
-    internal class NetStatSerializer : INetStatSerializer
+    class NetStatSerializer : INetStatSerializer
     {
-        readonly BinaryFormatter m_BinaryFormatter;
-        readonly MemoryStream m_MemoryStream;
+        MetricFactory m_MetricFactory = new MetricFactory();
 
-        public NetStatSerializer()
-        {
-            m_MemoryStream = new MemoryStream();
-            m_BinaryFormatter = new BinaryFormatter();
-        }
-        
         public NativeArray<byte> Serialize(MetricCollection metricCollection)
         {
-            m_MemoryStream.SetLength(0);
-            
-            m_BinaryFormatter.Serialize(m_MemoryStream, metricCollection);
-            long streamLength = m_MemoryStream.Length;
-        
-            var nativeArray = new NativeArray<byte>((int)streamLength, Allocator.Temp);
-            var memoryStreamBuffer = m_MemoryStream.GetBuffer();
-            
-            for (int i = 0; i < streamLength; ++i)
+            int size = 0;
+            for (int i = 0; i < metricCollection.Metrics.Count; ++i)
             {
-                nativeArray[i] = memoryStreamBuffer[i];
+                var metric = metricCollection.Metrics[i];
+                size += FastBufferWriter.GetWriteSize<MetricHeader>();
+                size += metric.GetWriteSize();
             }
 
-            return nativeArray;
+            size += FastBufferWriter.GetWriteSize<ulong>();
+
+            using var writer = new FastBufferWriter(size, Allocator.Temp, int.MaxValue);
+
+            writer.WriteValueSafe(metricCollection.ConnectionId);
+
+            writer.WriteValueSafe(metricCollection.Metrics.Count);
+            for(int i = 0; i < metricCollection.Metrics.Count; ++i)
+            {
+                var metric = metricCollection.Metrics[i];
+
+                var header = new MetricHeader(
+                    metric.FactoryTypeName,
+                    metric.MetricContainerType,
+                    metric.Id
+                );
+
+                writer.WriteValueSafe(header);
+
+                writer.TryBeginWrite(metric.GetWriteSize());
+                metric.Write(writer);
+            }
+
+            return writer.ToNativeArray(Allocator.Temp);
         }
 
         public MetricCollection Deserialize(NativeArray<byte> bytes)
         {
-            m_MemoryStream.SetLength(0);
-            
-            int bytesLength = bytes.Length;
-            for (int i = 0; i < bytesLength; ++i)
+            var metrics = new List<IMetric>();
+            ulong connectionId;
+
+            using (var reader = new FastBufferReader(bytes, Allocator.Temp))
             {
-                m_MemoryStream.WriteByte(bytes[i]);
+                reader.ReadValueSafe(out connectionId);
+
+                reader.ReadValueSafe(out int metricsCount);
+                for (int i = 0; i < metricsCount; ++i)
+                {
+                    reader.ReadValueSafe(out MetricHeader header);
+
+                    if (m_MetricFactory.TryConstruct(header, out var metric))
+                    {
+                        metric.Read(reader);
+                        metrics.Add(metric);
+                    }
+                    else
+                    {
+                        throw new InvalidOperationException($"Failed to construct metric from serialized data. Metric Header: {header}");
+                    }
+                }
             }
 
-            m_MemoryStream.Seek(0, SeekOrigin.Begin);
-            return (MetricCollection)m_BinaryFormatter.Deserialize(m_MemoryStream);
+            return new MetricCollection(
+                metrics,
+                connectionId);
         }
     }
 }

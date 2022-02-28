@@ -7,15 +7,19 @@ namespace Unity.Multiplayer.Tools.NetworkProfiler.Editor
     ///  Details view row entry that can be shared between the list and tree views
     internal class DetailsViewRow : VisualElement
     {
-        private Label m_NameLabel;
-        private Label m_TypeLabel;
-        private Label m_BytesSentLabel;
-        private Label m_BytesReceivedLabel;
+        const int LeftColumnLength = 200;
+        const int MiddleColumnLength = 150;
+        const int RightColumnLength = 200;
+
+        readonly Label m_NameLabel;
+        readonly Label m_TypeLabel;
+        readonly Label m_BytesSentLabel;
+        readonly Label m_BytesReceivedLabel;
 
         // Color values from here: https://docs.unity3d.com/2020.2/Documentation/Manual/UIE-USS-UnityVariables.html
         // and yes, we're planning to switch to USS styling because this hardcoded RGB isn't great
-        private static readonly Color k_defaultTextColor_LightTheme = new Color(9.0f / 256, 9f / 256, 9f / 256);
-        private static readonly Color k_defaultTextColor_DarkTheme = new Color(210f / 256, 210f / 256, 210f / 256);
+        private static readonly Color k_LightThemeTextColor = new Color(9.0f / 256, 9f / 256, 9f / 256);
+        private static readonly Color k_DarkThemeTextColor = new Color(210f / 256, 210f / 256, 210f / 256);
 
         public DetailsViewRow()
         {
@@ -25,7 +29,7 @@ namespace Unity.Multiplayer.Tools.NetworkProfiler.Editor
                 {
                     flexGrow = 1,
                     unityTextAlign = TextAnchor.MiddleLeft,
-                    width = DetailsViewColumnLengths.Left,
+                    width = LeftColumnLength,
                     overflow = Overflow.Hidden,
                     textOverflow = TextOverflow.Ellipsis,
                     unityTextOverflowPosition = TextOverflowPosition.End,
@@ -37,9 +41,9 @@ namespace Unity.Multiplayer.Tools.NetworkProfiler.Editor
                 {
                     flexGrow = 1,
                     unityTextAlign = TextAnchor.MiddleRight,
-                    width = DetailsViewColumnLengths.Middle,
-                    maxWidth = DetailsViewColumnLengths.Middle,
-                    minWidth = DetailsViewColumnLengths.Middle,
+                    width = MiddleColumnLength,
+                    maxWidth = MiddleColumnLength,
+                    minWidth = MiddleColumnLength,
                 },
             };
             m_BytesSentLabel = new Label
@@ -48,9 +52,9 @@ namespace Unity.Multiplayer.Tools.NetworkProfiler.Editor
                 {
                     flexGrow = 1,
                     unityTextAlign = TextAnchor.MiddleRight,
-                    width = DetailsViewColumnLengths.Middle,
-                    maxWidth = DetailsViewColumnLengths.Middle,
-                    minWidth = DetailsViewColumnLengths.Middle,
+                    width = MiddleColumnLength,
+                    maxWidth = MiddleColumnLength,
+                    minWidth = MiddleColumnLength,
                 },
             };
             m_BytesReceivedLabel = new Label
@@ -59,9 +63,9 @@ namespace Unity.Multiplayer.Tools.NetworkProfiler.Editor
                 {
                     flexGrow = 1,
                     unityTextAlign = TextAnchor.MiddleRight,
-                    width = DetailsViewColumnLengths.Right,
-                    maxWidth = DetailsViewColumnLengths.Right,
-                    minWidth = DetailsViewColumnLengths.Right,
+                    width = RightColumnLength,
+                    maxWidth = RightColumnLength,
+                    minWidth = RightColumnLength,
                 },
             };
 
@@ -83,25 +87,20 @@ namespace Unity.Multiplayer.Tools.NetworkProfiler.Editor
             {
                 return;
             }
-            var rowData = rowDataItem.data;
 
-            m_NameLabel.text = rowData.Name;
-            m_TypeLabel.text = rowData.TypeDisplayName;
-            m_BytesSentLabel.text =
-                FormattingUtil.FormatBytesForDetailsView(rowData.Bytes.Sent);
-            m_BytesReceivedLabel.text =
-                FormattingUtil.FormatBytesForDetailsView(rowData.Bytes.Received);
+            m_NameLabel.text = rowDataItem.data.Name;
+            m_TypeLabel.text = rowDataItem.data.TypeDisplayName;
+            m_BytesSentLabel.text = FormatBytes(rowDataItem.data.Bytes.Sent);
+            m_BytesReceivedLabel.text = FormatBytes(rowDataItem.data.Bytes.Received);
 
-            var isDarkTheme = EditorGUIUtility.isProSkin;
-
-            var textColorBase = isDarkTheme
-                ? new StyleColor(k_defaultTextColor_DarkTheme)
-                : new StyleColor(k_defaultTextColor_LightTheme);
+            var textColorBase = EditorGUIUtility.isProSkin
+                ? new StyleColor(k_DarkThemeTextColor)
+                : new StyleColor(k_LightThemeTextColor);
 
             m_NameLabel.style.color = textColorBase;
             m_TypeLabel.style.color = textColorBase;
 
-            var textColorBytes = rowData.SentOverLocalConnection
+            var textColorBytes = rowDataItem.data.SentOverLocalConnection
                 ? new StyleColor(Color.gray)
                 : textColorBase;
 
@@ -110,7 +109,7 @@ namespace Unity.Multiplayer.Tools.NetworkProfiler.Editor
 
             // The tooltip text depends on the theme because it describes the significance
             // of text colors that vary based on the theme
-            var bytesTooltipText = isDarkTheme
+            var bytesTooltipText = EditorGUIUtility.isProSkin
                 ? Tooltips.DetailsViewBytes_DarkTheme
                 : Tooltips.DetailsViewBytes_LightTheme;
 
@@ -119,5 +118,7 @@ namespace Unity.Multiplayer.Tools.NetworkProfiler.Editor
 
             userData = item;
         }
+
+        static string FormatBytes(long bytes) => bytes == 0 ? "-" : EditorUtility.FormatBytes(bytes);
     }
 }

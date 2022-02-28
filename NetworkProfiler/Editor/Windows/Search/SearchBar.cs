@@ -8,36 +8,41 @@ namespace Unity.Multiplayer.Tools.NetworkProfiler.Editor
 {
     class SearchBar : VisualElement
     {
-        static class VisualElementNames
-        {
-            internal const string ToolbarSearchField = "ToolbarSearchField";
-        }
-
-        static class VisualTreeAssetPaths
-        {
-            internal const string Search =
+        const string ToolbarSearchFieldName = "ToolbarSearchField";
+        const string SearchAssetPath =
                 "Packages/com.unity.multiplayer.tools/NetworkProfiler/Editor/Windows/Search/search.uxml";
-        }
+
+        static SearchListFilter Filter => Filters.PartialMatchGameObjectFilter;
+
+        readonly Action<IReadOnlyCollection<IRowData>> m_OnSearchResultsChanged;
+        readonly Action m_OnSearchStringCleared;
 
         readonly ToolbarSearchField m_ToolbarSearchField;
         List<IRowData> m_Entries = new List<IRowData>();
-        static SearchListFilter Filter => Filters.PartialMatchGameObjectFilter;
 
-        internal event Action<IReadOnlyCollection<IRowData>> OnSearchResultsChanged;
-        internal event Action OnSearchStringCleared;
-
-        public SearchBar()
+        public SearchBar(
+            Action<IReadOnlyCollection<IRowData>> onSearchResultsChanged,
+            Action onSearchStringCleared)
         {
-            var tree = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>(VisualTreeAssetPaths.Search);
+            m_OnSearchResultsChanged = onSearchResultsChanged;
+            m_OnSearchStringCleared = onSearchStringCleared;
+
+            var tree = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>(SearchAssetPath);
             var root = tree.CloneTree();
 
-            m_ToolbarSearchField = root.Q<ToolbarSearchField>(VisualElementNames.ToolbarSearchField);
+            m_ToolbarSearchField = root.Q<ToolbarSearchField>(ToolbarSearchFieldName);
             m_ToolbarSearchField.value = DetailsViewPersistentState.SearchBarString;
             m_ToolbarSearchField.RegisterValueChangedCallback(OnSearchFieldChanged);
 
             tooltip = Tooltips.SearchBar;
 
             Add(root);
+        }
+
+        internal void SetEntries(TreeModel treeModel)
+        {
+            m_Entries = TreeModelUtility.FlattenTree(treeModel);
+            RefreshSearchResults();
         }
 
         void OnSearchFieldChanged(ChangeEvent<string> searchString)
@@ -53,21 +58,10 @@ namespace Unity.Multiplayer.Tools.NetworkProfiler.Editor
             if (isSearching)
             {
                 var entries = Filter.Invoke(m_Entries, searchString);
-                OnSearchResultsChanged?.Invoke(entries);
+                m_OnSearchResultsChanged.Invoke(entries);
                 return;
             }
-            OnSearchStringCleared?.Invoke();
-        }
-
-        internal void SetEntries(List<IRowData> searchListEntries)
-        {
-            m_Entries = searchListEntries;
-            RefreshSearchResults();
-        }
-
-        internal void SetEntries(TreeModel treeModel)
-        {
-            SetEntries(TreeModelUtility.FlattenTree(treeModel));
+            m_OnSearchStringCleared.Invoke();
         }
     }
 }

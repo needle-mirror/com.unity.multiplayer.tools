@@ -11,11 +11,5 @@ namespace Unity.Multiplayer.Tools.NetworkProfiler.Editor
         IEnumerable<ITreeViewItem> children { get; }
 
         bool hasChildren { get; }
-
-        void AddChild(ITreeViewItem child);
-
-        void AddChildren(IList<ITreeViewItem> children);
-
-        void RemoveChild(ITreeViewItem child);
     }
 }

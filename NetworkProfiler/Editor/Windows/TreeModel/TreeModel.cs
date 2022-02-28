@@ -4,8 +4,9 @@ namespace Unity.Multiplayer.Tools.NetworkProfiler.Editor
 {
     class TreeModel
     {
+        readonly List<TreeModelNode> m_Children = new List<TreeModelNode>();
+
         public IReadOnlyList<TreeModelNode> Children => m_Children;
-        List<TreeModelNode> m_Children = new List<TreeModelNode>();
         
         public void SortChildren(SortDirection direction)
         {

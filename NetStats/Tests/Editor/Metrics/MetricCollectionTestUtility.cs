@@ -10,13 +10,12 @@ namespace Unity.Multiplayer.Tools.NetStats.Tests
             IReadOnlyCollection<IMetric> metrics,
              ulong localConnectionId = ulong.MaxValue)
         {
-            static string ByName(IMetric metric) => metric.Name;
+            static MetricId ById(IMetric metric) => metric.Id;
             var metricCollection = new MetricCollection(
-                metrics.OfType<IMetric<long>>().ToDictionary(ByName),
-                metrics.OfType<IMetric<double>>().ToDictionary(ByName),
-                metrics.OfType<IMetric<TimeSpan>>().ToDictionary(ByName),
-                metrics.OfType<IEventMetric<string>>().ToDictionary(ByName),
-                metrics.OfType<IEventMetric>().ToDictionary(ByName));
+                metrics.OfType<IMetric<long>>().ToDictionary(ById),
+                metrics.OfType<IMetric<double>>().ToDictionary(ById),
+                metrics.OfType<IMetric<TimeSpan>>().ToDictionary(ById),
+                metrics.OfType<IEventMetric>().ToDictionary(ById));
             metricCollection.ConnectionId = localConnectionId;
 
             return metricCollection;

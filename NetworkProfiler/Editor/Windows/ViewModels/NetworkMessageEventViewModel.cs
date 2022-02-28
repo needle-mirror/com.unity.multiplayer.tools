@@ -1,6 +1,5 @@
 using System;
-using Unity.Multiplayer.Tools.MetricTypes;
-using Unity.Multiplayer.Tools.NetworkProfiler.Runtime;
+using Unity.Multiplayer.Tools.NetStats;
 
 namespace Unity.Multiplayer.Tools.NetworkProfiler.Editor
 {
@@ -10,7 +9,8 @@ namespace Unity.Multiplayer.Tools.NetworkProfiler.Editor
             : base(
                 parent,
                 messageName,
-                MetricType.NetworkMessage,
+                MetricTypeExtensions.GetDisplayNameString(messageName), //Using messageName to clarify the type instead of just NetworkMessage
+                MetricTypeExtensions.GetTypeNameString(messageName),
                 onSelectedCallback)
         {
         }

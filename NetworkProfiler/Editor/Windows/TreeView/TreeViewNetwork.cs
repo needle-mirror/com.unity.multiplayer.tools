@@ -1,8 +1,5 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using Unity.Multiplayer.Tools.NetworkProfiler.Runtime;
-using UnityEngine;
 using UnityEngine.UIElements;
 
 namespace Unity.Multiplayer.Tools.NetworkProfiler.Editor
@@ -15,22 +12,26 @@ namespace Unity.Multiplayer.Tools.NetworkProfiler.Editor
             Activity,
         }
 
+        readonly TreeModel m_TreeModel;
         TreeView m_InnerTreeView;
-        TreeModel m_TreeModel;
         VisualElement m_TreeViewContainer;
         SortDirection m_SortDirection;
-        DisplayType m_DisplayType;
 
         public TreeViewNetwork(TreeModel treeModel)
         {
-            InitializeStyling();
             m_TreeModel = treeModel;
+
+            style.fontSize = 14;
+            style.flexDirection = FlexDirection.Row;
+
+            this.StretchToParentSize();
         }
 
-        public void Show(DisplayType displayType)
+        bool HasConnections => m_TreeModel?.Children.Count > 0;
+
+        public void Show()
         {
-            m_DisplayType = displayType;
-            if (HasConnections())
+            if (HasConnections)
             {
                 BuildTreeView(SortDirection.NameAscending);
             }
@@ -46,19 +47,6 @@ namespace Unity.Multiplayer.Tools.NetworkProfiler.Editor
         {
             tree.SortChildren(sort);
             return CreateTreeViewItemsFromTreeData(tree);
-        }
-
-        bool HasConnections()
-        {
-            return m_TreeModel.Children.Count > 0;
-        }
-
-        void InitializeStyling()
-        {
-            style.fontSize = 14;
-            style.flexDirection = FlexDirection.Row;
-
-            this.StretchToParentSize();
         }
 
         void UpdateTreeView(IList<ITreeViewItem> rootItems)
@@ -152,13 +140,17 @@ namespace Unity.Multiplayer.Tools.NetworkProfiler.Editor
         {
             var item = m_InnerTreeView.FindItem(id) as TreeViewItem<IRowData>;
             var locator = item.data.TreeViewPath;
-            DetailsViewPersistentState.SetFoldout(locator.ToString(), state);
+            DetailsViewPersistentState.SetFoldout(locator, state);
         }
 
         void AddTreeView(TreeView treeView)
         {
             m_TreeViewContainer?.RemoveFromHierarchy();
-            m_TreeViewContainer = new VisualElement {name = "TreeView Container"};
+
+            m_TreeViewContainer = new VisualElement
+            {
+                name = "TreeView Container"
+            };
             m_TreeViewContainer.style.flexGrow = 1f;
             m_TreeViewContainer.style.flexShrink = 0f;
             m_TreeViewContainer.style.flexBasis = 0f;
@@ -197,7 +189,7 @@ namespace Unity.Multiplayer.Tools.NetworkProfiler.Editor
 
         public void NameSort(bool isAscending)
         {
-            if (!HasConnections())
+            if (!HasConnections)
             {
                 return;
             }
@@ -210,7 +202,7 @@ namespace Unity.Multiplayer.Tools.NetworkProfiler.Editor
 
         public void TypeSort(bool isAscending)
         {
-            if (!HasConnections())
+            if (!HasConnections)
             {
                 return;
             }
@@ -223,7 +215,7 @@ namespace Unity.Multiplayer.Tools.NetworkProfiler.Editor
 
         public void BytesSentSort(bool isAscending)
         {
-            if (!HasConnections())
+            if (!HasConnections)
             {
                 return;
             }
@@ -236,7 +228,7 @@ namespace Unity.Multiplayer.Tools.NetworkProfiler.Editor
 
         public void BytesReceivedSort(bool isAscending)
         {
-            if (!HasConnections())
+            if (!HasConnections)
             {
                 return;
             }

@@ -9,12 +9,12 @@ namespace Unity.Multiplayer.Tools.NetworkProfiler.Editor
 {
     class TreeView : VisualElement
     {
-        static readonly string s_ListViewName = "unity-tree-view__list-view";
-        static readonly string s_ItemName = "unity-tree-view__item";
-        static readonly string s_ItemToggleName = "unity-tree-view__item-toggle";
-        static readonly string s_ItemIndentsContainerName = "unity-tree-view__item-indents";
-        static readonly string s_ItemIndentName = "unity-tree-view__item-indent";
-        static readonly string s_ItemContentContainerName = "unity-tree-view__item-content";
+        const string k_ListViewName = "unity-tree-view__list-view";
+        const string k_ItemName = "unity-tree-view__item";
+        const string k_ItemToggleName = "unity-tree-view__item-toggle";
+        const string k_ItemIndentsContainerName = "unity-tree-view__item-indents";
+        const string k_ItemIndentName = "unity-tree-view__item-indent";
+        const string k_ItemContentContainerName = "unity-tree-view__item-content";
 
         public new class UxmlFactory : UxmlFactory<TreeView, UxmlTraits> {}
 
@@ -30,17 +30,21 @@ namespace Unity.Multiplayer.Tools.NetworkProfiler.Editor
                 get { yield break; }
             }
 
-            public override void Init(VisualElement ve, IUxmlAttributes bag, CreationContext cc)
+            public override void Init(VisualElement visualElement, IUxmlAttributes bag, CreationContext creationContext)
             {
-                base.Init(ve, bag, cc);
+                base.Init(visualElement, bag, creationContext);
+
+                var treeView = (TreeView)visualElement;
+
                 var itemHeight = 0;
-                if (m_ItemHeight.TryGetValueFromBag(bag, cc, ref itemHeight))
+                if (m_ItemHeight.TryGetValueFromBag(bag, creationContext, ref itemHeight))
                 {
-                    ((TreeView)ve).itemHeight = itemHeight;
+                    treeView.itemHeight = itemHeight;
                 }
-                ((TreeView)ve).showBorder = m_ShowBorder.GetValueFromBag(bag, cc);
-                ((TreeView)ve).selectionType = m_SelectionType.GetValueFromBag(bag, cc);
-                ((TreeView)ve).showAlternatingRowBackgrounds = m_ShowAlternatingRowBackgrounds.GetValueFromBag(bag, cc);
+
+                treeView.showBorder = m_ShowBorder.GetValueFromBag(bag, creationContext);
+                treeView.selectionType = m_SelectionType.GetValueFromBag(bag, creationContext);
+                treeView.showAlternatingRowBackgrounds = m_ShowAlternatingRowBackgrounds.GetValueFromBag(bag, creationContext);
             }
         }
 
@@ -51,7 +55,10 @@ namespace Unity.Multiplayer.Tools.NetworkProfiler.Editor
             set
             {
                 if (m_MakeItem == value)
+                {
                     return;
+                }
+
                 m_MakeItem = value;
                 ListViewRefresh();
             }
@@ -69,7 +76,9 @@ namespace Unity.Multiplayer.Tools.NetworkProfiler.Editor
             get
             {
                 if (m_SelectedItems != null)
+                {
                     return m_SelectedItems;
+                }
 
                 m_SelectedItems = new List<ITreeViewItem>();
                 foreach (var treeItem in items)
@@ -77,7 +86,9 @@ namespace Unity.Multiplayer.Tools.NetworkProfiler.Editor
                     foreach (var itemId in m_ListView.selectedIndices)
                     {
                         if (treeItem.id == itemId)
+                        {
                             m_SelectedItems.Add(treeItem);
+                        }
                     }
                 }
 
@@ -146,17 +157,15 @@ namespace Unity.Multiplayer.Tools.NetworkProfiler.Editor
             public int id => item.id;
             public int depth;
 
-            public bool hasChildren => item.hasChildren;
-
             public ITreeViewItem item;
         }
 
-        [SerializeField] List<int> m_ExpandedItemIds;
+        [SerializeField]
+        List<int> m_ExpandedItemIds;
 
         List<TreeViewItemWrapper> m_ItemWrappers;
 
         readonly ListView m_ListView;
-        readonly ScrollView m_ScrollView;
 
         public TreeView()
         {
@@ -164,11 +173,13 @@ namespace Unity.Multiplayer.Tools.NetworkProfiler.Editor
             m_ExpandedItemIds = new List<int>();
             m_ItemWrappers = new List<TreeViewItemWrapper>();
 
-            m_ListView = new ListView();
-            m_ListView.name = s_ListViewName;
-            m_ListView.itemsSource = m_ItemWrappers;
-            m_ListView.viewDataKey = s_ListViewName;
-            m_ListView.AddToClassList(s_ListViewName);
+            m_ListView = new ListView
+            {
+                name = k_ListViewName,
+                itemsSource = m_ItemWrappers,
+                viewDataKey = k_ListViewName
+            };
+            m_ListView.AddToClassList(k_ListViewName);
 
             hierarchy.Add(m_ListView);
 
@@ -178,18 +189,16 @@ namespace Unity.Multiplayer.Tools.NetworkProfiler.Editor
             m_ListView.onItemsChosen += OnItemsChosen;
             m_ListView.onSelectionChange += OnSelectionChange;
             
-            m_ScrollView = m_ListView.Q<ScrollView>();
-            m_ScrollView.contentContainer.RegisterCallback<KeyDownEvent>(OnKeyDown);
-
-            RegisterCallback<MouseUpEvent>(OnTreeViewMouseUp, TrickleDown.TrickleDown);
-            RegisterCallback<CustomStyleResolvedEvent>(OnCustomStyleResolved);
+            var scrollView = m_ListView.Q<ScrollView>();
+            scrollView.contentContainer.RegisterCallback<KeyDownEvent>(OnKeyDown);
         }
 
         public TreeView(
             IList<ITreeViewItem> items,
             int itemHeight,
             Func<VisualElement> makeItem,
-            Action<VisualElement, ITreeViewItem> bindItem) : this()
+            Action<VisualElement, ITreeViewItem> bindItem)
+            : this()
         {
             m_ListView.SetItemHeight(itemHeight);
             m_MakeItem = makeItem;
@@ -199,25 +208,18 @@ namespace Unity.Multiplayer.Tools.NetworkProfiler.Editor
             Refresh();
         }
 
-        public void Refresh()
+        void Refresh()
         {
             RegenerateWrappers();
             ListViewRefresh();
         }
         
-        public void RemoveEmptyLabel()
-        {
-            var emptyLabel = m_ListView.Q<Label>(className: UiElementsUtility.emptyLabelUssClassName);
-            if (emptyLabel != null)
-            {
-                emptyLabel.style.display = DisplayStyle.None;
-            }
-        }
-
-        public static IEnumerable<ITreeViewItem> GetAllItems(IEnumerable<ITreeViewItem> rootItems)
+        static IEnumerable<ITreeViewItem> GetAllItems(IEnumerable<ITreeViewItem> rootItems)
         {
             if (rootItems == null)
+            {
                 yield break;
+            }
 
             var iteratorStack = new Stack<IEnumerator<ITreeViewItem>>();
             var currentIterator = rootItems.GetEnumerator();
@@ -248,17 +250,19 @@ namespace Unity.Multiplayer.Tools.NetworkProfiler.Editor
             }
         }
 
-        void OnKeyDown(KeyDownEvent evt)
+        void OnKeyDown(KeyDownEvent keyDownEvent)
         {
             var index = m_ListView.selectedIndex;
 
             var shouldStopPropagation = true;
 
-            switch (evt.keyCode)
+            switch (keyDownEvent.keyCode)
             {
                 case KeyCode.RightArrow:
                     if (!IsExpandedByIndex(index))
+                    {
                         ExpandItemByIndex(index);
+                    }
                     break;
                 case KeyCode.LeftArrow:
                     if (IsExpandedByIndex(index))
@@ -280,28 +284,22 @@ namespace Unity.Multiplayer.Tools.NetworkProfiler.Editor
             }
 
             if (shouldStopPropagation)
-                evt.StopPropagation();
+            {
+                keyDownEvent.StopPropagation();
+            }
         }
 
-        public void SetSelection(int id)
+        void SetSelection(int id)
         {
             SetSelection(new[] {id});
         }
 
-        public void SetSelection(IEnumerable<int> ids)
-        {
-            SetSelectionInternal(ids, true);
-        }
-
-        public void SetSelectionWithoutNotify(IEnumerable<int> ids)
-        {
-            SetSelectionInternal(ids, false);
-        }
-
-        internal void SetSelectionInternal(IEnumerable<int> ids, bool sendNotification)
+        void SetSelection(IEnumerable<int> ids)
         {
             if (ids == null)
+            {
                 return;
+            }
 
             var selectedIndexes = ids.Select(id => GetItemIndex(id, true)).ToList();
             ListViewRefresh();
@@ -325,11 +323,13 @@ namespace Unity.Multiplayer.Tools.NetworkProfiler.Editor
         {
             var item = FindItem(id);
             if (item == null)
+            {
                 throw new ArgumentOutOfRangeException(nameof(id), id, $"{nameof(TreeView)}: Item id not found.");
+            }
 
             if (expand)
             {
-                bool regenerateWrappers = false;
+                var regenerateWrappers = false;
                 var itemParent = item.parent;
                 while (itemParent != null)
                 {
@@ -343,57 +343,47 @@ namespace Unity.Multiplayer.Tools.NetworkProfiler.Editor
                 }
 
                 if (regenerateWrappers)
+                {
                     RegenerateWrappers();
+                }
             }
-
 
             var index = 0;
             for (; index < m_ItemWrappers.Count; ++index)
+            {
                 if (m_ItemWrappers[index].id == id)
+                {
                     break;
+                }
+            }
 
             return index;
         }
 
-        public void ClearSelection()
-        {
-            m_ListView.ClearSelection();
-        }
-
-        public void ScrollTo(VisualElement visualElement)
-        {
-            m_ListView.ScrollTo(visualElement);
-        }
-
-        public void ScrollToItem(int id)
-        {
-            var index = GetItemIndex(id, true);
-            Refresh();
-            m_ListView.ScrollToItem(index);
-        }
-
-        public bool IsExpanded(int id)
-        {
-            return m_ExpandedItemIds.Contains(id);
-        }
-
         public void CollapseItem(int id)
         {
-            // Make sure the item is valid.
             if (FindItem(id) == null)
+            {
                 throw new ArgumentOutOfRangeException(nameof(id), id, $"{nameof(TreeView)}: Item id not found.");
+            }
 
             // Try to find it in the currently visible list.
-            for (int i = 0; i < m_ItemWrappers.Count; ++i)
+            for (var i = 0; i < m_ItemWrappers.Count; ++i)
+            {
                 if (m_ItemWrappers[i].item.id == id)
+                {
                     if (IsExpandedByIndex(i))
                     {
                         CollapseItemByIndex(i);
                         return;
                     }
+                }
+            }
 
             if (!m_ExpandedItemIds.Contains(id))
+            {
                 return;
+            }
 
             m_ExpandedItemIds.Remove(id);
             onExpandedStateChanged?.Invoke(id, false);
@@ -402,21 +392,28 @@ namespace Unity.Multiplayer.Tools.NetworkProfiler.Editor
 
         public void ExpandItem(int id)
         {
-            // Make sure the item is valid.
             if (FindItem(id) == null)
+            {
                 throw new ArgumentOutOfRangeException(nameof(id), id, $"{nameof(TreeView)}: Item id not found.");
+            }
 
             // Try to find it in the currently visible list.
-            for (int i = 0; i < m_ItemWrappers.Count; ++i)
+            for (var i = 0; i < m_ItemWrappers.Count; ++i)
+            {
                 if (m_ItemWrappers[i].item.id == id)
+                {
                     if (!IsExpandedByIndex(i))
                     {
                         ExpandItemByIndex(i);
                         return;
                     }
+                }
+            }
 
             if (m_ExpandedItemIds.Contains(id))
+            {
                 return;
+            }
 
             m_ExpandedItemIds.Add(id);
             onExpandedStateChanged?.Invoke(id, true);
@@ -426,8 +423,12 @@ namespace Unity.Multiplayer.Tools.NetworkProfiler.Editor
         public ITreeViewItem FindItem(int id)
         {
             foreach (var item in items)
+            {
                 if (item.id == id)
+                {
                     return item;
+                }
+            }
 
             return null;
         }
@@ -440,7 +441,9 @@ namespace Unity.Multiplayer.Tools.NetworkProfiler.Editor
         void OnItemsChosen(IEnumerable<object> chosenItems)
         {
             if (onItemsChosen == null)
+            {
                 return;
+            }
 
             var itemsList = new List<ITreeViewItem>();
             foreach (var item in chosenItems)
@@ -455,49 +458,60 @@ namespace Unity.Multiplayer.Tools.NetworkProfiler.Editor
         void OnSelectionChange(IEnumerable<object> selectedListItems)
         {
             if (m_SelectedItems == null)
+            {
                 m_SelectedItems = new List<ITreeViewItem>();
+            }
 
             m_SelectedItems.Clear();
             foreach (var item in selectedListItems)
+            {
                 m_SelectedItems.Add(((TreeViewItemWrapper)item).item);
+            }
 
             onSelectionChange?.Invoke(m_SelectedItems);
         }
 
-        void OnTreeViewMouseUp(MouseUpEvent evt)
+        void OnItemMouseUp(MouseUpEvent mouseUpEvent)
         {
-            //m_ScrollView.contentContainer.Focus();
-        }
-
-        void OnItemMouseUp(MouseUpEvent evt)
-        {
-            if ((evt.modifiers & EventModifiers.Alt) == 0)
+            if ((mouseUpEvent.modifiers & EventModifiers.Alt) == 0)
+            {
                 return;
+            }
 
-            var target = evt.currentTarget as VisualElement;
-            var toggle = target.Q<Toggle>(s_ItemToggleName);
+            var target = mouseUpEvent.currentTarget as VisualElement;
+            var toggle = target.Q<Toggle>(k_ItemToggleName);
             var index = (int)toggle.userData;
             var item = m_ItemWrappers[index].item;
             var wasExpanded = IsExpandedByIndex(index);
 
             if (!item.hasChildren)
+            {
                 return;
+            }
 
             var hashSet = new HashSet<int>(m_ExpandedItemIds);
 
             if (wasExpanded)
+            {
                 hashSet.Remove(item.id);
+            }
             else
+            {
                 hashSet.Add(item.id);
+            }
 
             foreach (var child in GetAllItems(item.children))
             {
                 if (child.hasChildren)
                 {
                     if (wasExpanded)
+                    {
                         hashSet.Remove(child.id);
+                    }
                     else
+                    {
                         hashSet.Add(child.id);
+                    }
                 }
             }
 
@@ -505,14 +519,14 @@ namespace Unity.Multiplayer.Tools.NetworkProfiler.Editor
 
             Refresh();
 
-            evt.StopPropagation();
+            mouseUpEvent.StopPropagation();
         }
 
         VisualElement MakeTreeItem()
         {
             var itemContainer = new VisualElement
             {
-                name = s_ItemName,
+                name = k_ItemName,
                 style =
                 {
                     flexDirection = FlexDirection.Row,
@@ -520,38 +534,43 @@ namespace Unity.Multiplayer.Tools.NetworkProfiler.Editor
                     fontSize = 12,
                 },
             };
-            itemContainer.AddToClassList(s_ItemName);
+            itemContainer.AddToClassList(k_ItemName);
             itemContainer.RegisterCallback<MouseUpEvent>(OnItemMouseUp);
 
             var indents = new VisualElement
             {
-                name = s_ItemIndentsContainerName,
+                name = k_ItemIndentsContainerName,
                 style =
                 {
                     flexDirection = FlexDirection.Row,
                 },
             };
-            indents.AddToClassList(s_ItemIndentsContainerName);
+            indents.AddToClassList(k_ItemIndentsContainerName);
             itemContainer.hierarchy.Add(indents);
 
-            var toggle = new Toggle { name = s_ItemToggleName };
+            var toggle = new Toggle
+            {
+                name = k_ItemToggleName
+            };
             toggle.AddToClassList(Foldout.toggleUssClassName);
             toggle.RegisterValueChangedCallback(ToggleExpandedState);
             itemContainer.hierarchy.Add(toggle);
 
             var userContentContainer = new VisualElement
             {
-                name = s_ItemContentContainerName,
+                name = k_ItemContentContainerName,
                 style =
                 {
                     flexGrow = 1,
                 },
             };
-            userContentContainer.AddToClassList(s_ItemContentContainerName);
+            userContentContainer.AddToClassList(k_ItemContentContainerName);
             itemContainer.Add(userContentContainer);
 
             if (m_MakeItem != null)
+            {
                 userContentContainer.Add(m_MakeItem());
+            }
 
             return itemContainer;
         }
@@ -559,10 +578,12 @@ namespace Unity.Multiplayer.Tools.NetworkProfiler.Editor
         void UnbindTreeItem(VisualElement element, int index)
         {
             if (unbindItem == null)
+            {
                 return;
+            }
 
             var item = m_ItemWrappers[index].item;
-            var userContentContainer = element.Q(s_ItemContentContainerName).ElementAt(0);
+            var userContentContainer = element.Q(k_ItemContentContainerName).ElementAt(0);
             unbindItem(userContentContainer, item);
         }
 
@@ -570,33 +591,27 @@ namespace Unity.Multiplayer.Tools.NetworkProfiler.Editor
         {
             var item = m_ItemWrappers[index].item;
 
-            // Add indentation.
-            var indents = element.Q(s_ItemIndentsContainerName);
+            var indents = element.Q(k_ItemIndentsContainerName);
             indents.Clear();
-            for (int i = 0; i < m_ItemWrappers[index].depth; ++i)
+            for (var i = 0; i < m_ItemWrappers[index].depth; ++i)
             {
                 var indentElement = new VisualElement();
-                indentElement.AddToClassList(s_ItemIndentName);
+                indentElement.AddToClassList(k_ItemIndentName);
                 indents.Add(indentElement);
             }
 
-            // Set toggle data.
-            var toggle = element.Q<Toggle>(s_ItemToggleName);
+            var toggle = element.Q<Toggle>(k_ItemToggleName);
             toggle.SetValueWithoutNotify(IsExpandedByIndex(index));
             toggle.userData = index;
             toggle.visible = item.hasChildren;
 
             if (m_BindItem == null)
+            {
                 return;
+            }
 
-            // Bind user content container.
-            var userContentContainer = element.Q(s_ItemContentContainerName).ElementAt(0);
+            var userContentContainer = element.Q(k_ItemContentContainerName).ElementAt(0);
             m_BindItem(userContentContainer, item);
-        }
-
-        int GetItemId(int index)
-        {
-            return m_ItemWrappers[index].id;
         }
 
         bool IsExpandedByIndex(int index)
@@ -607,14 +622,16 @@ namespace Unity.Multiplayer.Tools.NetworkProfiler.Editor
         void CollapseItemByIndex(int index)
         {
             if (!m_ItemWrappers[index].item.hasChildren)
+            {
                 return;
+            }
 
             m_ExpandedItemIds.Remove(m_ItemWrappers[index].item.id);
             onExpandedStateChanged?.Invoke(m_ItemWrappers[index].item.id, false);
 
-            int recursiveChildCount = 0;
-            int currentIndex = index + 1;
-            int currentDepth = m_ItemWrappers[index].depth;
+            var recursiveChildCount = 0;
+            var currentIndex = index + 1;
+            var currentDepth = m_ItemWrappers[index].depth;
             while (currentIndex < m_ItemWrappers.Count && m_ItemWrappers[currentIndex].depth > currentDepth)
             {
                 recursiveChildCount++;
@@ -624,14 +641,14 @@ namespace Unity.Multiplayer.Tools.NetworkProfiler.Editor
             m_ItemWrappers.RemoveRange(index + 1, recursiveChildCount);
 
             ListViewRefresh();
-
-            //SaveViewData();
         }
 
         void ExpandItemByIndex(int index)
         {
             if (!m_ItemWrappers[index].item.hasChildren)
+            {
                 return;
+            }
 
             var childWrappers = new List<TreeViewItemWrapper>();
             CreateWrappers(m_ItemWrappers[index].item.children, m_ItemWrappers[index].depth + 1, ref childWrappers);
@@ -642,8 +659,6 @@ namespace Unity.Multiplayer.Tools.NetworkProfiler.Editor
             onExpandedStateChanged?.Invoke(m_ItemWrappers[index].item.id, true);
 
             ListViewRefresh();
-
-            //SaveViewData();
         }
 
         void ToggleExpandedState(ChangeEvent<bool> evt)
@@ -655,12 +670,13 @@ namespace Unity.Multiplayer.Tools.NetworkProfiler.Editor
             Assert.AreNotEqual(isExpanded, evt.newValue);
 
             if (isExpanded)
+            {
                 CollapseItemByIndex(index);
+            }
             else
+            {
                 ExpandItemByIndex(index);
-
-            // To make sure our TreeView gets focus, we need to force this. :(
-            //m_ScrollView.contentContainer.Focus();
+            }
         }
 
         void CreateWrappers(IEnumerable<ITreeViewItem> treeViewItems, int depth, ref List<TreeViewItemWrapper> wrappers)
@@ -676,7 +692,9 @@ namespace Unity.Multiplayer.Tools.NetworkProfiler.Editor
                 wrappers.Add(wrapper);
 
                 if (m_ExpandedItemIds.Contains(item.id) && item.hasChildren)
+                {
                     CreateWrappers(item.children, depth + 1, ref wrappers);
+                }
             }
         }
 
@@ -685,20 +703,11 @@ namespace Unity.Multiplayer.Tools.NetworkProfiler.Editor
             m_ItemWrappers.Clear();
 
             if (m_RootItems == null)
+            {
                 return;
+            }
 
             CreateWrappers(m_RootItems, 0, ref m_ItemWrappers);
-        }
-
-        void OnCustomStyleResolved(CustomStyleResolvedEvent e)
-        {
-            // int height;
-            // var oldHeight = m_ListView.itemHeight;
-            // if (!m_ListView.m_ItemHeightIsInline && e.customStyle.TryGetValue(ListView.s_ItemHeightProperty, out height))
-            //     m_ListView.m_ItemHeight = height;
-            //
-            // if (m_ListView.m_ItemHeight != oldHeight)
-            //     m_ListView.Refresh();
         }
     }
 }

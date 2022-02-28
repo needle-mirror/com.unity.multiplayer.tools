@@ -167,7 +167,7 @@ namespace Unity.Multiplayer.Tools.NetworkProfiler.Editor
             }
         }
         
-        static bool TryAddModule(List<NetcodeProfilerModuleData> modules, string moduleName, string[] counterNames)
+        static bool TryAddModule(List<NetcodeProfilerModuleData> modules, string moduleName, IReadOnlyList<string> counterNames)
         {
             if (!modules.Any(x => x.m_Name == moduleName))
             {

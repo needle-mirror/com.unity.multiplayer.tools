@@ -1,17 +1,28 @@
-﻿using System.Linq;
+﻿using Unity.Multiplayer.Tools.MetricTypes;
+using Unity.Multiplayer.Tools.Util;
 
-namespace Unity.Multiplayer.Tools.MetricTypes
+namespace Unity.Multiplayer.Tools.NetStats
 {
     static class MetricTypeExtensions
     {
+        internal static string GetDisplayNameString(string metricType)
+        {
+            return StringUtil.AddSpacesToCamelCase(metricType);
+        }
+
         internal static string GetDisplayNameString(this MetricType metricType)
         {
-            return string.Concat(metricType.ToString().Select(x => char.IsUpper(x) ? " " + x : x.ToString())).TrimStart(' ');
+            return GetDisplayNameString(metricType.ToString());
+        }
+
+        internal static string GetTypeNameString(string metricType)
+        {
+            return metricType.ToLowerInvariant();
         }
 
         internal static string GetTypeNameString(this MetricType metricType)
         {
-            return metricType.ToString().ToLowerInvariant();
+            return GetTypeNameString(metricType.ToString());
         }
     }
 }

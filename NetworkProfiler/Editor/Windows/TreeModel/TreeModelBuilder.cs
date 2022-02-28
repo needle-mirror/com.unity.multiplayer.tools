@@ -9,10 +9,10 @@ namespace Unity.Multiplayer.Tools.NetworkProfiler.Editor
 {
     class TreeModelBuilder
     {
-        TreeModel m_Tree;
-        Dictionary<ulong, TreeModelNode> m_ConnectionsById = new Dictionary<ulong, TreeModelNode>();
-        Dictionary<ulong, Dictionary<ulong, TreeModelNode>> m_NetworkObjectsByConnectionsById = new Dictionary<ulong, Dictionary<ulong, TreeModelNode>>();
-        MetricCollection m_MetricCollection;
+        readonly TreeModel m_Tree;
+        readonly Dictionary<ulong, TreeModelNode> m_ConnectionsById = new Dictionary<ulong, TreeModelNode>();
+        readonly Dictionary<ulong, Dictionary<ulong, TreeModelNode>> m_NetworkObjectsByConnectionsById = new Dictionary<ulong, Dictionary<ulong, TreeModelNode>>();
+        readonly MetricCollection m_MetricCollection;
 
         public TreeModelBuilder(MetricCollection metricCollection)
         {
@@ -24,21 +24,23 @@ namespace Unity.Multiplayer.Tools.NetworkProfiler.Editor
         {
             return m_Tree;
         }
-        
+
         internal TreeModelBuilder AddUnderConnection<TMetricType, TViewModelType>(
-            DirectionalMetricInfo sentMetric,
-            DirectionalMetricInfo receivedMetric,
+            MetricType metricType,
             Func<TMetricType, TreeModelNode, TViewModelType> viewModelFactory,
             Func<TMetricType, bool> filter = null)
             where TMetricType : struct, INetworkMetricEvent
             where TViewModelType : ViewModelBase
         {
+            var metricSent = metricType.GetDirectedMetric(NetworkDirection.Sent);
+            var metricReceived = metricType.GetDirectedMetric(NetworkDirection.Received);
+
             if (viewModelFactory == null)
             {
                 throw new ArgumentNullException(nameof(viewModelFactory));
             }
 
-            if (m_MetricCollection.TryGetEvent<TMetricType>(sentMetric.Id, out var sentEvent))
+            if (m_MetricCollection.TryGetEvent<TMetricType>(metricSent.GetId(), out var sentEvent))
             {
                 foreach (var value in sentEvent.Values)
                 {
@@ -53,8 +55,8 @@ namespace Unity.Multiplayer.Tools.NetworkProfiler.Editor
                     AddBytesToParentNodes(connection, viewModel.Bytes);
                 }
             }
-            
-            if (m_MetricCollection.TryGetEvent<TMetricType>(receivedMetric.Id, out var receivedEvent))
+
+            if (m_MetricCollection.TryGetEvent<TMetricType>(metricReceived.GetId(), out var receivedEvent))
             {
                 foreach (var value in receivedEvent.Values)
                 {
@@ -72,20 +74,22 @@ namespace Unity.Multiplayer.Tools.NetworkProfiler.Editor
 
             return this;
         }
-        
+
         internal TreeModelBuilder AddUnderNetworkObject<TMetricType, TViewModelType>(
-            DirectionalMetricInfo sentMetric,
-            DirectionalMetricInfo receivedMetric, 
-            Func<TMetricType, TreeModelNode, TViewModelType> viewModelFactory) 
+            MetricType metricType,
+            Func<TMetricType, TreeModelNode, TViewModelType> viewModelFactory)
             where TMetricType : struct, INetworkObjectEvent, INetworkMetricEvent
             where TViewModelType : ViewModelBase
         {
+            var metricSent = metricType.GetDirectedMetric(NetworkDirection.Sent);
+            var metricReceived = metricType.GetDirectedMetric(NetworkDirection.Received);
+
             if (viewModelFactory == null)
             {
                 throw new ArgumentNullException(nameof(viewModelFactory));
             }
-            
-            if (m_MetricCollection.TryGetEvent<TMetricType>(sentMetric.Id, out var sentEvent))
+
+            if (m_MetricCollection.TryGetEvent<TMetricType>(metricSent.GetId(), out var sentEvent))
             {
                 foreach (var value in sentEvent.Values)
                 {
@@ -96,8 +100,8 @@ namespace Unity.Multiplayer.Tools.NetworkProfiler.Editor
                     AddBytesToParentNodes(gameObject, viewModel.Bytes);
                 }
             }
-            
-            if (m_MetricCollection.TryGetEvent<TMetricType>(receivedMetric.Id, out var receivedEvent))
+
+            if (m_MetricCollection.TryGetEvent<TMetricType>(metricReceived.GetId(), out var receivedEvent))
             {
                 foreach (var value in receivedEvent.Values)
                 {
@@ -111,7 +115,7 @@ namespace Unity.Multiplayer.Tools.NetworkProfiler.Editor
 
             return this;
         }
-        
+
         TreeModelNode GetOrCreateConnection(ConnectionInfo connectionInfo)
         {
             if (!m_ConnectionsById.TryGetValue(connectionInfo.Id, out var node))

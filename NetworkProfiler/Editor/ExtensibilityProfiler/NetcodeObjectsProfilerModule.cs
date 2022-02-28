@@ -5,14 +5,18 @@ using Unity.Profiling.Editor;
 namespace Unity.Multiplayer.Tools.NetworkProfiler.Editor
 {
     [Serializable]
-    [ProfilerModuleMetadata(Strings.GameObjectsProfilerModuleName)]
+    [ProfilerModuleMetadata(ModuleNames.GameObjects)]
     class NetcodeObjectsProfilerModule : ProfilerModule
     {
         public NetcodeObjectsProfilerModule()
-            : base(ProfilerModuleDefinitions.ObjectsProfilerModule.CountersAsDescriptors()) {}
-        
+            : base(ProfilerModuleDefinitions.ObjectsProfilerModule.CountersAsDescriptors())
+        {
+        }
+
         public override ProfilerModuleViewController CreateDetailsViewController()
-            => new NetworkDetailsViewController(ProfilerWindow, TabNames.Activity);
+        {
+            return new NetworkDetailsViewController(ProfilerWindow, TabNames.Activity);
+        }
     }
 }
 #endif

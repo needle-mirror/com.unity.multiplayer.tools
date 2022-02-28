@@ -1,0 +1,18 @@
+{
+    "name": "Unity.Multiplayer.Tools.MetricTypes",
+    "rootNamespace": "Unity.Multiplayer.Tools.MetricTypes",
+    "references": [
+        "Unity.Collections",
+        "Unity.Multiplayer.Tools.NetStats",
+        "Unity.Multiplayer.Tools.Util"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": true,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

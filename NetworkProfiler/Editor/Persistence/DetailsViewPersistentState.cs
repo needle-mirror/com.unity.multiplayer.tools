@@ -2,23 +2,45 @@
 using UnityEngine;
 using System.Collections.Generic;
 using UnityEditor;
-using Object = UnityEngine.Object;
 
 namespace Unity.Multiplayer.Tools.NetworkProfiler.Editor
 {
     class DetailsViewPersistentState : ScriptableObject
     {
+        static DetailsViewPersistentState s_StateObject;
+
+        [SerializeField]
+        DetailsViewFoldoutState m_FoldoutState = new DetailsViewFoldoutState();
+
+        [SerializeField]
+        DetailsViewSelectedState m_SelectedState = new DetailsViewSelectedState();
+
+        [SerializeField]
+        string m_SearchBarString = null;
+
+        public static string MostRecentlySelected
+        {
+            get => GetOrCreateStateObject().m_SelectedState.MostRecentlySelected;
+            private set => GetOrCreateStateObject().m_SelectedState.MostRecentlySelected = value;
+        }
+
+        public static string SearchBarString
+        {
+            get => GetOrCreateStateObject().m_SearchBarString;
+            set => GetOrCreateStateObject().m_SearchBarString = value;
+        }
+
         static int? StateObjectInstanceId
         {
             get
             {
-                int ret = SessionState.GetInt(nameof(DetailsViewPersistentState), -1);
-                if (ret == -1)
+                var stateObjectInstanceId = SessionState.GetInt(nameof(DetailsViewPersistentState), -1);
+                if (stateObjectInstanceId == -1)
                 {
                     return null;
                 }
 
-                return ret;
+                return stateObjectInstanceId;
             }
             set
             {
@@ -26,11 +48,10 @@ namespace Unity.Multiplayer.Tools.NetworkProfiler.Editor
                 {
                     throw new ArgumentNullException(nameof(value));
                 }
+
                 SessionState.SetInt(nameof(DetailsViewPersistentState), value.Value);
             }
         }
-
-        static DetailsViewPersistentState s_StateObject;
 
         static DetailsViewPersistentState GetOrCreateStateObject()
         {
@@ -39,7 +60,7 @@ namespace Unity.Multiplayer.Tools.NetworkProfiler.Editor
                 return s_StateObject;
             }
 
-            int? maybeInstanceId = StateObjectInstanceId;
+            var maybeInstanceId = StateObjectInstanceId;
             if (maybeInstanceId.HasValue)
             {
                 s_StateObject = EditorUtility.InstanceIDToObject(maybeInstanceId.Value) as DetailsViewPersistentState;
@@ -47,18 +68,12 @@ namespace Unity.Multiplayer.Tools.NetworkProfiler.Editor
 
             if (!s_StateObject)
             {
-                s_StateObject = ScriptableObject.CreateInstance<DetailsViewPersistentState>();
+                s_StateObject = CreateInstance<DetailsViewPersistentState>();
                 s_StateObject.hideFlags = HideFlags.HideAndDontSave;
                 StateObjectInstanceId = s_StateObject.GetInstanceID();
             }
 
             return s_StateObject;
-        }
-
-        internal static void ResetState()
-        {
-            Object.DestroyImmediate(s_StateObject);
-            s_StateObject = null;
         }
 
         public static bool IsFoldedOut(string locator)
@@ -81,24 +96,5 @@ namespace Unity.Multiplayer.Tools.NetworkProfiler.Editor
             GetOrCreateStateObject().m_SelectedState.SetSelected(locators);
             MostRecentlySelected = locators.Count > 0 ? locators[locators.Count - 1] : null;
         }
-
-        public static string MostRecentlySelected
-        {
-            get => GetOrCreateStateObject().m_SelectedState.MostRecentlySelected;
-            private set => GetOrCreateStateObject().m_SelectedState.MostRecentlySelected = value;
-        }
-
-        public static string SearchBarString
-        {
-            get => GetOrCreateStateObject().m_SearchBarString;
-            set => GetOrCreateStateObject().m_SearchBarString = value;
-        }
-
-        [SerializeField]
-        DetailsViewFoldoutState m_FoldoutState = new DetailsViewFoldoutState();
-        [SerializeField]
-        DetailsViewSelectedState m_SelectedState = new DetailsViewSelectedState();
-        [SerializeField]
-        string m_SearchBarString = null;
     }
 }

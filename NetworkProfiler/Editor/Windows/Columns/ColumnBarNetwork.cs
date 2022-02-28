@@ -16,10 +16,10 @@ namespace Unity.Multiplayer.Tools.NetworkProfiler.Editor
             BytesReceived,
         }
 
-        public event ColumnClicked NameClickEvent;
-        public event ColumnClicked TypeClickEvent;
-        public event ColumnClicked BytesSentClickEvent;
-        public event ColumnClicked BytesReceivedClickEvent;
+        readonly ColumnClicked m_OnNameClicked;
+        readonly ColumnClicked m_OnTypeClicked;
+        readonly ColumnClicked m_OnBytesSentClicked;
+        readonly ColumnClicked m_OnBytesReceivedClicked;
 
         readonly ColumnBarState m_State;
         readonly Button m_NameImage;
@@ -46,8 +46,17 @@ namespace Unity.Multiplayer.Tools.NetworkProfiler.Editor
                 "Packages/com.unity.multiplayer.tools/NetworkProfiler/Editor/Windows/Columns/ColumnBar.uxml";
         }
 
-        public ColumnBarNetwork()
+        public ColumnBarNetwork(
+            ColumnClicked onNameClicked,
+            ColumnClicked onTypeClicked,
+            ColumnClicked onByteSentClicked,
+            ColumnClicked onBytesReceivedClicked)
         {
+            m_OnNameClicked = onNameClicked;
+            m_OnTypeClicked = onTypeClicked;
+            m_OnBytesSentClicked = onByteSentClicked;
+            m_OnBytesReceivedClicked = onBytesReceivedClicked;
+
             var tree = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>(VisualTreeAssetPaths.Column);
             var root = tree.CloneTree();
 
@@ -121,28 +130,28 @@ namespace Unity.Multiplayer.Tools.NetworkProfiler.Editor
         {
             var isAscending = m_State.ToggleNameSortDirection();
             UpdateDirectionUI(Columns.Name);
-            NameClickEvent?.Invoke(isAscending);
+            m_OnNameClicked.Invoke(isAscending);
         }
 
         void OnTypeClicked(ClickEvent clickEvent)
         {
             var isAscending = m_State.ToggleTypeSortDirection();
             UpdateDirectionUI(Columns.Type);
-            TypeClickEvent?.Invoke(isAscending);
+            m_OnTypeClicked.Invoke(isAscending);
         }
 
         void OnBytesSentClicked(ClickEvent clickEvent)
         {
             var isAscending = m_State.ToggleBytesSentSortDirection();
             UpdateDirectionUI(Columns.BytesSent);
-            BytesSentClickEvent?.Invoke(isAscending);
+            m_OnBytesSentClicked.Invoke(isAscending);
         }
 
         void OnBytesReceivedClicked(ClickEvent clickEvent)
         {
             var isAscending = m_State.ToggleBytesReceivedSortDirection();
             UpdateDirectionUI(Columns.BytesReceived);
-            BytesReceivedClickEvent?.Invoke(isAscending);
+            m_OnBytesReceivedClicked.Invoke(isAscending);
         }
     }
 }

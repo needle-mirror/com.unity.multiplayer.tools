@@ -1,35 +1,26 @@
 #if UNITY_2021_2_OR_NEWER
-using System;
-using Unity.Multiplayer.Tools.NetStats;
-using Unity.Multiplayer.Tools.NetworkProfiler.Runtime;
 using Unity.Profiling.Editor;
 using UnityEditor;
-using UnityEditorInternal;
 using UnityEngine.UIElements;
 
 namespace Unity.Multiplayer.Tools.NetworkProfiler.Editor
 {
     class NetworkDetailsViewController : ProfilerModuleViewController
     {
-        INetStatSerializer m_Serializer;
-        InternalView m_InternalView;
-        string m_TabName;
+        readonly string m_TabName;
+
+        readonly INetworkProfilerDataProvider m_NetworkProfilerDataProvider;
+        readonly NetworkProfilerDetailsView m_NetworkProfilerDetailsView;
 
         public NetworkDetailsViewController(ProfilerWindow profilerWindow, string tabName)
             : base(profilerWindow)
         {
-            m_Serializer = new NetStatSerializer();
             m_TabName = tabName;
-        }
 
-        protected override VisualElement CreateView()
-        {
-            ProfilerWindow.SelectedFrameIndexChanged += OnSelectedFrameIndexChanged;
+            m_NetworkProfilerDataProvider = new NetworkProfilerDataProvider();
+            m_NetworkProfilerDetailsView = new NetworkProfilerDetailsView();
 
-            m_InternalView = new InternalView();
-            m_InternalView.ShowTab(m_TabName);
-            m_InternalView.PopulateView(GetDataForFrame(Convert.ToInt32(ProfilerWindow.selectedFrameIndex)));
-            return m_InternalView;
+            ProfilerWindow.SelectedFrameIndexChanged += OnSelectedFrameChanged;
         }
 
         protected override void Dispose(bool disposing)
@@ -39,33 +30,22 @@ namespace Unity.Multiplayer.Tools.NetworkProfiler.Editor
                 return;
             }
 
-            ProfilerWindow.SelectedFrameIndexChanged -= OnSelectedFrameIndexChanged;
+            ProfilerWindow.SelectedFrameIndexChanged -= OnSelectedFrameChanged;
+
             base.Dispose(true);
         }
 
-        void OnSelectedFrameIndexChanged(long selectedFrameIndex)
+        protected override VisualElement CreateView()
         {
-            m_InternalView.PopulateView(GetDataForFrame(Convert.ToInt32(selectedFrameIndex)));
+            m_NetworkProfilerDetailsView.ShowTab(m_TabName);
+            m_NetworkProfilerDetailsView.PopulateView(m_NetworkProfilerDataProvider.GetDataForFrame(ProfilerWindow.selectedFrameIndex));
+
+            return m_NetworkProfilerDetailsView;
         }
 
-        MetricCollection GetDataForFrame(int frameIndex)
+        void OnSelectedFrameChanged(long selectedFrameIndex)
         {
-            using var frameData = ProfilerDriver.GetRawFrameDataView(frameIndex, 0);
-            
-            if (frameData == null || !frameData.valid)
-            {
-                return null;
-            }
-
-            var bytes =
-                frameData.GetFrameMetaData<byte>(FrameInfo.NetworkProfilerGuid, FrameInfo.NetworkProfilerDataTag);
-
-            if (bytes.Length > 0)
-            {
-                return m_Serializer.Deserialize(bytes);
-            }
-
-            return null;
+            m_NetworkProfilerDetailsView?.PopulateView(m_NetworkProfilerDataProvider.GetDataForFrame(ProfilerWindow.selectedFrameIndex));
         }
     }
 }

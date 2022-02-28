@@ -5,24 +5,38 @@ using UnityEngine.UIElements;
 
 namespace Unity.Multiplayer.Tools.NetworkProfiler.Editor
 {
-    class TreeViewTabElement : TabElement
+    class TreeViewTabElement : VisualElement
     {
-        ColumnBarNetwork m_ColumnBarNetwork;
+        readonly TreeViewNetwork.DisplayType m_DisplayType;
+
+        readonly ColumnBarNetwork m_ColumnBarNetwork;
+        readonly SearchBar m_SearchBar;
+
         TreeModel m_TreeModel;
-        TreeViewNetwork.DisplayType m_DisplayType;
         ListViewContainer m_FilteredResultsArea;
-        SearchBar m_SearchBar;
         bool m_ShowFiltered;
         bool m_ShowStandard;
         TreeViewNetwork m_TreeView;
         VisualElement m_TreeViewArea;
 
-        public void SetTreeViewDisplayType(TreeViewNetwork.DisplayType displayType)
+        public TreeViewTabElement(TreeViewNetwork.DisplayType displayType)
         {
             m_DisplayType = displayType;
+
+            style.flexGrow = 1;
+
+            m_ColumnBarNetwork = new ColumnBarNetwork(
+                HandleOnNameClickedEvent,
+                HandleOnTypeClickedEvent,
+                HandleOnBytesSentClickEvent,
+                HandleOnBytesReceivedClickEvent);
+
+            m_SearchBar = new SearchBar(
+                HandleOnSearchResultsChanged,
+                HandleOnSearchStringCleared);
         }
 
-        public override void UpdateMetrics(MetricCollection metricCollection)
+        public void UpdateMetrics(MetricCollection metricCollection)
         {
             m_TreeModel = ConstructTreeModel(metricCollection, m_DisplayType);
         }
@@ -37,68 +51,38 @@ namespace Unity.Multiplayer.Tools.NetworkProfiler.Editor
             };
         }
 
-        public override void Show()
+        public void Show()
         {
-            CleanupExistingUI();
             SetupUIElements();
             ShowStandardTreeView();
             style.display = new StyleEnum<DisplayStyle>(DisplayStyle.Flex);
         }
 
-        public override void Hide()
+        public void Hide()
         {
-            CleanupExistingUI();
             style.display = new StyleEnum<DisplayStyle>(DisplayStyle.None);
         }
 
-        public override void CustomizeToolbar(VisualElement container)
+        public void CustomizeToolbar(VisualElement container)
         {
-            m_SearchBar = new SearchBar();
-            m_SearchBar.OnSearchStringCleared += HandleOnSearchStringCleared;
-            m_SearchBar.OnSearchResultsChanged += HandleOnSearchResultsChanged;
-
             // Call set entries after adding the callback, so that we can
             // immediately get the callback with the filtered results
             m_SearchBar.SetEntries(m_TreeModel);
             container.Add(m_SearchBar);
         }
 
-        void CleanupExistingUI()
-        {
-            CleanupSearchBar();
-            CleanupColumnBar();
-        }
-
-        void CleanupColumnBar()
-        {
-            if (m_ColumnBarNetwork == null) return;
-            m_ColumnBarNetwork.NameClickEvent -= HandleOnNameClickedEvent;
-            m_ColumnBarNetwork.TypeClickEvent -= HandleOnTypeClickedEvent;
-            m_ColumnBarNetwork.BytesSentClickEvent -= HandleOnBytesSentClickEvent;
-            m_ColumnBarNetwork.BytesReceivedClickEvent -= HandleOnBytesReceivedClickEvent;
-            m_ColumnBarNetwork.RemoveFromHierarchy();
-        }
-
-        void CleanupSearchBar()
-        {
-            if (m_SearchBar == null) return;
-            m_SearchBar.OnSearchStringCleared -= HandleOnSearchStringCleared;
-            m_SearchBar.OnSearchResultsChanged -= HandleOnSearchResultsChanged;
-            m_SearchBar.RemoveFromHierarchy();
-        }
-
         void SetupUIElements()
         {
-            m_ColumnBarNetwork = new ColumnBarNetwork();
-            m_ColumnBarNetwork.NameClickEvent += HandleOnNameClickedEvent;
-            m_ColumnBarNetwork.TypeClickEvent += HandleOnTypeClickedEvent;
-            m_ColumnBarNetwork.BytesReceivedClickEvent += HandleOnBytesReceivedClickEvent;
-            m_ColumnBarNetwork.BytesSentClickEvent += HandleOnBytesSentClickEvent;
             m_TreeView = new TreeViewNetwork(m_TreeModel);
-            m_TreeView.Show(m_DisplayType);
-            m_TreeViewArea = new VisualElement {name = "TreeView Area"};
+            m_TreeView.Show();
+
+            m_TreeViewArea = new VisualElement
+            {
+                name = "TreeView Area"
+            };
             m_TreeViewArea.style.flexGrow = 1;
             m_TreeViewArea.Add(m_TreeView);
+
             m_FilteredResultsArea = new ListViewContainer();
         }
 

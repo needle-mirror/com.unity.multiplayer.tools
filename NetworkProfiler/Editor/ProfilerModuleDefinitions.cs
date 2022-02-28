@@ -3,31 +3,11 @@ using Unity.Multiplayer.Tools.NetworkProfiler.Runtime;
 
 namespace Unity.Multiplayer.Tools.NetworkProfiler.Editor
 {
-    internal struct ProfilerModuleDefinition
-    {
-        public string Name;
-        public string[] Counters;
-    }
-    
     internal static class ProfilerModuleDefinitions
     {
-        static ProfilerCounters ProfilerCounters => ProfilerCounters.Instance;
-
-        public static readonly IReadOnlyList<ProfilerModuleDefinition> Modules;
-
-        static ProfilerModuleDefinitions()
-        {
-            Modules = new List<ProfilerModuleDefinition>()
-            {
-                MessagesProfilerModule,
-                ObjectsProfilerModule
-            };
-        }
-        
-        internal static readonly ProfilerModuleDefinition ObjectsProfilerModule = new ProfilerModuleDefinition
-        {
-            Name = Strings.GameObjectsProfilerModuleName,
-            Counters = new []
+        internal static readonly ProfilerModuleDefinition ObjectsProfilerModule = new ProfilerModuleDefinition(
+            ModuleNames.GameObjects,
+            new []
             {
                 ProfilerCounters.rpc.Bytes.Sent, 
                 ProfilerCounters.rpc.Bytes.Received,
@@ -39,13 +19,11 @@ namespace Unity.Multiplayer.Tools.NetworkProfiler.Editor
                 ProfilerCounters.objectDestroyed.Bytes.Received,
                 ProfilerCounters.ownershipChange.Bytes.Sent,
                 ProfilerCounters.ownershipChange.Bytes.Received,
-            }
-        };
+            });
         
-        internal static readonly ProfilerModuleDefinition MessagesProfilerModule = new ProfilerModuleDefinition
-        {
-            Name = Strings.MessagesProfilerModuleName,
-            Counters = new []
+        internal static readonly ProfilerModuleDefinition MessagesProfilerModule = new ProfilerModuleDefinition(
+            ModuleNames.Message,
+            new []
             {
                 ProfilerCounters.totalBytes.Sent,
                 ProfilerCounters.totalBytes.Received,
@@ -55,7 +33,32 @@ namespace Unity.Multiplayer.Tools.NetworkProfiler.Editor
                 ProfilerCounters.unnamedMessage.Bytes.Received,
                 ProfilerCounters.sceneEvent.Bytes.Sent,
                 ProfilerCounters.sceneEvent.Bytes.Received,
-            }
-        };
+            });
+
+        static ProfilerModuleDefinitions()
+        {
+            Modules = new[]
+            {
+                MessagesProfilerModule,
+                ObjectsProfilerModule
+            };
+        }
+        
+        public static IReadOnlyList<ProfilerModuleDefinition> Modules { get; }
+
+        static ProfilerCounters ProfilerCounters => ProfilerCounters.Instance;
+    }
+
+    internal struct ProfilerModuleDefinition
+    {
+        public ProfilerModuleDefinition(string name, IReadOnlyList<string> counters)
+        {
+            Name = name;
+            Counters = counters;
+        }
+
+        public string Name { get; }
+
+        public IReadOnlyList<string> Counters { get; }
     }
 }

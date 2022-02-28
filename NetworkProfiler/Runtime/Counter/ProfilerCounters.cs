@@ -58,60 +58,60 @@ namespace Unity.Multiplayer.Tools.NetworkProfiler.Runtime
         public void UpdateFromMetrics(MetricCollection collection)
         {
             totalBytes.Sample(
-                collection.TryGetCounter(NetworkMetricTypes.TotalBytesSent.Id, out var bytesSent)
+                collection.TryGetCounter(DirectedMetricType.TotalBytesSent.GetId(), out var bytesSent)
                     ? bytesSent.Value
                     : 0L,
-                collection.TryGetCounter(NetworkMetricTypes.TotalBytesReceived.Id, out var bytesReceived)
-                    ? bytesReceived.Value 
+                collection.TryGetCounter(DirectedMetricType.TotalBytesReceived.GetId(), out var bytesReceived)
+                    ? bytesReceived.Value
                     : 0L);
-            
+
             rpc.Sample(
-                collection.GetEventValues<RpcEvent>(NetworkMetricTypes.RpcSent.Id),
-                collection.GetEventValues<RpcEvent>(NetworkMetricTypes.RpcReceived.Id));
-            
+                collection.GetEventValues<RpcEvent>(DirectedMetricType.RpcSent.GetId()),
+                collection.GetEventValues<RpcEvent>(DirectedMetricType.RpcReceived.GetId()));
+
             namedMessage.Sample(
-                collection.GetEventValues<NamedMessageEvent>(NetworkMetricTypes.NamedMessageSent.Id),
-                collection.GetEventValues<NamedMessageEvent>(NetworkMetricTypes.NamedMessageReceived.Id));
-            
+                collection.GetEventValues<NamedMessageEvent>(DirectedMetricType.NamedMessageSent.GetId()),
+                collection.GetEventValues<NamedMessageEvent>(DirectedMetricType.NamedMessageReceived.GetId()));
+
             unnamedMessage.Sample(
-                collection.GetEventValues<UnnamedMessageEvent>(NetworkMetricTypes.UnnamedMessageSent.Id),
-                collection.GetEventValues<UnnamedMessageEvent>(NetworkMetricTypes.UnnamedMessageReceived.Id));
-            
+                collection.GetEventValues<UnnamedMessageEvent>(DirectedMetricType.UnnamedMessageSent.GetId()),
+                collection.GetEventValues<UnnamedMessageEvent>(DirectedMetricType.UnnamedMessageReceived.GetId()));
+
             // Custom messages is a combination of named and unnamed messages
             customMessage.Sample(
-                collection.GetEventValues<NamedMessageEvent>(NetworkMetricTypes.NamedMessageSent.Id),
-                collection.GetEventValues<NamedMessageEvent>(NetworkMetricTypes.NamedMessageReceived.Id));
+                collection.GetEventValues<NamedMessageEvent>(DirectedMetricType.NamedMessageSent.GetId()),
+                collection.GetEventValues<NamedMessageEvent>(DirectedMetricType.NamedMessageReceived.GetId()));
             customMessage.Sample(
-                collection.GetEventValues<UnnamedMessageEvent>(NetworkMetricTypes.UnnamedMessageSent.Id),
-                collection.GetEventValues<UnnamedMessageEvent>(NetworkMetricTypes.UnnamedMessageReceived.Id));
+                collection.GetEventValues<UnnamedMessageEvent>(DirectedMetricType.UnnamedMessageSent.GetId()),
+                collection.GetEventValues<UnnamedMessageEvent>(DirectedMetricType.UnnamedMessageReceived.GetId()));
 
             networkVariableDelta.Sample(
-                collection.GetEventValues<NetworkVariableEvent>(NetworkMetricTypes.NetworkVariableDeltaSent.Id),
-                collection.GetEventValues<NetworkVariableEvent>(NetworkMetricTypes.NetworkVariableDeltaReceived.Id));
-            
+                collection.GetEventValues<NetworkVariableEvent>(DirectedMetricType.NetworkVariableDeltaSent.GetId()),
+                collection.GetEventValues<NetworkVariableEvent>(DirectedMetricType.NetworkVariableDeltaReceived.GetId()));
+
             objectSpawned.Sample(
-                collection.GetEventValues<ObjectSpawnedEvent>(NetworkMetricTypes.ObjectSpawnedSent.Id),
-                collection.GetEventValues<ObjectSpawnedEvent>(NetworkMetricTypes.ObjectSpawnedReceived.Id));
+                collection.GetEventValues<ObjectSpawnedEvent>(DirectedMetricType.ObjectSpawnedSent.GetId()),
+                collection.GetEventValues<ObjectSpawnedEvent>(DirectedMetricType.ObjectSpawnedReceived.GetId()));
 
             objectDestroyed.Sample(
-                collection.GetEventValues<ObjectDestroyedEvent>(NetworkMetricTypes.ObjectDestroyedSent.Id),
-                collection.GetEventValues<ObjectDestroyedEvent>(NetworkMetricTypes.ObjectDestroyedReceived.Id));
+                collection.GetEventValues<ObjectDestroyedEvent>(DirectedMetricType.ObjectDestroyedSent.GetId()),
+                collection.GetEventValues<ObjectDestroyedEvent>(DirectedMetricType.ObjectDestroyedReceived.GetId()));
 
             serverLog.Sample(
-                collection.GetEventValues<ServerLogEvent>(NetworkMetricTypes.ServerLogSent.Id),
-                collection.GetEventValues<ServerLogEvent>(NetworkMetricTypes.ServerLogReceived.Id));
+                collection.GetEventValues<ServerLogEvent>(DirectedMetricType.ServerLogSent.GetId()),
+                collection.GetEventValues<ServerLogEvent>(DirectedMetricType.ServerLogReceived.GetId()));
 
             sceneEvent.Sample(
-                collection.GetEventValues<SceneEventMetric>(NetworkMetricTypes.SceneEventSent.Id),
-                collection.GetEventValues<SceneEventMetric>(NetworkMetricTypes.SceneEventReceived.Id));
+                collection.GetEventValues<SceneEventMetric>(DirectedMetricType.SceneEventSent.GetId()),
+                collection.GetEventValues<SceneEventMetric>(DirectedMetricType.SceneEventReceived.GetId()));
 
             ownershipChange.Sample(
-                collection.GetEventValues<OwnershipChangeEvent>(NetworkMetricTypes.OwnershipChangeSent.Id),
-                collection.GetEventValues<OwnershipChangeEvent>(NetworkMetricTypes.OwnershipChangeReceived.Id));
-            
+                collection.GetEventValues<OwnershipChangeEvent>(DirectedMetricType.OwnershipChangeSent.GetId()),
+                collection.GetEventValues<OwnershipChangeEvent>(DirectedMetricType.OwnershipChangeReceived.GetId()));
+
             networkMessage.Sample(
-                collection.GetEventValues<NetworkMessageEvent>(NetworkMetricTypes.NetworkMessageSent.Id),
-                collection.GetEventValues<NetworkMessageEvent>(NetworkMetricTypes.NetworkMessageReceived.Id));
+                collection.GetEventValues<NetworkMessageEvent>(DirectedMetricType.NetworkMessageSent.GetId()),
+                collection.GetEventValues<NetworkMessageEvent>(DirectedMetricType.NetworkMessageReceived.GetId()));
         }
     }
 }

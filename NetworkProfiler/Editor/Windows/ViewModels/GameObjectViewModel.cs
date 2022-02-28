@@ -18,8 +18,8 @@ namespace Unity.Multiplayer.Tools.NetworkProfiler.Editor
 
         static string GetName(NetworkObjectIdentifier objectIdentifier)
         {
-            return !string.IsNullOrWhiteSpace(objectIdentifier.Name)
-                ? objectIdentifier.Name
+            return !string.IsNullOrWhiteSpace(objectIdentifier.Name.ToString())
+                ? objectIdentifier.Name.ToString()
                 : objectIdentifier.NetworkId.ToString();
         }
     }

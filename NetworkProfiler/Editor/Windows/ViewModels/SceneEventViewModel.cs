@@ -1,4 +1,3 @@
-
 using System;
 using Unity.Multiplayer.Tools.MetricTypes;
 
@@ -15,7 +14,7 @@ namespace Unity.Multiplayer.Tools.NetworkProfiler.Editor
         {
         }
 
-        private static string GenerateName(string sceneName, string eventType)
+        static string GenerateName(string sceneName, string eventType)
         {
             var name = eventType;
 

@@ -7,60 +7,76 @@ namespace Unity.Multiplayer.Tools.NetStats
     [Serializable]
     sealed class MetricCollection
     {
-        IReadOnlyDictionary<string, IMetric<long>> m_Counters;
-        IReadOnlyDictionary<string, IMetric<double>> m_Gauges;
-        IReadOnlyDictionary<string, IMetric<TimeSpan>> m_Timers;
-        IReadOnlyDictionary<string, IEventMetric<string>> m_Events;
-        IReadOnlyDictionary<string, IEventMetric> m_PayloadEvents;
+        IReadOnlyDictionary<MetricId, IMetric<long>> m_Counters;
+        IReadOnlyDictionary<MetricId, IMetric<double>> m_Gauges;
+        IReadOnlyDictionary<MetricId, IMetric<TimeSpan>> m_Timers;
+        IReadOnlyDictionary<MetricId, IEventMetric> m_PayloadEvents;
+
 
         internal MetricCollection(
-            IReadOnlyDictionary<string, IMetric<long>> counters,
-            IReadOnlyDictionary<string, IMetric<double>> gauges,
-            IReadOnlyDictionary<string, IMetric<TimeSpan>> timers,
-            IReadOnlyDictionary<string, IEventMetric<string>> events,
-            IReadOnlyDictionary<string, IEventMetric> payloadEvents)
+            IReadOnlyDictionary<MetricId, IMetric<long>> counters,
+            IReadOnlyDictionary<MetricId, IMetric<double>> gauges,
+            IReadOnlyDictionary<MetricId, IMetric<TimeSpan>> timers,
+            IReadOnlyDictionary<MetricId, IEventMetric> payloadEvents)
         {
             m_Counters = counters;
             m_Gauges = gauges;
             m_Timers = timers;
-            m_Events = events;
             m_PayloadEvents = payloadEvents;
 
             Metrics = counters.Values
                 .Concat<IMetric>(gauges.Values)
                 .Concat(timers.Values)
-                .Concat(m_Events.Values)
                 .Concat(m_PayloadEvents.Values)
                 .ToList();
         }
 
-        public IReadOnlyCollection<IMetric> Metrics { get; }
+        internal MetricCollection(
+            IReadOnlyCollection<IMetric> metrics,
+            ulong localConnectionId)
+        {
+            static MetricId ByMetricId(IMetric metric) => metric.Id;
+            m_Counters = metrics.OfType<IMetric<long>>().ToDictionary(ByMetricId);
+            m_Gauges = metrics.OfType<IMetric<double>>().ToDictionary(ByMetricId);
+            m_Timers = metrics.OfType<IMetric<TimeSpan>>().ToDictionary(ByMetricId);
+            m_PayloadEvents = metrics.OfType<IEventMetric>().ToDictionary(ByMetricId);
+            ConnectionId = localConnectionId;
+        }
+
+        public IReadOnlyList<IMetric> Metrics { get; }
 
         public ulong ConnectionId { get; set; } = ulong.MaxValue;
 
-        public bool TryGetCounter(string name, out IMetric<long> counter)
+        public bool TryGetCounter(MetricId metricId, out IMetric<long> counter)
         {
-            return m_Counters.TryGetValue(name, out counter);
+            return m_Counters.TryGetValue(metricId, out counter);
         }
 
-        public bool TryGetGauge(string name, out IMetric<double> gauge)
+        public IMetric<long> GetCounterOrDefault(MetricId metricId)
         {
-            return m_Gauges.TryGetValue(name, out gauge);
+            if (TryGetCounter(metricId, out IMetric<long> counter))
+            {
+                return counter;
+            }
+            else
+            {
+                return null;
+            }
         }
 
-        public bool TryGetTimer(string name, out IMetric<TimeSpan> timer)
+        public bool TryGetGauge(MetricId metricId, out IMetric<double> gauge)
         {
-            return m_Timers.TryGetValue(name, out timer);
+            return m_Gauges.TryGetValue(metricId, out gauge);
         }
 
-        public bool TryGetEvent(string name, out IEventMetric<string> metricEvent)
+        public bool TryGetTimer(MetricId metricId, out IMetric<TimeSpan> timer)
         {
-            return m_Events.TryGetValue(name, out metricEvent);
+            return m_Timers.TryGetValue(metricId, out timer);
         }
 
-        public bool TryGetEvent<TEvent>(string name, out IEventMetric<TEvent> metricEvent)
+        public bool TryGetEvent<TEvent>(MetricId metricId, out IEventMetric<TEvent> metricEvent)
         {
-            var found = m_PayloadEvents.TryGetValue(name, out var value);
+            var found = m_PayloadEvents.TryGetValue(metricId, out var value);
             if (found && value is IEventMetric<TEvent> typedMetric)
             {
                 metricEvent = typedMetric;
@@ -69,6 +85,24 @@ namespace Unity.Multiplayer.Tools.NetStats
 
             metricEvent = null;
             return false;
+        }
+
+        public IEventMetric<TEvent> GetPayloadEventOrDefault<TEvent>(MetricId metricId)
+        {
+            if (TryGetEvent<TEvent>(metricId, out var metricEvent))
+            {
+                return metricEvent;
+            }
+            return null;
+        }
+
+        public int GetEventCount(MetricId metricId)
+        {
+            if (m_PayloadEvents.TryGetValue(metricId, out var eventMetric))
+            {
+                return eventMetric.Count;
+            }
+            return 0;
         }
     }
 }

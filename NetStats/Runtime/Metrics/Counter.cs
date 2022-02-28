@@ -5,8 +5,8 @@ namespace Unity.Multiplayer.Tools.NetStats
     [Serializable]
     class Counter : Metric<long>
     {
-        public Counter(string name, long defaultValue = default)
-            : base(name, defaultValue)
+        public Counter(MetricId metricId, long defaultValue = default)
+            : base(metricId, defaultValue)
         {
         }
 
@@ -14,5 +14,7 @@ namespace Unity.Multiplayer.Tools.NetStats
         {
             Value += increment;
         }
+        
+        public override MetricContainerType MetricContainerType => MetricContainerType.Counter;
     }
 }

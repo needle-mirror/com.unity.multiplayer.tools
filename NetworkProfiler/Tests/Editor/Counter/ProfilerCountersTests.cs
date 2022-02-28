@@ -12,11 +12,11 @@ namespace Unity.Multiplayer.Tools.NetworkProfiler.Editor
     {
         public struct CounterValidationParameters
         {
-            internal string Case;
+            internal string TestCaseName;
             internal Func<IMetric[]> Metrics;
             internal Func<ProfilerCounters, string> CounterName;
             internal long CounterValue;
-            public override string ToString() => Case;
+            public override string ToString() => TestCaseName.ToString();
         }
 
         [TestCaseSource(typeof(ProfilerCountersTestData), nameof(ProfilerCountersTestData.ValidateCounterTestCases))]
@@ -25,30 +25,30 @@ namespace Unity.Multiplayer.Tools.NetworkProfiler.Editor
             var counters = new Dictionary<string, TestCounter>();
             var factory = new CounterFactory(counters);
             var testObj = new ProfilerCounters(factory, factory);
-            
+
             testObj.UpdateFromMetrics(
                 MetricCollectionTestUtility.ConstructFromMetrics(
                     parameters.Metrics().ToList()));
-            
+
             Assert.IsTrue(counters.TryGetValue(parameters.CounterName(testObj), out var counter));
             Assert.AreEqual(counter.value, parameters.CounterValue);
         }
-        
+
         class TestCounter : ICounter
         {
             public long value;
             public void Sample(long inValue) => value += inValue;
         }
-        
+
         class CounterFactory : ICounterFactory
         {
             Dictionary<string, TestCounter> m_Lookup;
-            
+
             public CounterFactory(Dictionary<string, TestCounter> lookup)
             {
                 m_Lookup = lookup;
             }
-            
+
             public ICounter Construct(string name)
             {
                 var counter = new TestCounter();

@@ -1,30 +1,37 @@
 using System;
 using System.Linq;
 using NUnit.Framework;
+using Unity.Multiplayer.Tools.MetricTypes;
 
 namespace Unity.Multiplayer.Tools.NetStats.Tests
 {
     sealed class MetricEventTests
     {
-        [TestCase("")]
-        [TestCase(" ")]
-        [TestCase(null)]
-        public void Constructor_WhenNameIsInvalid_ThrowsException(string name)
+        const int k_MetricValue1 = 1234;
+        const int k_MetricValue2 = 5678;
+
+        [TestCase(4596, 9)]
+        [TestCase(-1, 7)]
+        [TestCase(347, 11)]
+        public void Constructor_WhenTypeIndexIsOutOfRange_ThrowsException(int typeIndex, int value)
         {
-            Assert.Throws<ArgumentNullException>(() => new EventMetric(name));
+            Assert.Throws<ArgumentOutOfRangeException>(() => new EventMetric<int>(
+                new MetricId(typeIndex, value)));
         }
 
         [Test]
         public void ResetStringMetricEvent_Always_ClearsUnderlyingCollection()
         {
             // Arrange
-            var metric = new EventMetric(Guid.NewGuid().ToString());
-            metric.Mark(Guid.NewGuid().ToString());
+            var id = MetricId.Create(DirectedMetricType.RpcReceived);
+            var metric = new EventMetric<int>(id);
+            metric.Mark(k_MetricValue1);
 
             // Act
             metric.Reset();
 
             // Assert
+            Assert.AreEqual(id, metric.Id);
             Assert.IsEmpty(metric.Values);
         }
 
@@ -32,23 +39,25 @@ namespace Unity.Multiplayer.Tools.NetStats.Tests
         public void MarkStringMetricEvent_Always_AddsValueToUnderlyingCollection()
         {
             // Arrange
-            var metric = new EventMetric(Guid.NewGuid().ToString());
-            var value = Guid.NewGuid().ToString();
+            var id = MetricId.Create(DirectedMetricType.RpcReceived);
+            var metric = new EventMetric<int>(id);
 
             // Act
-            metric.Mark(value);
+            metric.Mark(k_MetricValue1);
 
             // Assert
+            Assert.AreEqual(id, metric.Id);
             Assert.AreEqual(1, metric.Values.Count);
-            Assert.AreEqual(value, metric.Values.FirstOrDefault());
+            Assert.AreEqual(k_MetricValue1, metric.Values.FirstOrDefault());
         }
 
         [Test]
         public void MarkStringMetricEvent_WithExistingItemsInCollection_KeepsUnderlyingItemsInOrder()
         {
             // Arrange
-            var metric = new EventMetric(Guid.NewGuid().ToString());
-            var values = new[] { Guid.NewGuid().ToString(), Guid.NewGuid().ToString(), Guid.NewGuid().ToString() };
+            var id = MetricId.Create(DirectedMetricType.SceneEventSent);
+            var metric = new EventMetric<int>(id);
+            var values = new[] { 1, 2, 3, 4, 5 };
 
             // Act
             foreach (var value in values)
@@ -57,6 +66,7 @@ namespace Unity.Multiplayer.Tools.NetStats.Tests
             }
 
             // Assert
+            Assert.AreEqual(id, metric.Id);
             CollectionAssert.AreEquivalent(values, metric.Values);
         }
 
@@ -64,13 +74,15 @@ namespace Unity.Multiplayer.Tools.NetStats.Tests
         public void ResetCustomStructMetricEvent_Always_ClearsUnderlyingCollection()
         {
             // Arrange
-            var metric = new EventMetric<CustomEvent>(Guid.NewGuid().ToString());
+            var id = MetricId.Create(DirectedMetricType.ObjectSpawnedReceived);
+            var metric = new EventMetric<CustomEvent>(id);
             metric.Mark(new CustomEvent());
 
             // Act
             metric.Reset();
 
             // Assert
+            Assert.AreEqual(id, metric.Id);
             Assert.IsEmpty(metric.Values);
         }
 
@@ -78,13 +90,15 @@ namespace Unity.Multiplayer.Tools.NetStats.Tests
         public void MarkCustomStructMetricEvent_Always_AddsValueToUnderlyingCollection()
         {
             // Arrange
-            var metric = new EventMetric<CustomEvent>(Guid.NewGuid().ToString());
-            var value = new CustomEvent(Guid.NewGuid().ToString());
+            var id = MetricId.Create(DirectedMetricType.TotalBytesSent);
+            var metric = new EventMetric<CustomEvent>(id);
+            var value = new CustomEvent(k_MetricValue1);
 
             // Act
             metric.Mark(value);
 
             // Assert
+            Assert.AreEqual(id, metric.Id);
             Assert.AreEqual(1, metric.Values.Count);
             Assert.AreEqual(value, metric.Values.FirstOrDefault());
         }
@@ -93,8 +107,9 @@ namespace Unity.Multiplayer.Tools.NetStats.Tests
         public void MarkCustomStructMetricEvent_WithExistingItemsInCollection_KeepsUnderlyingItemsInOrder()
         {
             // Arrange
-            var metric = new EventMetric<CustomEvent>(Guid.NewGuid().ToString());
-            var values = new[] { new CustomEvent(Guid.NewGuid().ToString()), new CustomEvent(Guid.NewGuid().ToString()) };
+            var id = MetricId.Create(DirectedMetricType.ObjectDestroyedReceived);
+            var metric = new EventMetric<CustomEvent>(id);
+            var values = new[] { new CustomEvent(k_MetricValue1), new CustomEvent(k_MetricValue2) };
 
             // Act
             foreach (var value in values)
@@ -103,18 +118,90 @@ namespace Unity.Multiplayer.Tools.NetStats.Tests
             }
 
             // Assert
+            Assert.AreEqual(id, metric.Id);
             CollectionAssert.AreEquivalent(values, metric.Values);
+        }
+
+        [Test]
+        public void MarkMetricEvent_WhenNumberOfValuesDoesNotGoOverLimit_DoesNotSetWentOverLimitFlag()
+        {
+            // Arrange
+            var metricLimit = 10U;
+            var id = MetricId.Create(DirectedMetricType.NetworkVariableDeltaReceived);
+            var metric = new EventMetric<int>(id)
+            {
+                MaxNumberOfValues = metricLimit,
+            };
+
+            // Act
+            foreach (var _ in Enumerable.Range(0, (int)metricLimit))
+            {
+                metric.Mark(k_MetricValue1);
+            }
+
+            // Assert
+            Assert.AreEqual(id, metric.Id);
+            Assert.False(metric.WentOverLimit);
+        }
+
+        [Test]
+        public void MarkMetricEvent_WhenNumberOfValuesGoesOverLimit_SetsWentOverLimitFlag()
+        {
+            // Arrange
+            var metricLimit = 10U;
+            var id = MetricId.Create(DirectedMetricType.RpcSent);
+            var metric = new EventMetric<int>(id)
+            {
+                MaxNumberOfValues = metricLimit,
+            };
+
+            // Act
+            foreach (var _ in Enumerable.Range(0, (int)metricLimit + 1))
+            {
+                metric.Mark(k_MetricValue1);
+            }
+
+            // Assert
+            Assert.AreEqual(id, metric.Id);
+            Assert.True(metric.WentOverLimit);
+        }
+
+        [Test]
+        public void Reset_Always_ResetsWentOverLimitFlag()
+        {
+            // Arrange
+            var metricLimit = 10U;
+            var id = MetricId.Create(DirectedMetricType.TotalBytesReceived);
+            var metric = new EventMetric<int>(id)
+            {
+                MaxNumberOfValues = metricLimit,
+            };
+
+            // Act
+            foreach (var _ in Enumerable.Range(0, (int)metricLimit + 1))
+            {
+                metric.Mark(k_MetricValue1);
+            }
+
+            Assert.True(metric.WentOverLimit);
+
+            // Act
+            metric.Reset();
+
+            // Assert
+            Assert.AreEqual(id, metric.Id);
+            Assert.False(metric.WentOverLimit);
         }
 
         [Serializable]
         public struct CustomEvent
         {
-            public CustomEvent(string id)
+            public CustomEvent(int id)
             {
                 Id = id;
             }
 
-            public string Id { get; }
+            public int Id { get; }
         }
     }
 }

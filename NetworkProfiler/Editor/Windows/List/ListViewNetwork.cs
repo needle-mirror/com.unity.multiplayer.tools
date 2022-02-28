@@ -1,14 +1,23 @@
 using System.Collections.Generic;
 using System.Linq;
-using UnityEditor;
 using UnityEditor.UIElements;
-using UnityEngine;
 using UnityEngine.UIElements;
 
 namespace Unity.Multiplayer.Tools.NetworkProfiler.Editor
 {
     class ListViewNetwork : VisualElement
     {
+        readonly ToolbarBreadcrumbs m_SelectedItemPath = new ToolbarBreadcrumbs
+        {
+            style =
+            {
+                flexGrow = 1,
+                position = Position.Absolute,
+                bottom = 0,
+                left = 0,
+            }
+        };
+
         internal ListViewNetwork(IReadOnlyCollection<IRowData> connections)
         {
             connections ??= new List<IRowData>();
@@ -24,24 +33,16 @@ namespace Unity.Multiplayer.Tools.NetworkProfiler.Editor
             }
         }
 
-        readonly ToolbarBreadcrumbs m_SelectedItemPath = new ToolbarBreadcrumbs
-        {
-            style =
-            {
-                flexGrow = 1,
-                position = Position.Absolute,
-                bottom = 0,
-                left = 0,
-            }
-        };
-
         void BuildListView(IReadOnlyCollection<IRowData> connections)
         {
             var nextId = 0;
             var rootItems = GenerateRowList(connections, ref nextId);
 
-            // Inline
-            var inlineTreeView = new TreeView(rootItems, 20, MakeItem, BindItem);
+            var inlineTreeView = new TreeView(
+                rootItems,
+                20,
+                () => new DetailsViewRow(),
+                (element, item) => (element as DetailsViewRow)?.BindItem(item));
 
             var mostRecentlySelectedPath = DetailsViewPersistentState.MostRecentlySelected;
             foreach (var item in rootItems.OfType<TreeViewItem<IRowData>>())
@@ -94,8 +95,7 @@ namespace Unity.Multiplayer.Tools.NetworkProfiler.Editor
 
         static void SetSelectedState(TreeView treeView, TreeViewItem<IRowData> item)
         {
-            var selectedState = DetailsViewPersistentState.IsSelected(item.data.TreeViewPath);
-            if (selectedState)
+            if (DetailsViewPersistentState.IsSelected(item.data.TreeViewPath))
             {
                 treeView.AddToSelection(item.id);
             }
@@ -126,18 +126,7 @@ namespace Unity.Multiplayer.Tools.NetworkProfiler.Editor
             Add(col);
         }
 
-        static VisualElement MakeItem()
-        {
-            return new DetailsViewRow();
-        }
-
-        static void BindItem(VisualElement element, ITreeViewItem item)
-        {
-            (element as DetailsViewRow)?.BindItem(item);
-        }
-
-        static IList<ITreeViewItem> GenerateRowList(IReadOnlyCollection<IRowData> rows,
-            ref int nextId)
+        static IList<ITreeViewItem> GenerateRowList(IReadOnlyCollection<IRowData> rows, ref int nextId)
         {
             var items = new List<ITreeViewItem>(rows.Count);
             foreach (var row in rows)
@@ -150,6 +139,5 @@ namespace Unity.Multiplayer.Tools.NetworkProfiler.Editor
 
             return items;
         }
-
     }
 }

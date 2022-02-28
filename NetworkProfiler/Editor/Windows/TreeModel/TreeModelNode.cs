@@ -19,24 +19,12 @@ namespace Unity.Multiplayer.Tools.NetworkProfiler.Editor
 
         internal TreeModelNode Parent { get; private set; }
         
-        public void Add(TreeModelNode node) => AddChild(node);
         public void AddChild(TreeModelNode node)
         {
             m_Children ??= new List<TreeModelNode>();
 
             m_Children.Add(node);
             node.Parent = this;
-        }
-
-        public void AddChildren(IEnumerable<TreeModelNode> nodes)
-        {
-            m_Children ??= new List<TreeModelNode>();
-
-            m_Children.AddRange(nodes);
-            foreach (var node in nodes)
-            {
-                node.Parent = this;
-            }
         }
 
         public void SortChildren(SortDirection direction)

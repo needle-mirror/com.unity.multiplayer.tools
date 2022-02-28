@@ -10,7 +10,6 @@ namespace Unity.Multiplayer.Tools.NetStats
         readonly List<IMetric<long>> m_Counters = new List<IMetric<long>>();
         readonly List<IMetric<double>> m_Gauges = new List<IMetric<double>>();
         readonly List<IMetric<TimeSpan>> m_Timers = new List<IMetric<TimeSpan>>();
-        readonly List<IEventMetric<string>> m_Events = new List<IEventMetric<string>>();
         readonly List<IEventMetric> m_PayloadEvents = new List<IEventMetric>();
 
         public MetricCollectionBuilder WithCounters(params Counter[] counters)
@@ -34,13 +33,6 @@ namespace Unity.Multiplayer.Tools.NetStats
             return this;
         }
 
-        public MetricCollectionBuilder WithMetricEvents(params IEventMetric<string>[] metricEvents)
-        {
-            m_Events.AddRange(metricEvents);
-
-            return this;
-        }
-
         public MetricCollectionBuilder WithMetricEvents<TEvent>(params IEventMetric<TEvent>[] metricEvents)
             where TEvent : struct
         {
@@ -52,11 +44,10 @@ namespace Unity.Multiplayer.Tools.NetStats
         public MetricCollection Build()
         {
             return new MetricCollection(
-                new ReadOnlyDictionary<string, IMetric<long>>(m_Counters.ToDictionary(x => x.Name, x => x)),
-                new ReadOnlyDictionary<string, IMetric<double>>(m_Gauges.ToDictionary(x => x.Name, x => x)),
-                new ReadOnlyDictionary<string, IMetric<TimeSpan>>(m_Timers.ToDictionary(x => x.Name, x => x)),
-                new ReadOnlyDictionary<string, IEventMetric<string>>(m_Events.ToDictionary(x => x.Name, x => x)),
-                new ReadOnlyDictionary<string, IEventMetric>(m_PayloadEvents.ToDictionary(x => x.Name, x => x)));
+                new ReadOnlyDictionary<MetricId, IMetric<long>>(m_Counters.ToDictionary(x => x.Id, x => x)),
+                new ReadOnlyDictionary<MetricId, IMetric<double>>(m_Gauges.ToDictionary(x => x.Id, x => x)),
+                new ReadOnlyDictionary<MetricId, IMetric<TimeSpan>>(m_Timers.ToDictionary(x => x.Id, x => x)),
+                new ReadOnlyDictionary<MetricId, IEventMetric>(m_PayloadEvents.ToDictionary(x => x.Id, x => x)));
         }
     }
 }

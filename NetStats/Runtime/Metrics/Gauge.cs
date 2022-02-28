@@ -5,8 +5,8 @@ namespace Unity.Multiplayer.Tools.NetStats
     [Serializable]
     class Gauge : Metric<double>
     {
-        public Gauge(string name, double defaultValue = default)
-            : base(name, defaultValue)
+        public Gauge(MetricId metricId, double defaultValue = default)
+            : base(metricId, defaultValue)
         {
         }
 
@@ -14,5 +14,7 @@ namespace Unity.Multiplayer.Tools.NetStats
         {
             Value = value;
         }
+
+        public override MetricContainerType MetricContainerType => MetricContainerType.Gauge;
     }
 }

@@ -19,14 +19,9 @@ namespace Unity.Multiplayer.Tools.NetworkProfiler.Editor
 
         internal void ShowResults()
         {
-            ClearResults();
-            Add(new ListViewNetwork(m_CachedEntries));
-        }
-
-        internal void ClearResults()
-        {
             Clear();
             RemoveFromHierarchy();
+            Add(new ListViewNetwork(m_CachedEntries));
         }
 
         internal void NameSort(bool isAscending)

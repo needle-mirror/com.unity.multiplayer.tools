@@ -1,6 +1,7 @@
 using System;
 using System.Threading;
 using NUnit.Framework;
+using Unity.Multiplayer.Tools.MetricTypes;
 
 namespace Unity.Multiplayer.Tools.NetStats.Tests
 {
@@ -10,13 +11,15 @@ namespace Unity.Multiplayer.Tools.NetStats.Tests
         public void Set_Always_SetsUnderlyingValueToSpecifiedTimeSpan()
         {
             // Arrange
-            var timer = new Timer(Guid.NewGuid().ToString());
+            var id = MetricId.Create(DirectedMetricType.ServerLogReceived);
+            var timer = new Timer(id);
             var duration = TimeSpan.FromDays(1);
 
             // Act
             timer.Set(duration);
 
             // Assert
+            Assert.AreEqual(id, timer.Id);
             Assert.AreEqual(duration, timer.Value);
         }
 
@@ -24,7 +27,8 @@ namespace Unity.Multiplayer.Tools.NetStats.Tests
         public void Time_Always_SetsUnderlyingValueToScopeExecutionDuration()
         {
             // Arrange
-            var timer = new Timer(Guid.NewGuid().ToString());
+            var id = MetricId.Create(DirectedMetricType.ServerLogSent);
+            var timer = new Timer(id);
 
             // Act
             using (timer.Time())
@@ -33,6 +37,7 @@ namespace Unity.Multiplayer.Tools.NetStats.Tests
             }
 
             // Assert
+            Assert.AreEqual(id, timer.Id);
             Assert.Greater(timer.Value, TimeSpan.FromMilliseconds(100));
         }
     }

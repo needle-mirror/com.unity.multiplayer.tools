@@ -3,17 +3,12 @@ namespace Unity.Multiplayer.Tools.NetworkProfiler.Editor
     class ColumnBarState
     {
         public bool IsNameAscending { get; private set; }
-        public bool IsTypeAscending { get; private set; }
-        public bool IsBytesReceivedAscending { get; private set; }
-        public bool IsBytesSentAscending { get; private set; }
 
-        void Reset()
-        {
-            IsNameAscending = false;
-            IsTypeAscending = false;
-            IsBytesSentAscending = false;
-            IsBytesReceivedAscending = false;
-        }
+        public bool IsTypeAscending { get; private set; }
+
+        public bool IsBytesReceivedAscending { get; private set; }
+
+        public bool IsBytesSentAscending { get; private set; }
 
         internal bool ToggleNameSortDirection()
         {
@@ -45,6 +40,14 @@ namespace Unity.Multiplayer.Tools.NetworkProfiler.Editor
             Reset();
             IsBytesReceivedAscending = !ascending;
             return ascending;
+        }
+
+        void Reset()
+        {
+            IsNameAscending = false;
+            IsTypeAscending = false;
+            IsBytesSentAscending = false;
+            IsBytesReceivedAscending = false;
         }
     }
 }

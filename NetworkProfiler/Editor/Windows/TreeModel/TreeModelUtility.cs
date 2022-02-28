@@ -1,9 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using Unity.Multiplayer.Tools.MetricTypes;
 using Unity.Multiplayer.Tools.NetStats;
-using UnityEngine;
 
 namespace Unity.Multiplayer.Tools.NetworkProfiler.Editor
 {
@@ -12,19 +10,19 @@ namespace Unity.Multiplayer.Tools.NetworkProfiler.Editor
         public static List<IRowData> FlattenTree(TreeModel tree)
         {
             var rowData = new List<IRowData>();
-            
+
             foreach (var child in tree.Children)
             {
                 FlattenTreeRecursive(child, rowData);
             }
-            
+
             return rowData;
         }
 
         static void FlattenTreeRecursive(TreeModelNode node, List<IRowData> outList)
         {
             outList.Add(node.RowData);
-            
+
             foreach (var child in node.Children)
             {
                 FlattenTreeRecursive(child, outList);
@@ -50,72 +48,62 @@ namespace Unity.Multiplayer.Tools.NetworkProfiler.Editor
 
             return new TreeModelBuilder(metrics)
                 .AddUnderConnection(
-                    NetworkMetricTypes.NamedMessageSent,
-                    NetworkMetricTypes.NamedMessageReceived,
-                    (NamedMessageEvent metric, TreeModelNode node) 
-                        => new NamedMessageEventViewModel(metric.Name, node.RowData))
+                    MetricType.NamedMessage,
+                    (NamedMessageEvent metric, TreeModelNode node)
+                        => new NamedMessageEventViewModel(metric.Name.ToString(), node.RowData))
                 .AddUnderConnection(
-                    NetworkMetricTypes.UnnamedMessageSent,
-                    NetworkMetricTypes.UnnamedMessageReceived,
-                    (UnnamedMessageEvent metric, TreeModelNode node) 
+                    MetricType.UnnamedMessage,
+                    (UnnamedMessageEvent metric, TreeModelNode node)
                         => new UnnamedMessageEventViewModel(node.RowData))
                 .AddUnderConnection(
-                    NetworkMetricTypes.SceneEventSent,
-                    NetworkMetricTypes.SceneEventReceived,
+                    MetricType.SceneEvent,
                     (SceneEventMetric metric, TreeModelNode node)
-                        => new SceneEventViewModel(metric.SceneName, metric.SceneEventType, node.RowData))
+                        => new SceneEventViewModel(metric.SceneName.ToString(), metric.SceneEventType.ToString(), node.RowData))
                 .AddUnderConnection(
-                    NetworkMetricTypes.ServerLogSent,
-                    NetworkMetricTypes.ServerLogReceived,
-                    (ServerLogEvent metric, TreeModelNode node) 
+                    MetricType.ServerLog,
+                    (ServerLogEvent metric, TreeModelNode node)
                         => new ServerLogEventViewModel(metric.LogLevel, node.RowData))
                 .AddUnderConnection(
-                    NetworkMetricTypes.NetworkMessageSent,
-                    NetworkMetricTypes.NetworkMessageReceived,
+                    MetricType.NetworkMessage,
                     (NetworkMessageEvent metric, TreeModelNode node)
-                        => new NetworkMessageEventViewModel(metric.Name, node.RowData),
-                    metric => !k_ExcludedNetworkMessageTypeNames.Contains(metric.Name))
+                        => new NetworkMessageEventViewModel(metric.Name.ToString(), node.RowData),
+                    metric => !k_ExcludedNetworkMessageTypeNames.Contains(metric.Name.ToString()))
                 .Build();
         }
-        
+
         public static TreeModel CreateActivityTreeStructure(MetricCollection metrics)
         {
             if (metrics == null)
             {
                 return new TreeModel();
             }
-            
+
             return new TreeModelBuilder(metrics)
-                
+
                 .AddUnderNetworkObject(
-                    NetworkMetricTypes.ObjectSpawnedSent,
-                    NetworkMetricTypes.ObjectSpawnedReceived,
-                    (ObjectSpawnedEvent metric, TreeModelNode node) 
+                    MetricType.ObjectSpawned,
+                    (ObjectSpawnedEvent metric, TreeModelNode node)
                         => new SpawnEventViewModel(metric.NetworkId, node.RowData))
 
                 .AddUnderNetworkObject(
-                    NetworkMetricTypes.ObjectDestroyedSent,
-                    NetworkMetricTypes.ObjectDestroyedReceived,
-                    (ObjectDestroyedEvent metric, TreeModelNode node) 
+                    MetricType.ObjectDestroyed,
+                    (ObjectDestroyedEvent metric, TreeModelNode node)
                         => new DestroyEventViewModel(node.RowData))
 
                 .AddUnderNetworkObject(
-                    NetworkMetricTypes.OwnershipChangeSent,
-                    NetworkMetricTypes.OwnershipChangeReceived,
-                    (OwnershipChangeEvent metric, TreeModelNode node) 
+                    MetricType.OwnershipChange,
+                    (OwnershipChangeEvent metric, TreeModelNode node)
                         => new OwnershipChangeEventViewModel(node.RowData))
 
                 .AddUnderNetworkObject(
-                    NetworkMetricTypes.RpcSent,
-                    NetworkMetricTypes.RpcReceived,
-                    (RpcEvent metric, TreeModelNode node) 
-                        => new RpcEventViewModel(metric.NetworkBehaviourName, metric.Name, node.RowData))
+                    MetricType.Rpc,
+                    (RpcEvent metric, TreeModelNode node)
+                        => new RpcEventViewModel(metric.NetworkBehaviourName.ToString(), metric.Name.ToString(), node.RowData))
 
                 .AddUnderNetworkObject(
-                    NetworkMetricTypes.NetworkVariableDeltaSent,
-                    NetworkMetricTypes.NetworkVariableDeltaReceived,
-                    (NetworkVariableEvent metric, TreeModelNode node) 
-                        => new NetworkVariableEventViewModel(metric.NetworkBehaviourName, metric.Name, node.RowData))
+                    MetricType.NetworkVariableDelta,
+                    (NetworkVariableEvent metric, TreeModelNode node)
+                        => new NetworkVariableEventViewModel(metric.NetworkBehaviourName.ToString(), metric.Name.ToString(), node.RowData))
 
                 .Build();
         }
