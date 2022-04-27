@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 using Unity.Multiplayer.Tools.NetStats;
-using Unity.Multiplayer.Tools.Util;
+using Unity.Multiplayer.Tools.Common;
 
 namespace Unity.Multiplayer.Tools.MetricTypes
 {

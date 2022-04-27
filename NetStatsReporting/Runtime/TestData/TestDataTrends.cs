@@ -1,4 +1,6 @@
-using Unity.Multiplayer.Tools.Util;
+#if UNITY_EDITOR
+
+using Unity.Multiplayer.Tools.Common;
 
 namespace Unity.Multiplayer.Tools.NetStatsReporting
 {
@@ -7,8 +9,12 @@ namespace Unity.Multiplayer.Tools.NetStatsReporting
         const float k_LargeMax = 20f;
         const float k_MediumMax = 10f;
         const float k_SmallMax = 5f;
-        const float k_MinRtt = 30f;
-        const float k_MaxRtt = 200f;
+        const float k_MinRtt =  30e-3f;
+        const float k_MaxRtt = 200e-3f;
+
+        const float k_Percent = 1e-2f;
+        const float k_PacketLossMin = 00.1f * k_Percent;
+        const float k_PacketLossMax = 10.0f * k_Percent;
 
         public LogNormalRandomWalk NamedMessagesSent { get; } = new LogNormalRandomWalk { Max = k_LargeMax };
         public LogNormalRandomWalk NamedMessagesReceived { get; } = new LogNormalRandomWalk { Max = k_LargeMax };
@@ -42,5 +48,13 @@ namespace Unity.Multiplayer.Tools.NetStatsReporting
         public LogNormalRandomWalk PacketReceivedCount { get; } = new LogNormalRandomWalk { Max = k_LargeMax };
 
         public LogNormalRandomWalk RttToServer { get; } = new LogNormalRandomWalk() { Min = k_MinRtt, Max = k_MaxRtt };
+
+        public LogNormalRandomWalk NetworkObjectsCount { get; } = new LogNormalRandomWalk() { Min = k_SmallMax, Max = k_LargeMax };
+
+        public LogNormalRandomWalk ConnectionsCount { get; } = new LogNormalRandomWalk() { Max = k_MediumMax };
+
+        public LogNormalRandomWalk PacketLoss { get; } = new LogNormalRandomWalk() { Min = k_PacketLossMin, Max = k_PacketLossMax };
     }
 }
+
+#endif

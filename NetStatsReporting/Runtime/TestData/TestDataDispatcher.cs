@@ -1,10 +1,12 @@
-﻿using System;
+﻿#if UNITY_EDITOR
+
+using System;
 using System.Linq;
 using Unity.Multiplayer.Tools.MetricTypes;
 
 namespace Unity.Multiplayer.Tools.NetStatsReporting
 {
-    internal class TestDataDispatcher
+    public class TestDataDispatcher
     {
         const int DefaultServerId = 0;
         const int DefaultClientId = 1;
@@ -123,6 +125,9 @@ namespace Unity.Multiplayer.Tools.NetStatsReporting
             m_Tracker.TrackPacketSent(m_Trends.PacketSentCount.NextInt(m_Random));
             m_Tracker.TrackPacketReceived(m_Trends.PacketReceivedCount.NextInt(m_Random));
             m_Tracker.TrackRttToServer(m_Trends.RttToServer.NextInt(m_Random));
+            m_Tracker.UpdateNetworkObjectsCount(m_Trends.NetworkObjectsCount.NextInt(m_Random));
+            m_Tracker.UpdateConnectionsCount(m_Trends.ConnectionsCount.NextInt(m_Random));
+            m_Tracker.UpdatePacketLoss(m_Trends.PacketLoss.NextFloat(m_Random));
 
             m_Tracker.Dispatcher.Dispatch();
         }
@@ -267,8 +272,13 @@ namespace Unity.Multiplayer.Tools.NetStatsReporting
             m_Tracker.TrackPacketSent(m_Trends.PacketSentCount.NextInt(m_Random));
             m_Tracker.TrackPacketReceived(m_Trends.PacketReceivedCount.NextInt(m_Random));
             m_Tracker.TrackRttToServer(m_Trends.RttToServer.NextInt(m_Random));
+            m_Tracker.UpdateNetworkObjectsCount(m_Trends.NetworkObjectsCount.NextInt(m_Random));
+            m_Tracker.UpdateConnectionsCount(m_Trends.ConnectionsCount.NextInt(m_Random));
+            m_Tracker.UpdatePacketLoss(m_Trends.PacketLoss.NextFloat(m_Random));
 
             m_Tracker.Dispatcher.Dispatch();
         }
     }
 }
+
+#endif

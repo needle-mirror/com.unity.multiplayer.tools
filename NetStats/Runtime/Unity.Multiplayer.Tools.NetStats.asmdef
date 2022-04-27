@@ -3,7 +3,7 @@
     "rootNamespace": "Unity.Multiplayer.Tools.NetStats",
     "references": [
         "Unity.Collections",
-        "Unity.Multiplayer.Tools.Util"
+        "Unity.Multiplayer.Tools.Common"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

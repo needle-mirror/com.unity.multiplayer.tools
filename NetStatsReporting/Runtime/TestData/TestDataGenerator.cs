@@ -1,4 +1,6 @@
-﻿using System;
+﻿#if UNITY_EDITOR
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Unity.Multiplayer.Tools.MetricTypes;
@@ -126,3 +128,5 @@ namespace Unity.Multiplayer.Tools.NetStatsReporting
         NetworkObjectIdentifier GetRandomGameObject() => m_GameObjects[m_Random.Next(0, m_GameObjects.Count)];
     }
 }
+
+#endif

@@ -58,5 +58,11 @@ namespace Unity.Multiplayer.Tools
         void TrackPacketReceived(int packetCount);
 
         void TrackRttToServer(int rtt);
+
+        void UpdateNetworkObjectsCount(int count);
+
+        void UpdateConnectionsCount(int count);
+
+        void UpdatePacketLoss(float count);
     }
 }

@@ -1,4 +1,5 @@
-using System;
+#if UNITY_EDITOR
+
 using UnityEngine;
 
 namespace Unity.Multiplayer.Tools.NetStatsReporting
@@ -11,12 +12,10 @@ namespace Unity.Multiplayer.Tools.NetStatsReporting
 
 #if UNITY_MP_TOOLS_DEV
     [AddComponentMenu("Multiplayer Tools/" + "Test Data Generator", 1000)]
-    public
 #else
     [AddComponentMenu("")] // Prevent the component from being instantiated in editor
-    internal               // Prevent the component from being instantiated via user code
 #endif
-    class TestDataGeneratorComponent : MonoBehaviour
+    public class TestDataGeneratorComponent : MonoBehaviour
     {
         [SerializeField] internal TestDataGeneratorType m_type;
 
@@ -50,3 +49,5 @@ namespace Unity.Multiplayer.Tools.NetStatsReporting
         }
     }
 }
+
+#endif

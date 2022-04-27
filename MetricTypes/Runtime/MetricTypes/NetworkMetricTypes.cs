@@ -1,6 +1,4 @@
-﻿using Unity.Multiplayer.Tools.NetStats;
-
-namespace Unity.Multiplayer.Tools.MetricTypes
+﻿namespace Unity.Multiplayer.Tools.MetricTypes
 {
     /// <summary>
     /// DEPRECATED
@@ -72,5 +70,14 @@ namespace Unity.Multiplayer.Tools.MetricTypes
 
         public static readonly DirectionalMetricInfo RttToServer =
             new DirectionalMetricInfo(DirectedMetricType.RttToServer);
+
+        public static readonly DirectionalMetricInfo NetworkObjects =
+            new DirectionalMetricInfo(DirectedMetricType.NetworkObjects);
+
+        public static readonly DirectionalMetricInfo ConnectedClients =
+            new DirectionalMetricInfo(DirectedMetricType.Connections);
+
+        public static readonly DirectionalMetricInfo PacketLoss =
+            new DirectionalMetricInfo(DirectedMetricType.PacketLoss);
     }
 }

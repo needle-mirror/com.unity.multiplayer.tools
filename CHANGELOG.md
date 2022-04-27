@@ -4,6 +4,14 @@ All notable changes to this package will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
+## [1.0.0-pre.7] - 2022-04-27
+
+### *Runtime Net Stats Monitor*
+
+This release adds the Runtime Net Stats Monitor (RNSM) to the Multiplayer Tools Package. This tool offers a configurable component for displaying various network stats in an on-screen display at runtime, including stats from the Netcode for GameObjects package, as well as custom, user-defined stats.
+
+For more information about the Runtime Net Stats Monitor, please see its documentation.
+
 ## [1.0.0-pre.6] - 2022-02-28
 
 ### *Network Profiler*

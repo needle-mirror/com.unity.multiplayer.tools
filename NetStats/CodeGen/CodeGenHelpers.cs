@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using Mono.Cecil;
 using Mono.Cecil.Cil;
+using Mono.Cecil.Rocks;
 using Unity.CompilationPipeline.Common.Diagnostics;
 using Unity.CompilationPipeline.Common.ILPostProcessing;
 using UnityEngine;
@@ -12,6 +13,11 @@ namespace Unity.Multiplayer.Tools.NetStats.CodeGen
 {
     static class CodeGenHelpers
     {
+        const string k_NetStatsAssemblyName = "Unity.Multiplayer.Tools.NetStats";
+        
+        public static bool AssemblyDependsOnNetStats(ICompiledAssembly compiledAssembly) =>
+            compiledAssembly.References.Any(reference => reference.Contains(k_NetStatsAssemblyName));
+        
         public static void AddError(this List<DiagnosticMessage> diagnostics, string message)
         {
             diagnostics.AddError((SequencePoint)null, message);
@@ -50,6 +56,64 @@ namespace Unity.Multiplayer.Tools.NetStats.CodeGen
             assemblyResolver.AddAssemblyDefinitionBeingOperatedOn(assemblyDefinition);
 
             return assemblyDefinition;
+        }
+        
+        public static void InjectTypeRegistration(
+            AssemblyDefinition assembly,
+            ModuleDefinition module,
+            Func<ILProcessor, List<Instruction>> instructionsFactory)
+        {
+            var type = module.Types.FirstOrDefault(t => t.FullName == TypeRegistration.k_ClassName);
+            
+            MethodDefinition method;
+            if (type != null)
+            {
+                method = type.Methods.First(m => m.Name == TypeRegistration.k_MethodName);
+            }
+            else
+            {
+                type = new TypeDefinition(
+                    string.Empty,
+                    TypeRegistration.k_ClassName,
+                    TypeAttributes.Class | TypeAttributes.Public,
+                    module.TypeSystem.Object);
+
+                method = new MethodDefinition(
+                    TypeRegistration.k_MethodName,
+                    MethodAttributes.Static,
+                    module.TypeSystem.Void);
+                method.Body.Instructions.Add(Instruction.Create(OpCodes.Ret));
+                
+                type.Methods.Add(method);
+                module.Types.Add(type);
+                
+                var assemblyContainsNetStatsTypesAttribute = module.ImportReference(
+                    typeof(AssemblyRequiresTypeRegistrationAttribute)
+                        .GetConstructor(Type.EmptyTypes));
+                assembly.CustomAttributes.Add(
+                    new CustomAttribute(
+                        assemblyContainsNetStatsTypesAttribute));
+            }
+            
+            var processor = method.Body.GetILProcessor();
+            var instructions = instructionsFactory.Invoke(processor);
+            instructions.ForEach(instruction => processor.Body.Instructions.Insert(processor.Body.Instructions.Count - 1, instruction));
+        }
+
+        public static GenericInstanceMethod CreateStaticGenericMethod(
+            ModuleDefinition module, 
+            TypeReference staticType, 
+            MethodReference staticGenericMethod,
+            TypeReference genericTypeArgument)
+        {
+            var method = new MethodReference(staticGenericMethod.Name, module.TypeSystem.Void, staticType);
+            var genericParameter = new GenericParameter(method);
+            method.GenericParameters.Add(genericParameter);
+            method.HasThis = false;
+            var genericInstanceMethod = new GenericInstanceMethod(method);
+            genericInstanceMethod.GenericArguments.Add(genericTypeArgument);
+
+            return genericInstanceMethod;
         }
     }
 }

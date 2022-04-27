@@ -1,18 +1,18 @@
 ﻿using NUnit.Framework;
 
 using Unity.Multiplayer.Tools.MetricTypes;
+using UnityEngine;
 
 namespace Unity.Multiplayer.Tools.NetStats.Tests
 {
     internal class MetricIdTests
     {
-        [TestCase(TestMetric.A)]
-        [TestCase(TestMetric.B)]
-        [TestCase(TestMetric.C)]
-        [TestCase(TestMetric.D)]
-        [TestCase(TestMetric.E)]
-        [TestCase(TestMetric.F)]
-        [TestCase(TestMetric.G)]
+        [TestCase(TestMetric.BytesCounter)]
+        [TestCase(TestMetric.BytesGauge)]
+        [TestCase(TestMetric.SecondsCounter)]
+        [TestCase(TestMetric.SecondsGauge)]
+        [TestCase(TestMetric.UnitlessCounter)]
+        [TestCase(TestMetric.UnitlessGauge)]
         public void GivenMetricId_WhenToString_ReturnsCorrectValue(TestMetric value)
         {
             var metricId = MetricId.Create(value);

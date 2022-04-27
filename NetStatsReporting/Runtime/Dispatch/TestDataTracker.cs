@@ -47,6 +47,18 @@ namespace Unity.Multiplayer.Tools
         {
             ShouldResetOnDispatch = true,
         };
+        readonly Gauge m_NetworkObjectsGauge = new Gauge(NetworkMetricTypes.NetworkObjects.Id)
+        {
+            ShouldResetOnDispatch = true,
+        };
+        readonly Gauge m_ConnectionsGauge = new Gauge(NetworkMetricTypes.ConnectedClients.Id)
+        {
+            ShouldResetOnDispatch = true,
+        };
+        readonly Gauge m_PacketLoss = new Gauge(NetworkMetricTypes.PacketLoss.Id)
+        {
+            ShouldResetOnDispatch = true,
+        };
 
         public TestDataTracker()
         {
@@ -64,6 +76,9 @@ namespace Unity.Multiplayer.Tools
                 .WithMetricEvents(m_SceneEventSentEvent, m_SceneEventReceivedEvent)
                 .WithCounters(m_PacketSentCounter, m_PacketReceivedCounter)
                 .WithGauges(m_RttToServerGauge)
+                .WithGauges(m_NetworkObjectsGauge)
+                .WithGauges(m_ConnectionsGauge)
+                .WithGauges(m_PacketLoss)
                 .Build();
         }
 
@@ -197,6 +212,21 @@ namespace Unity.Multiplayer.Tools
         public void TrackRttToServer(int rtt)
         {
             m_RttToServerGauge.Set(rtt);
+        }
+
+        public void UpdateNetworkObjectsCount(int count)
+        {
+            m_NetworkObjectsGauge.Set(count);
+        }
+
+        public void UpdateConnectionsCount(int count)
+        {
+            m_ConnectionsGauge.Set(count);
+        }
+
+        public void UpdatePacketLoss(float count)
+        {
+            m_PacketLoss.Set(count);
         }
     }
 }

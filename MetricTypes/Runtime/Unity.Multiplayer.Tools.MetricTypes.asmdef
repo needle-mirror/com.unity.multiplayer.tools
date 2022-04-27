@@ -3,8 +3,8 @@
     "rootNamespace": "Unity.Multiplayer.Tools.MetricTypes",
     "references": [
         "Unity.Collections",
-        "Unity.Multiplayer.Tools.NetStats",
-        "Unity.Multiplayer.Tools.Util"
+        "Unity.Multiplayer.Tools.Common",
+        "Unity.Multiplayer.Tools.NetStats"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

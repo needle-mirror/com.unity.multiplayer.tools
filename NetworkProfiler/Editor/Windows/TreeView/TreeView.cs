@@ -186,8 +186,13 @@ namespace Unity.Multiplayer.Tools.NetworkProfiler.Editor
             m_ListView.makeItem = MakeTreeItem;
             m_ListView.bindItem = BindTreeItem;
             m_ListView.unbindItem = UnbindTreeItem;
+#if UNITY_2022_2_OR_NEWER
+            m_ListView.itemsChosen += OnItemsChosen;
+            m_ListView.selectionChanged += OnSelectionChange;
+#else        
             m_ListView.onItemsChosen += OnItemsChosen;
             m_ListView.onSelectionChange += OnSelectionChange;
+#endif
             
             var scrollView = m_ListView.Q<ScrollView>();
             scrollView.contentContainer.RegisterCallback<KeyDownEvent>(OnKeyDown);

@@ -1,19 +1,15 @@
-﻿using System.Collections.Generic;
+﻿#if UNITY_EDITOR
+
+using System.Collections.Generic;
 using System.Linq;
-using Newtonsoft.Json.Linq;
-using UnityEngine;
+using Unity.Multiplayer.Tools.TestData.Definitions;
 using Random = System.Random;
 
 namespace Unity.Multiplayer.Tools.NetStatsReporting
 {
-    internal class TestDataDefinition
+    // Words from https://github.com/dariusk/corpora CC0 license
+    public class TestDataDefinition
     {
-        const string TestAssetPath =
-            "Packages/com.unity.multiplayer.tools/NetStatsReporting/Runtime/TestData/Definitions/";
-
-        readonly IReadOnlyList<string> m_Adjectives;
-        readonly IReadOnlyList<string> m_Verbs;
-        readonly IReadOnlyList<string> m_Nouns;
         readonly IReadOnlyList<string> m_VariableTypes = new[] { "count", "size", "state" };
 
         readonly Random m_Random;
@@ -21,31 +17,26 @@ namespace Unity.Multiplayer.Tools.NetStatsReporting
         public TestDataDefinition(int seed)
         {
             m_Random = new Random(seed);
-
-            // From https://github.com/dariusk/corpora CC0 license
-            m_Adjectives = LoadJsonDefinition("adjs.json", "adjs");
-            m_Verbs = LoadJsonDefinition("verbs.json", "verbs", "present");
-            m_Nouns = LoadJsonDefinition("personal_nouns.json", "personalNouns");
         }
 
         public string GenerateGameObjectName()
         {
-            return $"{Capitalize(GetRandomValue(m_Adjectives))} {Capitalize(GetRandomValue(m_Adjectives))} {Capitalize(GetRandomValue(m_Nouns))}";
+            return $"{Capitalize(GetRandomValue(Adjectives.Values))} {Capitalize(GetRandomValue(Adjectives.Values))} {Capitalize(GetRandomValue(Nouns.Values))}";
         }
 
         public string GenerateComponentName()
         {
-            return $"{Capitalize(GetRandomValue(m_Nouns))}{Capitalize(GetRandomValue(m_Verbs))}Component";
+            return $"{Capitalize(GetRandomValue(Nouns.Values))}{Capitalize(GetRandomValue(Verbs.Values))}Component";
         }
 
         public string GenerateVariableName()
         {
-            return $"{Capitalize(GetRandomValue(m_Nouns))}{Capitalize(GetRandomValue(m_Nouns))}{Capitalize(GetRandomValue(m_VariableTypes))}";
+            return $"{Capitalize(GetRandomValue(Nouns.Values))}{Capitalize(GetRandomValue(Nouns.Values))}{Capitalize(GetRandomValue(m_VariableTypes))}";
         }
 
         public string GenerateNamedMessageName()
         {
-            return $"{Capitalize(GetRandomValue(m_Verbs))}{Capitalize(GetRandomValue(m_Nouns))}";
+            return $"{Capitalize(GetRandomValue(Verbs.Values))}{Capitalize(GetRandomValue(Nouns.Values))}";
         }
 
         public string GenerateRpcName()
@@ -70,9 +61,10 @@ namespace Unity.Multiplayer.Tools.NetStatsReporting
             return m_Random.Next(1, 999);
         }
 
+
         public string GenerateSceneName()
         {
-            return $"{Capitalize(GetRandomValue(m_Adjectives))}{Capitalize(GetRandomValue(m_Adjectives))}Scene";
+            return $"{Capitalize(GetRandomValue(Adjectives.Values))}{Capitalize(GetRandomValue(Adjectives.Values))}Scene";
         }
 
         string GetRandomValue(IReadOnlyList<string> collection)
@@ -80,25 +72,6 @@ namespace Unity.Multiplayer.Tools.NetStatsReporting
             return !collection.Any()
                 ? string.Empty
                 : collection[m_Random.Next(0, collection.Count)];
-        }
-
-        static IReadOnlyList<string> LoadJsonDefinition(string filename, string category, string subCategory = "")
-        {
-            #if !UNITY_EDITOR
-                return System.Array.Empty<string>();
-            #else
-                var fileContent = UnityEditor.AssetDatabase.LoadAssetAtPath<TextAsset>($"{TestAssetPath}{filename}");
-                var jObject = JObject.Parse(fileContent.text);
-
-                var tokens = string.IsNullOrWhiteSpace(subCategory)
-                    ? jObject[category]?.Select(x => x.ToObject<string>())
-                    : jObject[category]?.Select(x => x[subCategory]).Select(x => x.ToObject<string>());
-
-                return tokens?
-                    .Where(x => x != null)
-                    .Where(x => !x.Contains("-"))
-                    .ToArray();
-            #endif
         }
 
         static string Capitalize(string input)
@@ -109,3 +82,5 @@ namespace Unity.Multiplayer.Tools.NetStatsReporting
         }
     }
 }
+
+#endif

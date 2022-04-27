@@ -25,6 +25,11 @@ namespace Unity.Multiplayer.Tools.NetStats
         static readonly Dictionary<FixedString128Bytes, IEventMetricFactory> k_FactoriesByName = new Dictionary<FixedString128Bytes, IEventMetricFactory>();
         static readonly Dictionary<Type, FixedString128Bytes> k_TypeNames = new Dictionary<Type, FixedString128Bytes>();
 
+        static EventMetricFactory()
+        {
+            TypeRegistration.RunIfNeeded();
+        }
+        
         internal static void RegisterType<T>() where T : unmanaged
         {
             if(k_TypeNames.ContainsKey(typeof(T)))

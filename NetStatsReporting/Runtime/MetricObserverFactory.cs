@@ -11,9 +11,11 @@ namespace Unity.Multiplayer.Tools
     class MetricObserver : IMetricObserver
     {
         private IMetricObserver m_profilerMetricObserver = ProfilerMetricObserverFactory.Construct();
+        private IMetricObserver m_rnsmMetricObserver = RnsmMetricObserverFactory.Construct();
         public void Observe(MetricCollection collection)
         {
             m_profilerMetricObserver.Observe(collection);
+            m_rnsmMetricObserver.Observe(collection);
         }
     }
 }

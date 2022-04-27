@@ -23,6 +23,11 @@ namespace Unity.Multiplayer.Tools.NetworkProfiler.Editor
 
         readonly struct TestMetric : INetworkObjectEvent, INetworkMetricEvent
         {
+            static TestMetric()
+            {
+                EventMetricFactory.RegisterType<TestMetric>();
+            }
+            
             public NetworkObjectIdentifier NetworkId { get; }
             public ConnectionInfo Connection { get; }
             public long BytesCount { get; }

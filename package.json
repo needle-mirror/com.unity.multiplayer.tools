@@ -1,7 +1,7 @@
 {
   "name": "com.unity.multiplayer.tools",
   "displayName": "Multiplayer Tools",
-  "version": "1.0.0-pre.6",
+  "version": "1.0.0-pre.7",
   "unity": "2020.3",
   "description": "Adds a suite of tools that improve workflows for multiplayer development",
   "dependencies": {
@@ -21,12 +21,12 @@
   "repository": {
     "url": "https://github.com/Unity-Technologies/com.unity.multiplayer.tools.git",
     "type": "git",
-    "revision": "4302f21980da69760c0606bdce8d8f1efefa0609"
+    "revision": "589206ac839bcef6c090c394b992406af6724a7a"
   },
   "upm": {
-    "changelog": "### *Network Profiler*,- Changed NetworkMessage to use the name of the message in the Type column (#133),### *Metrics*,- Added throttling to event metric types (#142),- Added a system to generate random data for tests (#141),- Refactored underlying data structures to reduce redundancy (#146),- Dramatically reduced runtime allocations caused by dispatching metrics to the profiler by updating the serialization implementation to use native buffers instead of BinaryFormatter,- Deprecated support for String when collecting metric payloads,- Added RTT to server metrics (#192),- Added Packet count to metrics (#180),### *Misc*,- Updated some internals exposed flags to enable some test improvements on NGO side"
+    "changelog": "### *Runtime Net Stats Monitor*\n\nThis release adds the Runtime Net Stats Monitor (RNSM) to the Multiplayer Tools Package. This tool offers a configurable component for displaying various network stats in an on-screen display at runtime, including stats from the Netcode for GameObjects package, as well as custom, user-defined stats.\n\nFor more information about the Runtime Net Stats Monitor, please see its documentation."
   },
   "upmCi": {
-    "footprint": "b5c89082468090cc101b8f400787985c62b980af"
+    "footprint": "4ef3d8466efb7b88f9dc1823c310ddbe6cc57f20"
   }
 }
