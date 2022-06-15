@@ -4,6 +4,19 @@ All notable changes to this package will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
+## [1.0.0-pre.8] - 2022-06-15
+
+### *Runtime Net Stats Monitor*
+- Clamping numerical values to acceptable limits for public APIs
+- Improve generated counter labels
+- Prevent an exception when there's only one sample
+- Added spacing between divider graph and axis number alignment
+- Reusing existing numerical labels when the value doesn't change or barely changed
+- Fix incorrect values for gauges in counter display elements using SMA
+- Ensure RNSM counters display 1 rather than 1,000 milli
+- Use infinity rather than float.Min for counter config bounds
+- Reduce vertices in graphs with large sample count
+
 ## [1.0.0-pre.7] - 2022-04-27
 
 ### *Runtime Net Stats Monitor*
@@ -15,16 +28,16 @@ For more information about the Runtime Net Stats Monitor, please see its documen
 ## [1.0.0-pre.6] - 2022-02-28
 
 ### *Network Profiler*
-- Changed NetworkMessage to use the name of the message in the Type column (#133)
+- Changed NetworkMessage to use the name of the message in the Type column
 
 ### *Metrics*
-- Added throttling to event metric types (#142)
-- Added a system to generate random data for tests (#141)
-- Refactored underlying data structures to reduce redundancy (#146)
+- Added throttling to event metric types
+- Added a system to generate random data for tests
+- Refactored underlying data structures to reduce redundancy
 - Dramatically reduced runtime allocations caused by dispatching metrics to the profiler by updating the serialization implementation to use native buffers instead of BinaryFormatter
 - Deprecated support for String when collecting metric payloads
-- Added RTT to server metrics (#192)
-- Added Packet count to metrics (#180)
+- Added RTT to server metrics
+- Added Packet count to metrics
 
 ### *Misc*
 - Updated some internals exposed flags to enable some test improvements on NGO side

@@ -19,6 +19,8 @@ namespace Unity.Multiplayer.Tools.Common
     /// </remarks>
     internal class ContinuousExponentialMovingAverage
     {
+        const double k_DefaultInitialTime = double.NegativeInfinity;
+
         public static readonly double k_ln2 = Math.Log(2);
 
         /// The decay constant is λ = ln(2) / HalfLife. A larger decay constant will results in a faster,
@@ -40,7 +42,7 @@ namespace Unity.Multiplayer.Tools.Common
         /// less responsive CEMA with more smoothing.
         public static double GetDecayConstantForHalfLife(double halfLife) => k_ln2 / halfLife;
 
-        public ContinuousExponentialMovingAverage(double decayConstant, double value = 0d, double time = Double.MinValue)
+        public ContinuousExponentialMovingAverage(double decayConstant, double value = 0d, double time = k_DefaultInitialTime)
         {
             if (decayConstant < 0)
             {
@@ -57,13 +59,13 @@ namespace Unity.Multiplayer.Tools.Common
         {
             DecayConstant = 0;
             LastValue = 0;
-            LastTime = Double.MinValue;
+            LastTime = k_DefaultInitialTime;
         }
 
         public void ClearValueAndTime()
         {
             LastValue = 0;
-            LastTime = Double.MinValue;
+            LastTime = k_DefaultInitialTime;
         }
 
         /// Adds a new sample to the Continuous Exponential Moving Average (CEMA).

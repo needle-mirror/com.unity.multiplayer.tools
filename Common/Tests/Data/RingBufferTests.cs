@@ -506,6 +506,44 @@ namespace Unity.Multiplayer.Tools.Common.Tests
             Assert.AreEqual(ring.Length, 4);
             Assert.AreEqual(new List<byte> { 8, 13, 21, 34 }, ring.ToList());
         }
+
+        [Test]
+        public void RingBufferMostAndLeastRecentAreCorrect()
+        {
+            var ring = new RingBuffer<byte>(4);
+
+            ring.PushBack(7); // => 7
+            Assert.AreEqual(7, ring.MostRecent);
+            Assert.AreEqual(7, ring.LeastRecent);
+
+            ring.PushBack(3); // => 3 7
+            Assert.AreEqual(3, ring.MostRecent);
+            Assert.AreEqual(7, ring.LeastRecent);
+
+            ring.PushBack(5); // => 5 3 7
+            Assert.AreEqual(5, ring.MostRecent);
+            Assert.AreEqual(7, ring.LeastRecent);
+
+            ring.PushBack(11); // => 11 5 3 7
+            Assert.AreEqual(11, ring.MostRecent);
+            Assert.AreEqual(7, ring.LeastRecent);
+
+            ring.PushBack(14); // => 14 11 5 3
+            Assert.AreEqual(14, ring.MostRecent);
+            Assert.AreEqual(3, ring.LeastRecent);
+
+            ring.PushBack(6); // => 6 14 11 5
+            Assert.AreEqual(6, ring.MostRecent);
+            Assert.AreEqual(5, ring.LeastRecent);
+
+            ring.PushBack(12); // => 12 6 14 11
+            Assert.AreEqual(12, ring.MostRecent);
+            Assert.AreEqual(11, ring.LeastRecent);
+
+            ring.PushBack(4); // => 4 12 6 14
+            Assert.AreEqual(4, ring.MostRecent);
+            Assert.AreEqual(14, ring.LeastRecent);
+        }
     }
 }
 #endif

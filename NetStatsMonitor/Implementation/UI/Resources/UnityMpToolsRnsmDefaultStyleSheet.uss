@@ -4,6 +4,7 @@
     --border-color: #585858;
     --left-padding-width: 6px;
     --legend-dimension: 6px;
+    --axis-label-spacing: 0px;
 }
 
 .rnsm-monitor {
@@ -55,6 +56,7 @@
     flex-direction: column;
     flex-grow: 1;
     padding-bottom: 3px;
+    padding-top: 5px;
 }
 
 .rnsm-graph .rnsm-display-element-label-empty {
@@ -76,16 +78,17 @@
 
 .rnsm-graph-axis Label {
     font-size: 10px;
-    padding-top: 0px;
-    padding-bottom: 0px;
+    padding-top: var(--axis-label-spacing);
+    padding-bottom: var(--axis-label-spacing);
 }
 
 .rnsm-graph-x-axis {
     flex-direction: row;
 }
 
-.rnsm-graph-y-axis {
-    flex-direction: column-reverse;
+.rnsm-graph-x-axis Label {
+    margin: var(--axis-label-spacing);
+    padding: var(--axis-label-spacing);
 }
 
 .rnsm-graph-x-axis .rnsm-graph-axis-min-value {
@@ -97,6 +100,18 @@
     -unity-text-align: upper-right;
 }
 
+.rnsm-graph-y-axis {
+    flex-direction: column-reverse;
+}
+
+.rnsm-graph-y-axis Label {
+    min-width: 41px;
+    margin-top: var(--axis-label-spacing);
+    margin-bottom: var(--axis-label-spacing);
+    margin-right: var(--axis-label-spacing);
+    padding: var(--axis-label-spacing);
+}
+
 .rnsm-graph-y-axis .rnsm-graph-axis-max-value {
     -unity-text-align: upper-left;
 }
@@ -106,11 +121,6 @@
     -unity-text-align: lower-left;
 }
 
-.rnsm-graph-y-axis Label {
-    min-width: 41px;
-    padding-left: 0px;
-}
-
 .rnsm-no-data-received-label {
     font-size: 11px;
 }
@@ -118,6 +128,7 @@
 .rnsm-graph-legend {
     flex-wrap: wrap;
     flex-direction: row;
+    padding-top: 1px;
 }
 
 .rnsm-graph-legendkey {

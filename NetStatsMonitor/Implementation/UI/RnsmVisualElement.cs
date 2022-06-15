@@ -15,7 +15,7 @@ using UnityEngine.UIElements;
 
 namespace Unity.Multiplayer.Tools.NetStatsMonitor.Implementation
 {
-    internal class RnsmVisualElement : VisualElement
+    class RnsmVisualElement : VisualElement
     {
         readonly Label m_Title = new Label();
         readonly VisualElement m_DisplayElementsContainer = new();
@@ -52,7 +52,8 @@ namespace Unity.Multiplayer.Tools.NetStatsMonitor.Implementation
             var graphsUsed = 0;
             foreach (var displayElementConfig in configuration.DisplayElements)
             {
-                switch (displayElementConfig.Type)
+                var type = displayElementConfig.Type;
+                switch (type)
                 {
                     case DisplayElementType.Counter:
                     {
@@ -82,6 +83,9 @@ namespace Unity.Multiplayer.Tools.NetStatsMonitor.Implementation
                         graphsUsed++;
                         break;
                     }
+                    default:
+                        throw new NotSupportedException(
+                            $"Unhandled {nameof(DisplayElementType)} {type}");
                 }
             }
             // Remove unused counters and graphs
@@ -94,6 +98,7 @@ namespace Unity.Multiplayer.Tools.NetStatsMonitor.Implementation
                 m_Graphs.RemoveRange(graphsUsed, m_Graphs.Count - graphsUsed);
             }
         }
+
 
         /// Update the display data with new network data.
         public void UpdateDisplayData(MultiStatHistory stats, double time)

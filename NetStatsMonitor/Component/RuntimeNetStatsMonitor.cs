@@ -9,6 +9,7 @@
 
 
 using JetBrains.Annotations;
+using System;
 using Unity.Multiplayer.Tools.NetStats;
 using UnityEngine;
 using UnityEngine.UIElements;
@@ -51,12 +52,21 @@ namespace Unity.Multiplayer.Tools.NetStatsMonitor
         /// The on-screen display will never be updated faster than the overall refresh rate.
         /// The default refresh rate is 30fps.
         /// </summary>
-        [field:SerializeField]
-        [field:Min(0)]
-        [field:Tooltip("The maximum rate at which the Runtime Net Stats Monitor's on-screen display is updated " +
-                       "(per second). " +
-                       "The on-screen display will never be updated faster than the overall refresh rate.")]
-        public double MaxRefreshRate { get; set; } = 30;
+        public double MaxRefreshRate
+        {
+            get => m_MaxRefreshRate;
+            set => m_MaxRefreshRate = Math.Max(value, ConfigurationLimits.k_RefreshRateMin);
+        }
+
+        /// The maximum rate at which the Runtime Net Stats Monitor's on-screen display is updated (per second).
+        /// The on-screen display will never be updated faster than the overall refresh rate.
+        /// The default refresh rate is 30fps.
+        [SerializeField]
+        [Min((float)ConfigurationLimits.k_RefreshRateMin)]
+        [Tooltip("The maximum rate at which the Runtime Net Stats Monitor's on-screen display is updated " +
+            "(per second). " +
+            "The on-screen display will never be updated faster than the overall refresh rate.")]
+        double m_MaxRefreshRate = 30;
 
         /// <summary>
         /// Custom stylesheet to override the default style of the Runtime Net Stats Monitor.
@@ -80,7 +90,7 @@ namespace Unity.Multiplayer.Tools.NetStatsMonitor
         /// Position configuration that allows custom positioning on screen
         /// The default position is the top left corner of the screen
         /// </summary>
-        [field:SerializeField]
+        [field: SerializeField]
         public PositionConfiguration Position { get; set; } = new();
 
         /// <summary>
@@ -90,7 +100,7 @@ namespace Unity.Multiplayer.Tools.NetStatsMonitor
         /// </summary>
         [CanBeNull]
         [field: SerializeField]
-        [Tooltip(
+        [field: Tooltip(
             "The configuration asset used to configure the information displayed in this Runtime Net Stats Monitor. " +
             "The NetStatsMonitorConfiguration can created from the Create menu, or from C# using " +
             "ScriptableObject.CreateInstance."

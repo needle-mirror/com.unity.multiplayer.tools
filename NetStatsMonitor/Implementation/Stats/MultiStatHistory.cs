@@ -21,25 +21,18 @@ namespace Unity.Multiplayer.Tools.NetStatsMonitor.Implementation
 {
     /// A class for storing multiple RNSM stat histories over multiple frames,
     /// to facilitate moving averages and graphs over time
-    internal class MultiStatHistory
+    class MultiStatHistory
     {
         [NotNull]
         readonly Dictionary<MetricId, StatHistory> m_Data = new();
 
         [NotNull]
-        internal IReadOnlyDictionary<MetricId, StatHistory> Data => m_Data;
+        public IReadOnlyDictionary<MetricId, StatHistory> Data => m_Data;
 
         /// Record sample time-stamps for graphs and counters, so that
         /// we can gracefully handle irregularly-timed metric dispatches.
         [NotNull]
-        readonly RingBuffer<double> m_TimeStamps = new(0);
-
-        internal MultiStatHistory(){}
-
-        internal MultiStatHistory(MetricId metricId, StatHistory statHistory)
-        {
-            m_Data[metricId] = statHistory;
-        }
+        public RingBuffer<double> TimeStamps { get; } = new(0);
 
         public void Clear()
         {
@@ -48,7 +41,7 @@ namespace Unity.Multiplayer.Tools.NetStatsMonitor.Implementation
 
         public void Collect(StatsAccumulator statsAccumulator, double time)
         {
-            m_TimeStamps.PushBack(time);
+            TimeStamps.PushBack(time);
             foreach (var (metricId, history) in m_Data)
             {
                 var collectedValue = statsAccumulator.Collect(metricId);
@@ -85,10 +78,32 @@ namespace Unity.Multiplayer.Tools.NetStatsMonitor.Implementation
                     m_Data[statName] = new StatHistory(statRequirements);
                 }
             }
-            m_TimeStamps.Capacity = maxSampleCount;
+            TimeStamps.Capacity = maxSampleCount;
         }
 
-        internal double? GetSimpleMovingAverageRate(MetricId metricId, int maxSampleCount, double time)
+        internal double? GetSimpleMovingAverageForCounter(MetricId metricId, int maxSampleCount, double time)
+        {
+            if (!Data.TryGetValue(metricId, out StatHistory statHistory))
+            {
+                return null;
+            }
+
+            var sampleCount = Math.Min(maxSampleCount, statHistory.RecentValues.Length);
+            if (sampleCount <= 1)
+            {
+                return null;
+            }
+            var sampleSum = statHistory.RecentValues.SumLastN(sampleCount);
+
+            var startTime = TimeStamps[^(sampleCount - 1)];
+
+            var timeSpan = time - startTime;
+
+            var rate = sampleSum / timeSpan;
+            return rate;
+        }
+
+        public double? GetSimpleMovingAverageForGauge(MetricId metricId, int maxSampleCount)
         {
             if (!Data.TryGetValue(metricId, out StatHistory statHistory))
             {
@@ -102,25 +117,68 @@ namespace Unity.Multiplayer.Tools.NetStatsMonitor.Implementation
             }
             var sampleSum = statHistory.RecentValues.SumLastN(sampleCount);
 
-            var startTime = m_TimeStamps[^(sampleCount - 1)];
-            var timeSpan = time - startTime;
+            var average = sampleSum / sampleCount;
+            return average;
+        }
 
-            var rate = sampleSum / timeSpan;
-            return rate;
+        public double? GetSimpleMovingAverage(MetricId metricId, int maxSampleCount, double time)
+        {
+            var metricKind = metricId.MetricKind;
+            switch (metricKind)
+            {
+                case MetricKind.Counter:
+                    return GetSimpleMovingAverageForCounter(metricId, maxSampleCount, time);
+                case MetricKind.Gauge:
+                    return GetSimpleMovingAverageForGauge(metricId, maxSampleCount);
+                default:
+                    throw new NotSupportedException($"Unhandled {nameof(MetricKind)} {metricKind}");
+            }
         }
 
         /// The length of the history in seconds
         internal double TimeSpanOfLastNSamples(int sampleCount)
         {
-            var validSampleCount = Math.Min(sampleCount, m_TimeStamps.Length);
+            var validSampleCount = Math.Min(sampleCount, TimeStamps.Length);
             if (validSampleCount <= 1)
             {
                 return 0;
             }
-            var firstTimeStamp = m_TimeStamps[^(validSampleCount - 1)];
-            var lastTimeStamp = m_TimeStamps[^1];
+            var firstTimeStamp = TimeStamps[^(validSampleCount - 1)];
+            var lastTimeStamp = TimeStamps[^1];
             return lastTimeStamp - firstTimeStamp;
         }
+
+#if UNITY_INCLUDE_TESTS
+        public static MultiStatHistory CreateMockMultiStatHistoryForTest(
+            MetricId metricId,
+            StatHistory statHistory,
+            double[] timeStamps = null)
+        {
+            var history = new MultiStatHistory();
+            history.m_Data[metricId] = statHistory;
+
+            if (timeStamps != null)
+            {
+                var timeStampCount = timeStamps.Length;
+                history.TimeStamps.Capacity = timeStampCount;
+                foreach (var timeStamp in timeStamps)
+                {
+                    history.TimeStamps.PushBack(timeStamp);
+                }
+            }
+            else
+            {
+                var sampleCapacity = statHistory.RecentValues.Capacity;
+                var sampleCount = statHistory.RecentValues.Length;
+                history.TimeStamps.Capacity = sampleCapacity;
+                for (var i = 0; i < sampleCount; ++i)
+                {
+                    history.TimeStamps.PushBack(i);
+                }
+            }
+            return history;
+        }
+#endif
     }
 }
 #endif

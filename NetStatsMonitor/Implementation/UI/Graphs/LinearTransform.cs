@@ -8,25 +8,26 @@
 // ---------------------------------------------------------------------------------------------------------------------
 
 #if UNITY_MP_TOOLS_NET_STATS_MONITOR_IMPLEMENTATION_ENABLED
-
-using System.Collections.Generic;
-using System.Linq;
-using Unity.Multiplayer.Tools.NetStats;
-
 namespace Unity.Multiplayer.Tools.NetStatsMonitor.Implementation
 {
-    public static class StringUtils
+    struct LinearTransform
     {
-        public static string LabelFormatting(string label, IReadOnlyCollection<MetricId> stats)
+        /// As in y = a * x + b
+        public float A { get; set; }
+
+        /// As in y = a * x + b
+        public float B { get; set; }
+
+        public float Apply(float x)
         {
-            if (string.IsNullOrWhiteSpace(label))
-            {
-                return !stats.Any() 
-                    ? "Configuration Needed" 
-                    : string.Join(", ", stats);
-            }
-            return label;
+            // Math.FusedMultiplyAdd doesn't seem to be available for some reason.
+            // Hopefully this optimization is still possible with Burst
+            return A * x + B;
         }
+
+        public bool IsIdentity => A == 1f && B == 0f;
+
+        public static LinearTransform Identity => new LinearTransform { A = 1, B = 0 };
     }
 }
 #endif

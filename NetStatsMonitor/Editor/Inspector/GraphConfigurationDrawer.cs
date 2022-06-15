@@ -56,7 +56,17 @@ namespace Unity.Multiplayer.Tools.NetStatsMonitor.Editor
             m_Foldout.text = configurationProp.displayName;
             Add(m_Foldout);
 
-            Content.AddFieldForProperty(configurationProp, k_SampleCountFieldName);
+
+            var help = new HelpBox(ConfigurationLimits.k_GraphMaxSampleWarningMessage, HelpBoxMessageType.Warning);
+            Content.Add(help);
+
+            var (samplesProperty, samplesField) = Content.AddFieldForProperty(configurationProp, k_SampleCountFieldName);
+            samplesField.RegisterValueChangeCallback(_ =>
+            {
+                help.style.display = GetWarningBoxDisplayStyle(samplesProperty.intValue);
+            });
+            help.style.display = GetWarningBoxDisplayStyle(samplesProperty.intValue);
+
             Content.AddFieldForProperty(configurationProp, k_XAxisTypeFieldName);
             Content.AddFieldForProperty(configurationProp, k_VariableColorsFieldName);
 
@@ -74,6 +84,11 @@ namespace Unity.Multiplayer.Tools.NetStatsMonitor.Editor
         {
             var lineGraphOptionsVisible = type == DisplayElementType.LineGraph;
             Content.AddOrRemovePropertyField(m_LineGraphProp, m_LineGraphField, lineGraphOptionsVisible);
+        }
+
+        DisplayStyle GetWarningBoxDisplayStyle(int value)
+        {
+            return ConfigurationLimits.k_GraphSampleMax < value ? DisplayStyle.Flex : DisplayStyle.None;
         }
     }
 }

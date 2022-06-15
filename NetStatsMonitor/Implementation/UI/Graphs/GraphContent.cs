@@ -21,26 +21,24 @@ namespace Unity.Multiplayer.Tools.NetStatsMonitor.Implementation
 {
     internal class GraphContent : VisualElement
     {
-        GraphBuffers m_Buffers = new();
-        GraphParameters m_Parameters;
+        GraphParameters m_GraphParams;
+        readonly GraphBuffers m_Buffers = new();
+        Color[] m_VariableColors;
         IGraphRenderer m_Renderer;
-        Rect m_GraphContentRect;
 
         public GraphContent()
         {
-            m_GraphContentRect = contentRect;
             generateVisualContent += OnGenerateVisualContent;
         }
 
         public void UpdateConfiguration(DisplayElementConfiguration config)
         {
-            var newParameters = new GraphParameters
+            m_GraphParams = new GraphParameters
             {
                 StatCount = config.Stats.Count,
                 SamplesPerStat = config.GraphConfiguration.SampleCount,
             };
-            m_Buffers.UpdateConfiguration(m_Parameters, newParameters, config.GraphConfiguration.VariableColors);
-            m_Parameters = newParameters;
+            m_VariableColors = config.GraphConfiguration.VariableColors.ToArray();
             switch (config.Type)
             {
                 case DisplayElementType.LineGraph:
@@ -69,22 +67,39 @@ namespace Unity.Multiplayer.Tools.NetStatsMonitor.Implementation
             {
                 return new();
             }
-            m_GraphContentRect = contentRect;
+            var graphContentRect = contentRect;
+            var graphWidth = graphContentRect.width;
+            if (float.IsNaN(graphWidth))
+            {
+                return new();
+            }
+
+            var newBufferParam = new GraphBufferParameters(
+                m_GraphParams,
+                graphWidth,
+                m_Renderer.MaxPointsPerPixel);
+
+            // We need to do this each time we draw, as even if the configuration hasn't changed,
+            // the contentRect may have
+            m_Buffers.UpdateIfNeeded(newBufferParam, m_VariableColors);
+
             var minAndMaxPlotValue = m_Renderer.UpdateVertices(
                 history,
                 stats,
                 minPlotValue,
                 maxPlotValue,
-                m_Parameters,
-                renderBoundsXMin: m_GraphContentRect.xMin,
-                renderBoundsXMax: m_GraphContentRect.xMax,
+                m_GraphParams,
+                m_Buffers.Parameters,
+                renderBoundsXMin: graphContentRect.xMin,
+                renderBoundsXMax: graphContentRect.xMax,
 
                 // Inverting renderBoundsYMin and renderBoundsYMax
                 // since we want our graph from bottom to top
-                renderBoundsYMin: m_GraphContentRect.yMax,
-                renderBoundsYMax: m_GraphContentRect.yMin,
+                renderBoundsYMin: graphContentRect.yMax,
+                renderBoundsYMax: graphContentRect.yMin,
 
                 m_Buffers.Vertices);
+
             MarkDirtyRepaint();
             return minAndMaxPlotValue;
         }
@@ -95,18 +110,7 @@ namespace Unity.Multiplayer.Tools.NetStatsMonitor.Implementation
             {
                 return;
             }
-            var currenctRect = contentRect;
-            if (m_GraphContentRect != currenctRect)
-            {
-                RescalePlot();
-                m_GraphContentRect = currenctRect;
-            }
             m_Buffers.WriteToMeshGenerationContext(mgc);
-        }
-
-        void RescalePlot()
-        {
-            //TODO: MTT-2375 - Handle Graph Resizing Due to Configuration Changes Immediately
         }
     }
 }

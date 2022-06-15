@@ -16,7 +16,8 @@ using UnityEngine;
 
 namespace Unity.Multiplayer.Tools.NetStatsMonitor.Implementation
 {
-    internal static class UnitUtils
+    /// Utils for lists of MetricIds
+    internal static class MetricsUtils
     {
         public static BaseUnits GetUnits(List<MetricId> metrics, string displayElementLabel)
         {

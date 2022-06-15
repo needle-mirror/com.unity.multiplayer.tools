@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using JetBrains.Annotations;
 using Unity.Multiplayer.Tools.Common;
 
 namespace Unity.Multiplayer.Tools.NetStats
@@ -78,6 +79,8 @@ namespace Unity.Multiplayer.Tools.NetStats
 
                 var values = type.GetEnumValues().Cast<int>().ToArray();
                 var names = type.GetEnumNames();
+                Array.Sort(names, values);
+
                 var displayNames = new string[values.Length];
                 var kinds = new MetricKind[values.Length];
                 var units = new BaseUnits[values.Length];
@@ -90,7 +93,7 @@ namespace Unity.Multiplayer.Tools.NetStats
                     var metadata = enumMemberInfo?.GetCustomAttribute<MetricMetadataAttribute>();
                     if (metadata != null)
                     {
-                        displayNames[i] = metadata.DisplayName;
+                        displayNames[i] = metadata.DisplayName ?? StringUtil.AddSpacesToCamelCase(name);
                         kinds[i] = metadata.MetricKind;
                         units[i] = metadata.Units.GetBaseUnits();
                         displayAsPercentage[i] = metadata.DisplayAsPercentage;
@@ -149,9 +152,10 @@ namespace Unity.Multiplayer.Tools.NetStats
             return k_EnumNames[typeIndex];
         }
 
+        [NotNull]
         internal static string GetEnumName(int typeIndex, int enumValue)
         {
-            return GetEnumMetadataOrDefault(k_EnumNames, typeIndex, enumValue, enumValue.ToString());
+            return GetEnumMetadata(k_EnumNames, typeIndex, enumValue) ?? enumValue.ToString();
         }
 
         internal static MetricKind GetEnumMetricKind(int typeIndex, int enumValue)
@@ -164,9 +168,10 @@ namespace Unity.Multiplayer.Tools.NetStats
             return k_EnumDisplayNames[typeIndex];
         }
 
+        [NotNull]
         internal static string GetEnumDisplayName(int typeIndex, int enumValue)
         {
-            return GetEnumMetadata(k_EnumDisplayNames, typeIndex, enumValue);
+            return GetEnumMetadata(k_EnumDisplayNames, typeIndex, enumValue) ?? "";
         }
 
         internal static BaseUnits GetEnumUnit(int typeIndex, int enumValue)
@@ -185,15 +190,8 @@ namespace Unity.Multiplayer.Tools.NetStats
             {
                 return default(T);
             }
-
             var index = Array.IndexOf(k_EnumValues[typeIndex], enumValue);
             return index == -1 ? default(T) : data[typeIndex][index];
-        }
-
-        static T GetEnumMetadataOrDefault<T>(List<T[]> data, int typeIndex, int enumValue, T @default = default(T))
-        {
-            var index = Array.IndexOf(k_EnumValues[typeIndex], enumValue);
-            return index == -1 ? @default : data[typeIndex][index];
         }
     }
 }

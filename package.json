@@ -1,7 +1,7 @@
 {
   "name": "com.unity.multiplayer.tools",
   "displayName": "Multiplayer Tools",
-  "version": "1.0.0-pre.7",
+  "version": "1.0.0-pre.8",
   "unity": "2020.3",
   "description": "Adds a suite of tools that improve workflows for multiplayer development",
   "dependencies": {
@@ -21,12 +21,12 @@
   "repository": {
     "url": "https://github.com/Unity-Technologies/com.unity.multiplayer.tools.git",
     "type": "git",
-    "revision": "589206ac839bcef6c090c394b992406af6724a7a"
+    "revision": "bd02ac4b1799b3c071ceecb19b4478612b97ecff"
   },
-  "upm": {
-    "changelog": "### *Runtime Net Stats Monitor*\n\nThis release adds the Runtime Net Stats Monitor (RNSM) to the Multiplayer Tools Package. This tool offers a configurable component for displaying various network stats in an on-screen display at runtime, including stats from the Netcode for GameObjects package, as well as custom, user-defined stats.\n\nFor more information about the Runtime Net Stats Monitor, please see its documentation."
+  "_upm": {
+    "changelog": "### *Runtime Net Stats Monitor*\n- Clamping numerical values to acceptable limits for public APIs\n- Improve generated counter labels\n- Prevent an exception when there's only one sample\n- Added spacing between divider graph and axis number alignment\n- Reusing existing numerical labels when the value doesn't change or barely changed\n- Fix incorrect values for gauges in counter display elements using SMA\n- Ensure RNSM counters display 1 rather than 1,000 milli\n- Use infinity rather than float.Min for counter config bounds\n- Reduce vertices in graphs with large sample count"
   },
   "upmCi": {
-    "footprint": "4ef3d8466efb7b88f9dc1823c310ddbe6cc57f20"
+    "footprint": "91683c23a73e75e69eb0208907fb82e879ce9e61"
   }
 }

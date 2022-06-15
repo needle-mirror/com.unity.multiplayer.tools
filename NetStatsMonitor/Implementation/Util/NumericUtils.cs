@@ -24,7 +24,7 @@ namespace Unity.Multiplayer.Tools.NetStatsMonitor.Implementation
         public float GetValue(float exponentBase) => Mantissa * MathF.Pow(exponentBase, Exponent);
     }
 
-    internal static class NumericUtils
+    static class NumericUtils
     {
         const char k_SmallSpace = '\u2009';
         const char k_DivisionSlash = '/';
@@ -118,30 +118,77 @@ namespace Unity.Multiplayer.Tools.NetStatsMonitor.Implementation
             return result;
         }
 
-        public static string Base1000ToEngineeringNotation(
+        public static (string leadingNumber, string prefixSymbol) GetLeadingNumberAndPrefixSymbol(
             MantissaAndExponent inputBase1000,
-            int significantDigits,
-            BaseUnits units)
+            float roundedValue,
+            int digitsBelowDecimal)
         {
             // Metric prefixes are powers of 1000, so we can convert directly this way
-            var digitsAboveDecimal =
-                inputBase1000.Mantissa >= 100f ? 3 :
-                inputBase1000.Mantissa >=  10f ? 2 :
-                1;
+            var metricPrefix = (MetricPrefix)inputBase1000.Exponent;
 
+            if (metricPrefix < MetricPrefix.Min)
+            {
+                // Special case handling for exponents too small to have a metric prefix
+                return ("0", "");
+            }
+            if (metricPrefix > MetricPrefix.Max)
+            {
+                // Special case handling for exponents too large to have a metric prefix
+                return (inputBase1000.Mantissa >= 0 ? "+∞" : "-∞", "");
+            }
+            var prefixSymbol = metricPrefix.GetSymbol();
+            
+            var leadingNumber = roundedValue.ToString("N" + digitsBelowDecimal, CultureInfo.CurrentCulture);
+
+            return (leadingNumber, prefixSymbol);
+        }
+        
+        /// Returns (string LeadingNumber, string PrefixSymbol)
+        public static (string leadingNumber, string prefixSymbol) GetLeadingNumberAndPrefixSymbol(
+            MantissaAndExponent inputBase1000,
+            int significantDigits)
+        {
+            if (Math.Abs(inputBase1000.Mantissa - 1e3f) < MathF.Pow(10, 3 - significantDigits))
+            {
+                // If we would round up to one-thousand, re-normalize the input,
+                // so that we display something like 1 rather than 1,000 milli
+                inputBase1000.Mantissa *= 1e-3f;
+                inputBase1000.Exponent += 1;
+            }
+
+            var digitsAboveDecimal = GetDigitsAboveDecimal(inputBase1000, false);
+            var digitsBelowDecimal = GetDigitsBelowDecimal(significantDigits, digitsAboveDecimal);
+            
             var roundedValue = RoundToSignificantDigits(
                 inputBase1000.Mantissa,
                 significantDigits,
                 digitsAboveDecimal);
 
-            var digitsBelowDecimal = Math.Max(significantDigits - digitsAboveDecimal, 0);
-            var leadingNumber = roundedValue.ToString("N" + digitsBelowDecimal, CultureInfo.CurrentCulture);
+            return GetLeadingNumberAndPrefixSymbol(inputBase1000, roundedValue, digitsBelowDecimal);
+        }
 
-            var metricPrefix = (MetricPrefix)inputBase1000.Exponent;
-            var prefixSymbol = metricPrefix.GetSymbol();
-
+        public static string Base1000ToEngineeringNotation(
+            MantissaAndExponent inputBase1000,
+            BaseUnits units,
+            float roundedValue,
+            int digitsBelowdecimal)
+        {
+            var (leadingNumber, prefixSymbol) = GetLeadingNumberAndPrefixSymbol(inputBase1000,
+                roundedValue,
+                digitsBelowdecimal);
             var (unitsNumerator, unitsDenominator) = units.NumeratorAndDenominatorDisplayStrings;
-
+            return leadingNumber
+                + (unitsNumerator == "" ? prefixSymbol : $"{k_SmallSpace}{prefixSymbol}{unitsNumerator}")
+                + (unitsDenominator == "" ? "" : $"{k_DivisionSlash}{unitsDenominator}");
+        }
+        
+        public static string Base1000ToEngineeringNotation(
+            MantissaAndExponent inputBase1000,
+            int significantDigits,
+            BaseUnits units)
+        {
+            var (leadingNumber, prefixSymbol) = GetLeadingNumberAndPrefixSymbol(inputBase1000, significantDigits);
+            var (unitsNumerator, unitsDenominator) = units.NumeratorAndDenominatorDisplayStrings;
             return leadingNumber
                    + (unitsNumerator == "" ? prefixSymbol : $"{k_SmallSpace}{prefixSymbol}{unitsNumerator}")
                    + (unitsDenominator == "" ? "" : $"{k_DivisionSlash}{unitsDenominator}");
@@ -150,13 +197,9 @@ namespace Unity.Multiplayer.Tools.NetStatsMonitor.Implementation
         public static string Base10ToPercentageNotation(
             MantissaAndExponent inputBase10,
             int significantDigits,
-            BaseUnits units)
+            BaseUnits units,
+            float roundedValue)
         {
-            var roundedValue = RoundToSignificantDigits(
-                inputBase10.Mantissa,
-                significantDigits,
-                inputDigitsAboveDecimal: 1);
-
             var percentage = 100 * roundedValue * MathF.Pow(10, inputBase10.Exponent);
 
             var significantDigitsAboveDecimal = Math.Max(inputBase10.Exponent + 3, 0);
@@ -174,8 +217,25 @@ namespace Unity.Multiplayer.Tools.NetStatsMonitor.Implementation
             var (unitsNumerator, unitsDenominator) = units.NumeratorAndDenominatorDisplayStrings;
 
             return $"{leadingNumber}%"
-                   + (unitsNumerator   == "" ? "" : $"{k_SmallSpace}{unitsNumerator}")
-                   + (unitsDenominator == "" ? "" : $"{k_DivisionSlash}{unitsDenominator}");
+                + (unitsNumerator   == "" ? "" : $"{k_SmallSpace}{unitsNumerator}")
+                + (unitsDenominator == "" ? "" : $"{k_DivisionSlash}{unitsDenominator}");
+        }
+        
+        public static string Base10ToPercentageNotation(
+            MantissaAndExponent inputBase10,
+            int significantDigits,
+            BaseUnits units)
+        {
+            var roundedValue = RoundToSignificantDigits(
+                inputBase10.Mantissa,
+                significantDigits,
+                inputDigitsAboveDecimal: 1);
+
+            return Base10ToPercentageNotation(
+                inputBase10,
+                significantDigits,
+                units,
+                roundedValue);
         }
 
         public static string Base10ToDisplayNotation(
@@ -195,30 +255,22 @@ namespace Unity.Multiplayer.Tools.NetStatsMonitor.Implementation
                     units);
         }
 
-        public static string ToDisplayNotation(
-            float input,
-            int significantDigits,
-            BaseUnits units,
-            bool displayAsPercentage)
+        public static bool Approximately(double a, double b, double tolerance)
         {
-            return Base10ToDisplayNotation(
-                ToBase10(input),
-                significantDigits,
-                units,
-                displayAsPercentage);
+            return Math.Abs(a - b) < tolerance;
+        }
+        
+        public static int GetDigitsAboveDecimal(MantissaAndExponent inputBase1000, bool displayAsPercentage)
+        {
+            return displayAsPercentage ? 1 : 
+                inputBase1000.Mantissa >= 100f ? 3 :
+                inputBase1000.Mantissa >=  10f ? 2 :
+                1;
         }
 
-        public static string ToDisplayNotation(
-            double input,
-            int significantDigits,
-            BaseUnits units,
-            bool displayAsPercentage)
+        public static int GetDigitsBelowDecimal(int significantDigits, int digitsAboveDecimal)
         {
-            return Base10ToDisplayNotation(
-                ToBase10(input),
-                significantDigits,
-                units,
-                displayAsPercentage);
+            return Math.Max(significantDigits - digitsAboveDecimal, 0);
         }
     }
 }

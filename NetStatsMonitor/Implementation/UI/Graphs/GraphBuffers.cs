@@ -10,16 +10,16 @@
 #if UNITY_MP_TOOLS_NET_STATS_MONITOR_IMPLEMENTATION_ENABLED
 
 using System;
-using System.Collections.Generic;
 using Unity.Multiplayer.Tools.NetStatsMonitor.Implementation.Graphing;
 using UnityEngine;
 using UnityEngine.UIElements;
 
 namespace Unity.Multiplayer.Tools.NetStatsMonitor.Implementation
 {
-    internal class GraphBuffers
+    class GraphBuffers
     {
-        public const int k_VerticesPerSample = 2;
+        /// One vertex below each point and one vertex above
+        public const int k_VerticesPerPoint = 2;
         const int k_TrisPerLine = 2;
         const int k_IndicesPerTri = 3;
         const int k_IndicesPerLineSegment = k_TrisPerLine * k_IndicesPerTri;
@@ -27,15 +27,33 @@ namespace Unity.Multiplayer.Tools.NetStatsMonitor.Implementation
         public Vertex[] Vertices { get; private set; }
         ushort[] Indices { get; set; }
 
-        public void UpdateConfiguration(
-            GraphParameters oldParams,
-            GraphParameters newParams,
-            List<Color> variableColors)
-        {
-            var sampleCount = newParams.StatCount * newParams.SamplesPerStat;
-            var vertexCount = k_VerticesPerSample * sampleCount;
+        public GraphBufferParameters Parameters { get; private set; }
 
-            var linesSegmentsPerStat = Math.Max(0, newParams.SamplesPerStat - 1);
+        int m_VariableColorsHash;
+
+        static int ComputeColorsHash(Color[] colors)
+        {
+            int hash = 0;
+            for (int i = 0; i < colors.Length; ++i)
+            {
+                var colorHash = colors[i].GetHashCode();
+                hash = HashCode.Combine(hash, colorHash);
+            }
+            return hash;
+        }
+
+        /// Updating may include:
+        /// 1. Resizing/allocating buffers
+        /// 2. Recomputing index buffer values
+        /// 3. Recomputing vertex color buffer values
+        public void UpdateIfNeeded(
+            in GraphBufferParameters newParams,
+            in Color[] variableColors)
+        {
+            var pointCount = newParams.StatCount * newParams.GraphWidthPoints;
+            var vertexCount = k_VerticesPerPoint * pointCount;
+
+            var linesSegmentsPerStat = Math.Max(0, newParams.GraphWidthPoints - 1);
             var lineSegmentCount = linesSegmentsPerStat * newParams.StatCount;
             var indexCount = k_IndicesPerLineSegment * lineSegmentCount;
 
@@ -47,21 +65,32 @@ namespace Unity.Multiplayer.Tools.NetStatsMonitor.Implementation
             {
                 Indices = new ushort[indexCount];
             }
-            if (newParams.StatCount != oldParams.StatCount || newParams.SamplesPerStat != oldParams.SamplesPerStat)
-            {
-                ComputeIndices(newParams.StatCount, newParams.SamplesPerStat);
-            }
 
-            // Since the configuration has changed, it's possible the colors have changed
-            SetVertexColors(newParams.StatCount, newParams.SamplesPerStat, variableColors);
+            var bufferParamsChanged =
+                newParams.StatCount != Parameters.StatCount ||
+                newParams.GraphWidthPoints != Parameters.GraphWidthPoints;
+            if (bufferParamsChanged)
+            {
+                ComputeIndices(newParams.StatCount, newParams.GraphWidthPoints);
+            }
+            Parameters = newParams;
+
+            var newColorsHash = ComputeColorsHash(variableColors);
+            var colorsChanged = newColorsHash != m_VariableColorsHash;
+            if (bufferParamsChanged || colorsChanged)
+            {
+                // Since the configuration has changed, it's possible the colors have changed
+                SetVertexColors(newParams.StatCount, newParams.GraphWidthPoints, variableColors);
+            }
+            m_VariableColorsHash = newColorsHash;
         }
 
-        void ComputeIndices(int statCount, int samplesPerStat)
+        void ComputeIndices(int statCount, int pointsPerStat)
         {
-            var lineSegmentsPerStat = Math.Max(0, samplesPerStat - 1);
+            var lineSegmentsPerStat = Math.Max(0, pointsPerStat - 1);
             var indicesPerStat = k_IndicesPerLineSegment * lineSegmentsPerStat;
 
-            var verticesPerStat = k_VerticesPerSample * samplesPerStat;
+            var verticesPerStat = k_VerticesPerPoint * pointsPerStat;
 
             for (var statIndex = 0; statIndex < statCount; ++statIndex)
             {
@@ -70,7 +99,7 @@ namespace Unity.Multiplayer.Tools.NetStatsMonitor.Implementation
                 for (var lineSegmentIndex = 0; lineSegmentIndex < lineSegmentsPerStat; ++lineSegmentIndex)
                 {
                     var lineSegmentIndicesBegin = statIndicesBegin + k_IndicesPerLineSegment * lineSegmentIndex;
-                    var lineSegmentVerticesBegin = statVerticesBegin + k_VerticesPerSample * lineSegmentIndex;
+                    var lineSegmentVerticesBegin = statVerticesBegin + k_VerticesPerPoint * lineSegmentIndex;
 
                     // First tri
                     // V0 - V2
@@ -91,13 +120,13 @@ namespace Unity.Multiplayer.Tools.NetStatsMonitor.Implementation
             }
         }
 
-        void SetVertexColors(int statCount, int samplesPerStat, List<Color> variableColors)
+        void SetVertexColors(int statCount, int pointsPerStat, Color[] variableColors)
         {
-            var verticesPerStat = k_VerticesPerSample * samplesPerStat;
+            var verticesPerStat = k_VerticesPerPoint * pointsPerStat;
             for (var statIndex = 0; statIndex < statCount; ++statIndex)
             {
                 var statVerticesBegin = statIndex * verticesPerStat;
-                Color32 statColor = (variableColors != null && statIndex < variableColors.Count)
+                Color32 statColor = (variableColors != null && statIndex < variableColors.Length)
                     ? variableColors[statIndex]
                     : GraphColorUtils.GetColorForIndex(statIndex, statCount);
                 for (var vertexIndex = 0; vertexIndex < verticesPerStat; ++vertexIndex)
@@ -115,7 +144,7 @@ namespace Unity.Multiplayer.Tools.NetStatsMonitor.Implementation
                 Vertices.Length == 0 ||
                 Indices.Length == 0)
             {
-                // This can occur if a graph is configured without any stats or with zero samples
+                // This can occur if a graph is configured without any stats, samples, or space on screen
                 // in which case the buffers are not allocated
                 return;
             }

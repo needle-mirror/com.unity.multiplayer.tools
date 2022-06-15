@@ -50,10 +50,12 @@ namespace Unity.Multiplayer.Tools.MetricTypes
         /// <summary>
         /// Number of RPC sent.
         /// </summary>
+        [MetricMetadata(DisplayName  = "RPCs Sent")]
         RpcSent                      = (MT.Rpc                  << NDC.k_BitWidth) | ND.Sent,
         /// <summary>
         /// Number of RPC received.
         /// </summary>
+        [MetricMetadata(DisplayName  = "RPCs Received")]
         RpcReceived                  = (MT.Rpc                  << NDC.k_BitWidth) | ND.Received,
 
         /// <summary>
@@ -83,64 +85,78 @@ namespace Unity.Multiplayer.Tools.MetricTypes
         /// <summary>
         /// Number of network variable delta message sent.
         /// </summary>
+        [MetricMetadata(DisplayName  = "Network Variable Deltas Sent")]
         NetworkVariableDeltaSent     = (MT.NetworkVariableDelta << NDC.k_BitWidth) | ND.Sent,
         /// <summary>
         /// Number of network variable delta message received.
         /// </summary>
+        [MetricMetadata(DisplayName  = "Network Variable Deltas Received")]
         NetworkVariableDeltaReceived = (MT.NetworkVariableDelta << NDC.k_BitWidth) | ND.Received,
 
         /// <summary>
         /// Number of network object spawned message sent.
         /// </summary>
+        [MetricMetadata(DisplayName  = "Objects Spawned Sent")]
         ObjectSpawnedSent            = (MT.ObjectSpawned        << NDC.k_BitWidth) | ND.Sent,
         /// <summary>
         /// Number of network object spawned message received.
         /// </summary>
+        [MetricMetadata(DisplayName  = "Objects Spawned Received")]
         ObjectSpawnedReceived        = (MT.ObjectSpawned        << NDC.k_BitWidth) | ND.Received,
 
         /// <summary>
         /// Number of network object destroyed message sent.
         /// </summary>
+        [MetricMetadata(DisplayName  = "Objects Destroyed Sent")]
         ObjectDestroyedSent          = (MT.ObjectDestroyed      << NDC.k_BitWidth) | ND.Sent,
         /// <summary>
         /// Number of network object destroyed message received.
         /// </summary>
+        [MetricMetadata(DisplayName  = "Objects Destroyed Received")]
         ObjectDestroyedReceived      = (MT.ObjectDestroyed      << NDC.k_BitWidth) | ND.Received,
 
         /// <summary>
         /// Number of ownership change message sent.
         /// </summary>
+        [MetricMetadata(DisplayName  = "Ownership Changes Sent")]
         OwnershipChangeSent          = (MT.OwnershipChange      << NDC.k_BitWidth) | ND.Sent,
         /// <summary>
         /// Number of ownership change message received.
         /// </summary>
+        [MetricMetadata(DisplayName  = "Ownership Changes Received")]
         OwnershipChangeReceived      = (MT.OwnershipChange      << NDC.k_BitWidth) | ND.Received,
 
         /// <summary>
         /// Number of server log message sent.
         /// </summary>
+        [MetricMetadata(DisplayName  = "Server Logs Sent")]
         ServerLogSent                = (MT.ServerLog            << NDC.k_BitWidth) | ND.Sent,
         /// <summary>
         /// Number of server log message received.
         /// </summary>
+        [MetricMetadata(DisplayName  = "Server Logs Received")]
         ServerLogReceived            = (MT.ServerLog            << NDC.k_BitWidth) | ND.Received,
 
         /// <summary>
         /// Number of scene event message sent.
         /// </summary>
+        [MetricMetadata(DisplayName  = "Scene Events Sent")]
         SceneEventSent               = (MT.SceneEvent           << NDC.k_BitWidth) | ND.Sent,
         /// <summary>
         /// Number of scene event message received.
         /// </summary>
+        [MetricMetadata(DisplayName  = "Scene Events Received")]
         SceneEventReceived           = (MT.SceneEvent           << NDC.k_BitWidth) | ND.Received,
 
         /// <summary>
         /// Number of network message sent.
         /// </summary>
+        [MetricMetadata(DisplayName  = "Network Messages Sent")]
         NetworkMessageSent           = (MT.NetworkMessage       << NDC.k_BitWidth) | ND.Sent,
         /// <summary>
         /// Number of network message received.
         /// </summary>
+        [MetricMetadata(DisplayName  = "Network Messages Received")]
         NetworkMessageReceived       = (MT.NetworkMessage       << NDC.k_BitWidth) | ND.Received,
 
         /// <summary>

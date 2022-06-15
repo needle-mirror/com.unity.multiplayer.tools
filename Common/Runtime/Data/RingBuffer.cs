@@ -8,8 +8,7 @@ namespace Unity.Multiplayer.Tools.Common
     /// A ring buffer, indexed from least recent (beginning at 0) to most recent (ending at length - 1).
     /// It is possible for a RingBuffer to have zero capacity, in which case it does not allocate storage,
     /// ignores values that are pushed to it, and its length will always be zero.
-    internal class RingBuffer<T>
-        : IEnumerable<T>
+    class RingBuffer<T> : IEnumerable<T>
     {
         /// Backing buffer, null in the event that the buffer has zero capacity
         [CanBeNull]
@@ -19,7 +18,7 @@ namespace Unity.Multiplayer.Tools.Common
         int m_Begin;
 
         /// The number of values stored
-        public int Length { get; private set; }
+        public int Length { get; set; }
 
         /// The capacity of the ring buffer.
         /// Writing to the capacity will resize the ring buffer if necessary,
@@ -238,15 +237,13 @@ namespace Unity.Multiplayer.Tools.Common
 
         /// <exception cref="IndexOutOfRangeException">Throws IndexOutOfRange if length is 0</exception>
         public T LeastRecent => this[0];
+        public T LeastRecentOrDefault => Length > 0 ? LeastRecent : default;
 
 #if UNITY_2021_2_OR_NEWER // Index and ^i syntax are not available in lower versions
         /// <exception cref="IndexOutOfRangeException">Throws IndexOutOfRange if length is 0</exception>
-        public T MostRecent => this[^0];
+        public T MostRecent => this[^1];
+        public T MostRecentOrDefault => Length > 0 ? MostRecent : default;
 #endif
-
-        public T LeastRecentOrDefault => Length > 0 ? m_Buffer![m_Begin] : default;
-
-        public T MostRecentOrDefault => Length > 0 ? m_Buffer![m_Begin + Length - 1] : default;
 
         /// Enumerator from least to most recent
         public IEnumerator<T> GetEnumerator()

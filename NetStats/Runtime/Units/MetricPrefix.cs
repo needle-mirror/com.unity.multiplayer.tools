@@ -4,6 +4,10 @@ namespace Unity.Multiplayer.Tools.NetStats
 {
     internal enum MetricPrefix : sbyte
     {
+        /// Metric prefix for 1000^-6
+        Atto  = -6,
+        /// Metric prefix for 1000^-5
+        Femto = -5,
         /// Metric prefix for 1000^-4
         Pico  = -4,
         /// Metric prefix for 1000^-3
@@ -23,6 +27,15 @@ namespace Unity.Multiplayer.Tools.NetStats
         Giga = 3,
         /// Metric prefix for 1000^4
         Tera = 4,
+        /// Metric prefix for 1000^5
+        Peta = 5,
+        /// Metric prefix for 1000^6
+        Exa  = 6,
+
+        /// The smallest metric prefix available
+        Min = Atto,
+        /// The largest metric prefix available
+        Max = Exa,
     }
 
     internal static class UnitPrefixExtensions
@@ -31,17 +44,21 @@ namespace Unity.Multiplayer.Tools.NetStats
         {
             switch (prefix)
             {
-
+                case MetricPrefix.Atto:  return "a";
+                case MetricPrefix.Femto: return "f";
+                case MetricPrefix.Pico:  return "p";
                 case MetricPrefix.Nano:  return "n";
                 case MetricPrefix.Micro: return "μ";
                 case MetricPrefix.Milli: return "m";
 
-                case MetricPrefix.None: return "";
+                case MetricPrefix.None:  return "";
 
-                case MetricPrefix.Kilo: return "k";
-                case MetricPrefix.Mega: return "M";
-                case MetricPrefix.Giga: return "G";
-                case MetricPrefix.Tera: return "T";
+                case MetricPrefix.Kilo:  return "k";
+                case MetricPrefix.Mega:  return "M";
+                case MetricPrefix.Giga:  return "G";
+                case MetricPrefix.Tera:  return "T";
+                case MetricPrefix.Peta:  return "P";
+                case MetricPrefix.Exa:   return "E";
 
                 default:
                     throw new ArgumentException($"Unhandled {nameof(MetricPrefix)} {prefix}");
@@ -52,6 +69,8 @@ namespace Unity.Multiplayer.Tools.NetStats
         {
             switch (prefix)
             {
+                case MetricPrefix.Atto:  return 1e-18f;
+                case MetricPrefix.Femto: return 1e-15f;
                 case MetricPrefix.Pico:  return 1e-12f;
                 case MetricPrefix.Nano:  return 1e-9f;
                 case MetricPrefix.Micro: return 1e-6f;
@@ -63,6 +82,8 @@ namespace Unity.Multiplayer.Tools.NetStats
                 case MetricPrefix.Mega: return 1e6f;
                 case MetricPrefix.Giga: return 1e9f;
                 case MetricPrefix.Tera: return 1e12f;
+                case MetricPrefix.Peta: return 1e15f;
+                case MetricPrefix.Exa:  return 1e18f;
 
                 default:
                     throw new ArgumentException($"Unhandled {nameof(MetricPrefix)} {prefix}");

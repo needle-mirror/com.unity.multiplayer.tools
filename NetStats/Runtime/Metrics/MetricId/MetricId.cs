@@ -1,5 +1,6 @@
 using System;
 using System.Globalization;
+using JetBrains.Annotations;
 using UnityEngine;
 
 namespace Unity.Multiplayer.Tools.NetStats
@@ -18,7 +19,11 @@ namespace Unity.Multiplayer.Tools.NetStats
         internal int EnumValue { get; set; }
 
         internal Type EnumType => MetricIdTypeLibrary.GetType(TypeIndex);
+
+        [NotNull]
         internal string Name => MetricIdTypeLibrary.GetEnumName(TypeIndex, EnumValue);
+
+        [NotNull]
         internal string DisplayName => MetricIdTypeLibrary.GetEnumDisplayName(TypeIndex, EnumValue);
         internal MetricKind MetricKind => MetricIdTypeLibrary.GetEnumMetricKind(TypeIndex, EnumValue);
         internal BaseUnits Units => MetricIdTypeLibrary.GetEnumUnit(TypeIndex, EnumValue);

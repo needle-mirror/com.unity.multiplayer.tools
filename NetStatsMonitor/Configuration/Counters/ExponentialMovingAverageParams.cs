@@ -14,7 +14,18 @@ namespace Unity.Multiplayer.Tools.NetStatsMonitor
         /// By default, this is set to one second.
         /// </summary>
         [field: SerializeField]
-        [field: Min(0)]
-        public double HalfLife { get; set; } = 1;
+        [field: Min((float)ConfigurationLimits.k_ExponentialMovingAverageHalfLifeMin)]
+        double m_HalfLife = 1;
+
+        public double HalfLife
+        {
+            get => m_HalfLife;
+            set => m_HalfLife = Math.Max(value, ConfigurationLimits.k_ExponentialMovingAverageHalfLifeMin);
+        }
+
+        internal int ComputeHashCode()
+        {
+            return HalfLife.GetHashCode();
+        }
     }
 }

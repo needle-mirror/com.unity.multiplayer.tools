@@ -19,7 +19,7 @@ using Unity.Multiplayer.Tools.NetStats;
 
 namespace Unity.Multiplayer.Tools.NetStatsMonitor.Implementation
 {
-    internal class GraphVisualElement : VisualElement
+    class GraphVisualElement : VisualElement
     {
         List<MetricId> m_Stats;
         int m_SampleCount;
@@ -27,7 +27,8 @@ namespace Unity.Multiplayer.Tools.NetStatsMonitor.Implementation
         BaseUnits m_YAxisUnits;
         bool m_YAxisDisplayAsPercentage;
         MinAndMax m_PlotRange;
-
+        MinAndMax m_LastYValues;
+        double m_LastTimeSpan = Single.MinValue;
 
         readonly Label m_Label = new();
 
@@ -75,7 +76,11 @@ namespace Unity.Multiplayer.Tools.NetStatsMonitor.Implementation
             var details = config.GraphConfiguration;
 
             m_Stats = new List<MetricId>(config.Stats);
-            m_SampleCount = details.SampleCount;
+            m_SampleCount = Math.Clamp(details.SampleCount,
+                                       ConfigurationLimits.k_GraphSampleMin,
+                                       ConfigurationLimits.k_GraphSampleMax);
+
+
             m_XAxisType = details.XAxisType;
 
             m_Label.text = config.Label;
@@ -86,9 +91,9 @@ namespace Unity.Multiplayer.Tools.NetStatsMonitor.Implementation
 
             m_Content.UpdateConfiguration(config);
 
-            m_YAxisUnits = UnitUtils.GetUnits(m_Stats, m_Label.text);
+            m_YAxisUnits = MetricsUtils.GetUnits(m_Stats, m_Label.text);
             m_YAxisDisplayAsPercentage =
-                UnitUtils.ShouldDisplayAsPercentage(m_Stats, m_Label.text);
+                MetricsUtils.ShouldDisplayAsPercentage(m_Stats, m_Label.text);
 
             m_YAxisLabels.MinLabel = $"0 {m_YAxisUnits}";
 
@@ -108,16 +113,22 @@ namespace Unity.Multiplayer.Tools.NetStatsMonitor.Implementation
         }
 
         /// Returns the YAxis bound display string and value
-        (string, float) ComputeYAxisBound(float plotBound)
+        (string Label, float Value) ComputeYAxisBound(float plotBound, float currentValue, string currentStringValue)
         {
             var mantissaAndExponent = GraphScalingUtils.NextLargestRoundNumber(plotBound);
             var mantissa = mantissaAndExponent.Mantissa;
+            var value = mantissaAndExponent.GetValue(exponentBase: 10);
+
+            if (value == currentValue)
+            {
+                return (currentStringValue, value);
+            }
+
             var displayString = NumericUtils.Base10ToDisplayNotation(
                 mantissaAndExponent,
                 significantDigits: mantissa == MathF.Floor(mantissa) ? 1 : 2,
                 m_YAxisUnits,
                 m_YAxisDisplayAsPercentage);
-            var value = mantissaAndExponent.GetValue(exponentBase: 10);
             return (displayString, value);
         }
 
@@ -126,8 +137,11 @@ namespace Unity.Multiplayer.Tools.NetStatsMonitor.Implementation
             // The minimum and maximum axis bounds can be computed using the same method without
             // special case handling because m_PlotRange.Min <= 0 and m_PlotRange.Max >= 0,
             // and so the next round number of greater magnitude works as an axis bound in both cases
-            var (yAxisMinLabel, minPlotValue) = ComputeYAxisBound(m_PlotRange.Min);
-            var (yAxisMaxLabel, maxPlotValue) = ComputeYAxisBound(m_PlotRange.Max);
+            var (yAxisMinLabel, minPlotValue) = ComputeYAxisBound(m_PlotRange.Min, m_LastYValues.Min, m_YAxisLabels.MinLabel);
+            var (yAxisMaxLabel, maxPlotValue) = ComputeYAxisBound(m_PlotRange.Max, m_LastYValues.Max ,m_YAxisLabels.MaxLabel);
+
+            m_LastYValues.Min = minPlotValue;
+            m_LastYValues.Max = maxPlotValue;
 
             m_PlotRange = m_Content.UpdateDisplayData(history, m_Stats, minPlotValue, maxPlotValue);
 
@@ -136,7 +150,11 @@ namespace Unity.Multiplayer.Tools.NetStatsMonitor.Implementation
             if (m_XAxisType == GraphXAxisType.Time)
             {
                 var timeSpan = history.TimeSpanOfLastNSamples(m_SampleCount);
-                m_XAxisLabels.MinLabel = $"-{timeSpan:0.00} s";
+                if (!NumericUtils.Approximately(timeSpan, m_LastTimeSpan, 1E-3))
+                {
+                    m_LastTimeSpan = timeSpan;
+                    m_XAxisLabels.MinLabel = $"-{timeSpan:0.00} s";
+                }
             }
         }
     }

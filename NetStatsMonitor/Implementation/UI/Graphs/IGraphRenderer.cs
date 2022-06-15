@@ -19,7 +19,7 @@ using Unity.Multiplayer.Tools.NetStats;
 namespace Unity.Multiplayer.Tools.NetStatsMonitor.Implementation
 {
     /// A graph renderer is responsible for writing to the vertex buffer to render the correct kind of graph
-    internal interface IGraphRenderer
+    interface IGraphRenderer
     {
         /// Updates the vertices with the geometry needed to render the graph.
         /// Returns the true min and max value displayed on the graph, for use
@@ -31,7 +31,8 @@ namespace Unity.Multiplayer.Tools.NetStatsMonitor.Implementation
         /// to a new min or max are delayed by one frame.
         /// <param name="history"> The history of all stat values.</param>
         /// <param name="stats"> The stats to be plotted.</param>
-        /// <param name="graphParams"> Some parameters of the graph.</param>
+        /// <param name="graphParams"> Parameters of the graph.</param>
+        /// <param name="bufferParams"> Parameters of the graph buffers.</param>
         /// <param name="yAxisMin"> The minimum y-value within the graph bounds.</param>
         /// <param name="yAxisMax"> The maximum y-value within the graph bounds.</param>
         /// <param name="renderBoundsXMin"> The render bound corresponding to the minimum x value</param>
@@ -45,17 +46,20 @@ namespace Unity.Multiplayer.Tools.NetStatsMonitor.Implementation
         /// Note that this is not necessarily the maximum value of the two render bounds.
         /// </param>
         /// <param name="vertices"> The vertices to be written to. </param>
-        public MinAndMax UpdateVertices(
+        MinAndMax UpdateVertices(
             MultiStatHistory history,
             List<MetricId> stats,
             float yAxisMin,
             float yAxisMax,
-            GraphParameters graphParams,
+            in GraphParameters graphParams,
+            in GraphBufferParameters bufferParams,
             float renderBoundsXMin,
             float renderBoundsXMax,
             float renderBoundsYMin,
             float renderBoundsYMax,
             Vertex[] vertices);
+
+        float MaxPointsPerPixel { get; }
 
         void UpdateConfiguration(DisplayElementConfiguration config){}
     }

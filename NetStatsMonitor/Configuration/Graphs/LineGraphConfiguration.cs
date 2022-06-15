@@ -14,8 +14,21 @@ namespace Unity.Multiplayer.Tools.NetStatsMonitor
         /// The line thickness for a line graph.
         /// By default this is set to one.
         /// </summary>
-        [field: SerializeField]
-        public float LineThickness { get; set; } = 1;
+        /// <remarks>
+        /// The accepted range for the line thickness is between 1 and 10.
+        /// If the value goes beyond those value, it will be clamped.
+        /// </remarks>
+        public float LineThickness
+        {
+            get => m_LineThickness;
+            set => m_LineThickness = Mathf.Clamp(value, ConfigurationLimits.k_GraphLineThicknessMin, ConfigurationLimits.k_GraphLineThicknessMax);
+        }
+
+        /// The line thickness for a line graph.
+        /// By default this is set to one.
+        [SerializeField]
+        [Range(ConfigurationLimits.k_GraphLineThicknessMin, ConfigurationLimits.k_GraphLineThicknessMax)]
+        float m_LineThickness = 1;
 
         internal int ComputeHashCode()
         {

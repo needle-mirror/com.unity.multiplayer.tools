@@ -12,6 +12,8 @@
 using System;
 using System.Collections.Generic;
 using Unity.Multiplayer.Tools.NetStats;
+using Unity.Multiplayer.Tools.NetStatsMonitor.Configuration;
+using UnityEngine;
 using UnityEngine.Assertions;
 using UnityEngine.UIElements;
 
@@ -37,18 +39,39 @@ namespace Unity.Multiplayer.Tools.NetStatsMonitor.Implementation
         float m_HighlightThresholdMin = float.MinValue;
         float m_HighlightThresholdMax = float.MaxValue;
 
-        double m_DisplayValue;
+        double m_DisplayValue = double.NaN;
+
         internal double DisplayValue
         {
             get => m_DisplayValue;
             set
             {
+                var mantissaExponent = m_DisplayAsPercentage
+                    ? NumericUtils.ToBase10(value)
+                    : NumericUtils.Base10ToBase1000(NumericUtils.ToBase10(value));
+                
+                var digitsAboveDecimal = NumericUtils.GetDigitsAboveDecimal(mantissaExponent, m_DisplayAsPercentage);
+                var roundedValue = NumericUtils.RoundToSignificantDigits(mantissaExponent.Mantissa, m_SignificantDigits, digitsAboveDecimal);
+
+                if (roundedValue == m_DisplayValue)
+                {
+                    return;
+                }
+                
                 m_DisplayValue = value;
-                m_Value.text = NumericUtils.ToDisplayNotation(
-                    m_DisplayValue,
-                    significantDigits: m_SignificantDigits,
-                    units: m_Units,
-                    displayAsPercentage: m_DisplayAsPercentage);
+                m_Value.text = m_DisplayAsPercentage
+                    ? NumericUtils.Base10ToPercentageNotation(
+                        inputBase10: mantissaExponent,
+                        significantDigits: m_SignificantDigits,
+                        units: m_Units)
+                    : NumericUtils.Base1000ToEngineeringNotation(
+                        inputBase1000: mantissaExponent,
+                        units: m_Units,
+                        roundedValue: roundedValue,
+                        digitsBelowdecimal: NumericUtils.GetDigitsBelowDecimal(
+                            m_SignificantDigits,
+                            digitsAboveDecimal));
+                
                 UpdateHighlightUssClasses();
             }
         }
@@ -69,14 +92,18 @@ namespace Unity.Multiplayer.Tools.NetStatsMonitor.Implementation
         {
             var details = config.CounterConfiguration;
 
-            m_Label.text = StringUtils.LabelFormatting(config.Label, config.Stats);
+            m_Label.text = string.IsNullOrWhiteSpace(config.Label)
+                ? LabelGeneration.GenerateLabel(config.Stats)
+                : config.Label;
             m_Stats = new List<MetricId>(config.Stats);
-            m_Units = UnitUtils.GetUnits(m_Stats, config.Label);
-            m_DisplayAsPercentage = UnitUtils.ShouldDisplayAsPercentage(m_Stats, config.Label);
+            m_Units = MetricsUtils.GetUnits(m_Stats, config.Label);
+            m_DisplayAsPercentage = MetricsUtils.ShouldDisplayAsPercentage(m_Stats, config.Label);
             m_SmoothingMethod = details.SmoothingMethod;
             m_AggregationMethod = details.AggregationMethod;
             m_DecayConstant = config.DecayConstant;
-            m_SampleCount = Math.Max(config.SampleCount, 0);
+            m_SampleCount = Math.Clamp(config.SampleCount,
+                ConfigurationLimits.k_CounterSampleMin,
+                ConfigurationLimits.k_CounterSampleMax);
             m_SignificantDigits = Math.Max(details.SignificantDigits, 1);
 
             m_HighlightThresholdMin = details.HighlightLowerBound;
@@ -147,14 +174,14 @@ namespace Unity.Multiplayer.Tools.NetStatsMonitor.Implementation
                 }
                 case SmoothingMethod.SimpleMovingAverage:
                 {
-                    foreach (var statName in m_Stats)
+                    foreach (var stat in m_Stats)
                     {
-                        var rate = history.GetSimpleMovingAverageRate(statName, m_SampleCount, time);
-                        if (!rate.HasValue)
+                        var statValue = history.GetSimpleMovingAverage(stat, m_SampleCount, time);
+                        if (!statValue.HasValue)
                         {
                             continue;
                         }
-                        displayValue += rate.Value;
+                        displayValue += statValue.Value;
                         statsFoundCount++;
                     }
                     break;

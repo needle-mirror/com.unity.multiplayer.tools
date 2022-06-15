@@ -26,12 +26,18 @@ namespace Unity.Multiplayer.Tools.NetStatsMonitor
         /// The number of significant digits to display for this counter.
         /// </summary>
         [field: SerializeField]
-        // Limited to 7 for now
-        // Informed by the approximate base 10 precision of 32-bit floating point
-        // https://en.wikipedia.org/wiki/Single-precision_floating-point_format
-        [field: Range(1, 7)]
+        [field: Range(ConfigurationLimits.k_CounterSignificantDigitsMin, ConfigurationLimits.k_CounterSignificantDigitsMax)]
         [field: Tooltip("The number of significant digits to display for this counter.")]
-        public int SignificantDigits { get; set; } = 3;
+        int m_SignificantDigits = 3;
+        
+        public int SignificantDigits
+        {
+            get => m_SignificantDigits;
+            set => m_SignificantDigits = Mathf.Clamp(
+                value,
+                ConfigurationLimits.k_CounterSignificantDigitsMin,
+                ConfigurationLimits.k_CounterSignificantDigitsMax); 
+        }
 
         /// <summary>
         /// Values below this threshold will be highlighted by the default styling,
@@ -44,7 +50,7 @@ namespace Unity.Multiplayer.Tools.NetStatsMonitor
                         "and can be highlighted by custom styling using the following USS classes: " +
                         "\"" + UssClassNames.k_CounterOutOfBounds + "\", or " +
                         "\"" + UssClassNames.k_CounterBelowThreshold + "\"")]
-        public float HighlightLowerBound { get; set; } = float.MinValue;
+        public float HighlightLowerBound { get; set; } = float.NegativeInfinity;
 
         /// <summary>
         /// Values above this threshold will be highlighted by the default styling,
@@ -57,7 +63,7 @@ namespace Unity.Multiplayer.Tools.NetStatsMonitor
                         "and can be highlighted by custom styling using the following USS classes: " +
                         "\"" + UssClassNames.k_CounterOutOfBounds + "\", or " +
                         "\"" + UssClassNames.k_CounterAboveThreshold + "\"")]
-        public float HighlightUpperBound { get; set; } = float.MaxValue;
+        public float HighlightUpperBound { get; set; } = float.PositiveInfinity;
 
         /// <summary>
         /// Parameters used if <see cref="SmoothingMethod"/> is set to ExponentialMovingAverage.
@@ -80,7 +86,6 @@ namespace Unity.Multiplayer.Tools.NetStatsMonitor
             ? SimpleMovingAverageParams.SampleCount
             : 0;
 
-#if UNITY_2021_2_OR_NEWER // HashCode isn't defined in Unity < 2021.2
         internal int ComputeHashCode()
         {
             return HashCode.Combine(
@@ -89,9 +94,8 @@ namespace Unity.Multiplayer.Tools.NetStatsMonitor
                 SignificantDigits,
                 HighlightLowerBound,
                 HighlightUpperBound,
-                ExponentialMovingAverageParams,
-                SimpleMovingAverageParams);
+                ExponentialMovingAverageParams.ComputeHashCode(),
+                SimpleMovingAverageParams.ComputeHashCode());
         }
-#endif
     }
 }

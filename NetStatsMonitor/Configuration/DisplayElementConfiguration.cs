@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Unity.Multiplayer.Tools.Common;
 using Unity.Multiplayer.Tools.NetStats;
+using Unity.Multiplayer.Tools.NetStatsMonitor.Configuration;
 
 namespace Unity.Multiplayer.Tools.NetStatsMonitor
 {
@@ -124,6 +125,85 @@ namespace Unity.Multiplayer.Tools.NetStatsMonitor
             ? ContinuousExponentialMovingAverage.GetDecayConstantForHalfLife(HalfLife.Value)
             : null;
 
+        public void OnValidate()
+        {
+            RefreshGenerateLabel();
+            ValidateColors();
+        }
+
+        int m_PreviousStatsHash = 0;
+        string m_PreviousGeneratedLabel = "";
+        void RefreshGenerateLabel()
+        {
+            if (Type != DisplayElementType.Counter)
+            {
+                // We don't do label generation for graphs because:
+                // 1. Unlike counters they don't need a label to understood (they have a legend)
+                // 2. They're more compact without labels
+                // So users can enter labels for them, but we don't generate them automatically
+                return;
+            }
+            var currentStatsHash = ComputeStatsHashCode();
+            if (m_PreviousStatsHash == 0)
+            {
+                m_PreviousStatsHash = currentStatsHash;
+                m_PreviousGeneratedLabel = LabelGeneration.GenerateLabel(Stats);
+                return;
+            }
+            if (currentStatsHash == m_PreviousStatsHash)
+            {
+                return;
+            }
+            m_PreviousStatsHash = currentStatsHash;
+
+            // The stats have changed
+            var newGeneratedLabel = LabelGeneration.GenerateLabel(Stats);
+            if (Label == m_PreviousGeneratedLabel)
+            {
+                Label = newGeneratedLabel;
+            }
+            m_PreviousGeneratedLabel = newGeneratedLabel;
+        }
+
+        void ValidateColors()
+        {
+            // A new element in a Reordable list will either be copied from the previous element
+            // or zero initialized if it's the first
+            // In those scenarios, if all the elements have a black color (r=0, g=0, b=0)
+            // And the alpha is also 0, we assume these are new custom colors and we set the alpha to 1
+
+            var variableColors = GraphConfiguration?.VariableColors;
+
+            if (variableColors == null)
+            {
+                return;
+            }
+
+            var areAllColorsZeroInitialized = true;
+            for (int j = 0; j < variableColors.Count; ++j)
+            {
+                var graphConfigurationVariableColor = variableColors[j];
+                if (graphConfigurationVariableColor.a != 0f ||
+                    graphConfigurationVariableColor.r != 0f ||
+                    graphConfigurationVariableColor.g != 0f ||
+                    graphConfigurationVariableColor.b != 0f)
+                {
+                    areAllColorsZeroInitialized = false;
+                    break;
+                }
+            }
+
+            if (areAllColorsZeroInitialized)
+            {
+                for (int j = 0; j < variableColors.Count; ++j)
+                {
+                    var graphConfigurationVariableColor = variableColors[j];
+                    graphConfigurationVariableColor.a = 1f;
+                    variableColors[j] = graphConfigurationVariableColor;
+                }
+            }
+        }
+
         // Custom Serialization of Stats as Strings, so that reordering does not break configuration
         // ----------------------------------------------------------------------------------------
         [Serializable]
@@ -223,15 +303,19 @@ namespace Unity.Multiplayer.Tools.NetStatsMonitor
         }
 
 #if UNITY_2021_2_OR_NEWER // HashCode isn't defined in Unity < 2021.2
-        internal int ComputeHashCode()
+        internal int ComputeStatsHashCode()
         {
-            int hash = HashCode.Combine(Type, Label);
-
+            var hash = 0;
             foreach (var stat in Stats)
             {
                 hash = HashCode.Combine(hash, stat);
             }
+            return hash;
+        }
 
+        internal int ComputeHashCode()
+        {
+            int hash = HashCode.Combine(Type, Label, ComputeStatsHashCode());
             switch (Type)
             {
                 case DisplayElementType.Counter:

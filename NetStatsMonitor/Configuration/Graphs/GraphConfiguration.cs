@@ -14,8 +14,24 @@ namespace Unity.Multiplayer.Tools.NetStatsMonitor
         /// <summary>
         /// The number of samples that are maintained for the purpose of graphing.
         /// </summary>
+        /// <remarks>
+        /// If the value is out of the range [0, 4096], it will be clamped to the
+        /// nearest value.
+        /// </remarks>
         [field: SerializeField]
-        public int SampleCount { get; set; } = 256;
+        [field: Tooltip("The number of samples that are maintained for the purpose of graphing. " +
+                        "If the value is out of the range [0, 4096], it will be clamped to the nearest value.")]
+        [field: Range(ConfigurationLimits.k_GraphSampleMin, ConfigurationLimits.k_GraphSampleMax)]
+        int m_SampleCount = 256;
+
+        public int SampleCount
+        {
+            get => m_SampleCount;
+            set => m_SampleCount = Mathf.Clamp(
+                value,
+                ConfigurationLimits.k_GraphSampleMin,
+                ConfigurationLimits.k_GraphSampleMax);
+        }
 
         /// <summary>
         /// List of colors to override the default colors of the graph.
@@ -38,7 +54,6 @@ namespace Unity.Multiplayer.Tools.NetStatsMonitor
         [field: SerializeField]
         public LineGraphConfiguration LineGraphConfiguration { get; set; } = new();
 
-#if UNITY_2021_2_OR_NEWER // HashCode isn't defined in Unity < 2021.2
         internal int ComputeHashCode()
         {
             var hash = HashCode.Combine(SampleCount, (int)XAxisType, LineGraphConfiguration.ComputeHashCode());
@@ -51,6 +66,5 @@ namespace Unity.Multiplayer.Tools.NetStatsMonitor
             }
             return hash;
         }
-#endif
     }
 }

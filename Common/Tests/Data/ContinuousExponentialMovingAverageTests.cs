@@ -12,9 +12,9 @@ namespace Unity.Multiplayer.Tools.Common.Tests
         public void InitializedCorrectlyWithOneArgument(double decayConstant)
         {
             var ema = new ContinuousExponentialMovingAverage(decayConstant);
-            Assert.AreEqual(ema.DecayConstant, decayConstant);
-            Assert.AreEqual(ema.LastValue, 0f);
-            Assert.AreEqual(ema.LastTime, Double.MinValue);
+            Assert.AreEqual(decayConstant, ema.DecayConstant);
+            Assert.AreEqual(0f, ema.LastValue);
+            Assert.AreEqual(Double.NegativeInfinity, ema.LastTime);
         }
 
         [TestCase(0.5)]
@@ -25,8 +25,8 @@ namespace Unity.Multiplayer.Tools.Common.Tests
             double initialValue = 0f)
         {
             var ema = new ContinuousExponentialMovingAverage(decayConstant, initialValue);
-            Assert.AreEqual(ema.DecayConstant, decayConstant);
-            Assert.AreEqual(ema.LastValue, initialValue);
+            Assert.AreEqual(decayConstant, ema.DecayConstant);
+            Assert.AreEqual(initialValue, ema.LastValue);
         }
 
         [TestCase(0.5)]
@@ -41,8 +41,8 @@ namespace Unity.Multiplayer.Tools.Common.Tests
             double initialTime = Double.MinValue)
         {
             var ema = new ContinuousExponentialMovingAverage(decayConstant, initialValue, initialTime);
-            Assert.AreEqual(ema.DecayConstant, decayConstant);
-            Assert.AreEqual(ema.LastValue, initialValue);
+            Assert.AreEqual(decayConstant, ema.DecayConstant);
+            Assert.AreEqual(initialValue, ema.LastValue);
         }
 
         [TestCase(1)]
@@ -80,7 +80,7 @@ namespace Unity.Multiplayer.Tools.Common.Tests
             var cema = ContinuousExponentialMovingAverage.CreateWithHalfLife(halfLife);
             Assert.AreEqual(ContinuousExponentialMovingAverage.k_ln2 / halfLife, cema.DecayConstant);
             Assert.AreEqual(0d, cema.LastValue);
-            Assert.AreEqual(Double.MinValue, cema.LastTime);
+            Assert.AreEqual(Double.NegativeInfinity, cema.LastTime);
         }
 
         [TestCase(-89.30,    4.7)]
@@ -92,7 +92,7 @@ namespace Unity.Multiplayer.Tools.Common.Tests
         {
             var cema = ContinuousExponentialMovingAverage.CreateWithHalfLife(0.5);
             Assert.AreEqual(0, cema.LastValue);
-            Assert.AreEqual(Double.MinValue, cema.LastTime);
+            Assert.AreEqual(Double.NegativeInfinity, cema.LastTime);
 
             cema.AddSampleForGauge(value, time);
             Assert.AreEqual(value, cema.LastValue);
