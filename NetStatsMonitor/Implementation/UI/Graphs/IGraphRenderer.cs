@@ -29,8 +29,11 @@ namespace Unity.Multiplayer.Tools.NetStatsMonitor.Implementation
         /// once to determine the min and max and a second time to render.
         /// It does however mean that updates of the graph bounds in response
         /// to a new min or max are delayed by one frame.
-        /// <param name="history"> The history of all stat values.</param>
         /// <param name="stats"> The stats to be plotted.</param>
+        /// <param name="dataSampler"> Sample data for each point in the graph.</param>
+        /// <param name="pointsToAdvance">
+        /// The number of points to advance this frame (also the number of new samples received).
+        /// </param>
         /// <param name="graphParams"> Parameters of the graph.</param>
         /// <param name="bufferParams"> Parameters of the graph buffers.</param>
         /// <param name="yAxisMin"> The minimum y-value within the graph bounds.</param>
@@ -47,8 +50,9 @@ namespace Unity.Multiplayer.Tools.NetStatsMonitor.Implementation
         /// </param>
         /// <param name="vertices"> The vertices to be written to. </param>
         MinAndMax UpdateVertices(
-            MultiStatHistory history,
             List<MetricId> stats,
+            GraphDataSampler dataSampler,
+            int pointsToAdvance,
             float yAxisMin,
             float yAxisMax,
             in GraphParameters graphParams,

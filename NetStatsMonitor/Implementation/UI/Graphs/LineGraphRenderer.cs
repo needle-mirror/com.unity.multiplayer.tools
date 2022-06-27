@@ -26,10 +26,8 @@ namespace Unity.Multiplayer.Tools.NetStatsMonitor.Implementation
         const float k_MaxPointsPerPixel = 0.5f;
         public float MaxPointsPerPixel => k_MaxPointsPerPixel;
 
-        readonly GraphInputSynchronizer m_InputSynchronizer = new();
         GraphBoundsTransformer m_BoundsTransformer;
 
-        readonly List<RingBuffer<float>> m_PointValues = new();
         RingBuffer<float> m_MaxPointValues;
         float m_MaxPointValue = 0f;
         bool m_MustRecomputeMaxPointValue;
@@ -43,7 +41,6 @@ namespace Unity.Multiplayer.Tools.NetStatsMonitor.Implementation
 
         void ResizeInternalBuffersIfNeeded(in GraphBufferParameters bufferParams)
         {
-            var statCount = bufferParams.StatCount;
             var pointCount = bufferParams.GraphWidthPoints;
 
             if (m_MaxPointValues == null)
@@ -57,21 +54,12 @@ namespace Unity.Multiplayer.Tools.NetStatsMonitor.Implementation
                 m_MaxPointValues.Length = pointCount;
                 m_MustRecomputeMaxPointValue = true;
             }
-            m_PointValues.Resize(statCount);
-            for (var i = 0; i < statCount; ++i)
-            {
-                if (m_PointValues[i] == null || m_PointValues[i].Capacity != pointCount)
-                {
-                    var buffer = new RingBuffer<float>(pointCount);
-                    buffer.Length = pointCount;
-                    m_PointValues[i] = buffer;
-                }
-            }
         }
 
         public MinAndMax UpdateVertices(
-            MultiStatHistory history,
             List<MetricId> stats,
+            GraphDataSampler dataSampler,
+            int pointsToAdvance,
             float yAxisMin,
             float yAxisMax,
             in GraphParameters graphParams,
@@ -145,10 +133,6 @@ namespace Unity.Multiplayer.Tools.NetStatsMonitor.Implementation
             var graphSamplesPerPoint = ((float)graphWidthSamples) / graphWidthPoints;
             var graphPointsPerSample = 1 / graphSamplesPerPoint;
 
-            var pointsToAdvance = m_InputSynchronizer.ComputeNumberOfPointsToAdvance(
-                history.TimeStamps,
-                graphSamplesPerPoint);
-
             m_BoundsTransformer ??= new GraphBoundsTransformer(
                 renderBoundsXMin, renderBoundsXMax, renderBoundsYMin, renderBoundsYMax,
                 yAxisMin, yAxisMax);
@@ -171,13 +155,10 @@ namespace Unity.Multiplayer.Tools.NetStatsMonitor.Implementation
                 return new MinAndMax { Min = sampleValueMin, Max = m_MaxPointValue };
             }
 
-            ShiftMaxPointValues(pointsToAdvance: pointsToAdvance);
-            AddNewPointValues(
-                history: history,
-                stats: stats,
+            UpdateMaxPointValues(
+                stats,
+                dataSampler,
                 graphWidthPoints: graphWidthPoints,
-                graphWidthSamples: graphWidthSamples,
-                graphSamplesPerPoint: graphSamplesPerPoint,
                 pointsToAdvance: pointsToAdvance);
 
             var xScale = (renderBoundsXMax - renderBoundsXMin) / graphWidthPoints;
@@ -199,20 +180,16 @@ namespace Unity.Multiplayer.Tools.NetStatsMonitor.Implementation
             for (var statIndex = 0; statIndex < statCount; ++statIndex)
             {
                 var statId = stats[statIndex];
-                var statData = history.Data[statId].RecentValues;
                 var statVerticesBegin = statIndex * verticesPerStat;
 
-                var pointValues = m_PointValues[statIndex];
-
-                // The actual number of samples available for this stat, which may be
-                // more or less than the number of samples shown on the graph
+                var pointValues = dataSampler.PointValues[statId];
 
                 ShiftExistingGeometry(
                     vertices: vertices,
                     statVerticesBegin: statVerticesBegin,
                     xScale: xScale,
-                    pointsToCopy: pointsToCopy,
-                    pointsToAdvance: pointsToAdvance);
+                    pointsToAdvance: pointsToAdvance,
+                    pointsToCopy: pointsToCopy);
 
                 ComputeNewGeometry(
                     vertices: vertices,
@@ -254,70 +231,40 @@ namespace Unity.Multiplayer.Tools.NetStatsMonitor.Implementation
             return pointsToCopy;
         }
 
-        void AddNewPointValues(
-            MultiStatHistory history,
+        void UpdateMaxPointValues(
             List<MetricId> stats,
+            GraphDataSampler sampler,
             int graphWidthPoints,
-            int graphWidthSamples,
-            float graphSamplesPerPoint,
             int pointsToAdvance)
         {
-            var statCount = m_PointValues.Count;
-            for (var statIndex = 0; statIndex < statCount; ++statIndex)
+            // The largest value dropped during this advance
+            float maxValueDropped = 0f;
+
+            // Shift out the values of the old points that have fallen outside the graph
+            for (var i = 0; i < pointsToAdvance; ++i)
             {
-                var statId = stats[statIndex];
-                var statData = history.Data[statId].RecentValues;
-
-                var sampleCount = statData.Length;
-
-                var pointValues = m_PointValues[statIndex];
-
-                // initialSampleIndex is the sample index corresponding to the 0th point in the graph,
-                // which is not necessarily the 0th point in this pass to create new geometry
-                // 1. It will be positive if there are excess samples outside the graph that will be skipped
-                // 2. It will be negative if there are not enough samples to fill the graph
-                // 3. It will be zero if there are exactly the right number of samples to fill the graph
-                var initialSampleIndex = sampleCount - graphWidthSamples;
-
-                var initialPointIndex = Math.Max(graphWidthPoints - pointsToAdvance, 0);
-
-                // Avoid some accesses by remembering the most recently read value
-                var lastReadSample = 0f;
-
-                // Avoid recomputing by saving this from the end of the previous iteration
-                var fractionOfPreviousSample = 0f;
-
-                var sampleIndex = initialSampleIndex + initialPointIndex * graphSamplesPerPoint;
-                for (var pointIndex = initialPointIndex; pointIndex < graphWidthPoints; ++pointIndex)
-                {
-                    var pointValue = GraphDataSampler.SamplePointAndAdvance(
-                        graphSamplesPerPoint: graphSamplesPerPoint,
-                        sampleCount: sampleCount,
-                        statData: statData,
-                        sampleIndex: ref sampleIndex,
-                        lastReadSample: ref lastReadSample,
-                        fractionOfPreviousSample: ref fractionOfPreviousSample);
-                    pointValues.PushBack(pointValue);
-
-                    m_MaxPointValue = Math.Max(pointValue, m_MaxPointValue);
-                    m_MaxPointValues[pointIndex] = Math.Max(pointValue, m_MaxPointValues[pointIndex]);
-                }
-            }
-        }
-
-        void ShiftMaxPointValues(int pointsToAdvance)
-        {
-            for (var pointIndex = 0; pointIndex < pointsToAdvance; ++pointIndex)
-            {
-                if (m_MaxPointValues.LeastRecent >= m_MaxPointValue - float.Epsilon)
-                {
-                    // The previous maximum value is being shifted out,
-                    // and we need to recompute the maximum for the graph
-                    // bounds
-                    m_MustRecomputeMaxPointValue = true;
-                }
+                maxValueDropped = Math.Max(maxValueDropped, m_MaxPointValues.LeastRecent);
                 m_MaxPointValues.PushBack(0);
             }
+
+            var firstNewPointIndex = graphWidthPoints - pointsToAdvance;
+            foreach (var stat in stats)
+            {
+                var pointValues = sampler.PointValues[stat];
+                // Account for the new values received
+                for (var pointIndex = firstNewPointIndex; pointIndex < graphWidthPoints; ++pointIndex)
+                {
+                    var pointValue = pointValues[pointIndex];
+                    m_MaxPointValues[pointIndex] = Math.Max(pointValues[pointIndex], pointValue);
+                    m_MaxPointValue = Math.Max(m_MaxPointValue, pointValue);
+                }
+            }
+
+            if (maxValueDropped >= m_MaxPointValue)
+            {
+                m_MustRecomputeMaxPointValue = true;
+            }
+
             if (m_MustRecomputeMaxPointValue)
             {
                 m_MaxPointValue = m_MaxPointValues.Max();

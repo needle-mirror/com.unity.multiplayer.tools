@@ -125,7 +125,7 @@ namespace Unity.Multiplayer.Tools.NetStatsMonitor
             ? ContinuousExponentialMovingAverage.GetDecayConstantForHalfLife(HalfLife.Value)
             : null;
 
-        public void OnValidate()
+        internal void OnValidate()
         {
             RefreshGenerateLabel();
             ValidateColors();

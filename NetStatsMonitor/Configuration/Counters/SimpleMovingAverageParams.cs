@@ -13,23 +13,28 @@ namespace Unity.Multiplayer.Tools.NetStatsMonitor
         /// The number of samples that are maintained for the purpose of smoothing.
         /// </summary>
         /// <remarks>
-        /// If the value is out of the range [0, 4096], it will be clamped to the
-        /// nearest value.
+        /// The value is clamped to the range [8, 4096].
         /// </remarks>
         [field: SerializeField]
         [field: Min(1)]
         [field: Tooltip("The number of samples that are maintained for the purpose of smoothing." +
-                        "If the value is out of the range [0, 4096], it will be clamped to the nearest value.")]
+                        "The value is clamped to the range [8, 4096].")]
         [field: Range(ConfigurationLimits.k_CounterSampleMin, ConfigurationLimits.k_CounterSampleMax)]
         int m_SampleCount = 64;
-        
+
+        /// <summary>
+        /// The number of samples that are maintained for the purpose of smoothing.
+        /// </summary>
+        /// <remarks>
+        /// The value is clamped to the range [8, 4096].
+        /// </remarks>
         public int SampleCount
         {
-            get => m_SampleCount; 
+            get => m_SampleCount;
             set => m_SampleCount = Mathf.Clamp(
                 value,
                 ConfigurationLimits.k_CounterSampleMin,
-                ConfigurationLimits.k_CounterSampleMax); 
+                ConfigurationLimits.k_CounterSampleMax);
         }
 
         internal int ComputeHashCode()

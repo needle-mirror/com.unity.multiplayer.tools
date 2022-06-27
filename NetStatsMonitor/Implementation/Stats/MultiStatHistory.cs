@@ -78,7 +78,15 @@ namespace Unity.Multiplayer.Tools.NetStatsMonitor.Implementation
                     m_Data[statName] = new StatHistory(statRequirements);
                 }
             }
-            TimeStamps.Capacity = maxSampleCount;
+
+            // Include a surplus of one timestamp so that the duration of the oldest sample
+            // can still be computed
+            const int k_TimeStampSurplus = 1;
+            TimeStamps.Capacity = maxSampleCount + k_TimeStampSurplus;
+            for (int i = 0; i < k_TimeStampSurplus; ++i)
+            {
+                TimeStamps.PushBack(0);
+            }
         }
 
         internal double? GetSimpleMovingAverageForCounter(MetricId metricId, int maxSampleCount, double time)

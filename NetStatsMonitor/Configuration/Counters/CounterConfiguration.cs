@@ -29,14 +29,17 @@ namespace Unity.Multiplayer.Tools.NetStatsMonitor
         [field: Range(ConfigurationLimits.k_CounterSignificantDigitsMin, ConfigurationLimits.k_CounterSignificantDigitsMax)]
         [field: Tooltip("The number of significant digits to display for this counter.")]
         int m_SignificantDigits = 3;
-        
+
+        /// <summary>
+        /// The number of significant digits to display for this counter.
+        /// </summary>
         public int SignificantDigits
         {
             get => m_SignificantDigits;
             set => m_SignificantDigits = Mathf.Clamp(
                 value,
                 ConfigurationLimits.k_CounterSignificantDigitsMin,
-                ConfigurationLimits.k_CounterSignificantDigitsMax); 
+                ConfigurationLimits.k_CounterSignificantDigitsMax);
         }
 
         /// <summary>

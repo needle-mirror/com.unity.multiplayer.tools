@@ -4,6 +4,11 @@ All notable changes to this package will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
+## [1.0.0] - 2022-06-27
+
+### *Runtime Net Stats Monitor*
+- Doc-comment fixes based on 1.0 release XML doc validation 
+
 ## [1.0.0-pre.8] - 2022-06-15
 
 ### *Runtime Net Stats Monitor*

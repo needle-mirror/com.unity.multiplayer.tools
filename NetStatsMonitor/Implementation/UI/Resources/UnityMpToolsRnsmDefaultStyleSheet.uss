@@ -74,6 +74,12 @@
     padding-top: 0px;
     padding-bottom: 1px;
     min-height: 64px;
+    /* Setting both the min and the max provides stronger guarantees on the width */
+    /* than just setting `width`. This is important for graphs, as frequent small */
+    /* changes in the size of the graph can result in frequent reallocations of */
+    /* the graphs buffers (the size of which depends on the size of the graph) */
+    min-width: 196px;
+    max-width: 196px;
 }
 
 .rnsm-graph-axis Label {
@@ -105,7 +111,7 @@
 }
 
 .rnsm-graph-y-axis Label {
-    min-width: 41px;
+    min-width: 45px;
     margin-top: var(--axis-label-spacing);
     margin-bottom: var(--axis-label-spacing);
     margin-right: var(--axis-label-spacing);

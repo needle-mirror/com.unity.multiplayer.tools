@@ -21,8 +21,10 @@ namespace Unity.Multiplayer.Tools.NetStatsMonitor
         [field: SerializeField]
         public bool OverridePosition { get; set; } = true;
 
+        /// <summary>
         /// The position of the Net Stats Monitor from left to right in the range from 0 to 1.
         /// 0 is flush left, 0.5 is centered, and 1 is flush right.
+        /// </summary>
         public float PositionLeftToRight
         {
             get => m_PositionLeftToRight;
@@ -43,8 +45,10 @@ namespace Unity.Multiplayer.Tools.NetStatsMonitor
         [SerializeField]
         float m_PositionLeftToRight;
 
+        /// <summary>
         /// The position of the Net Stats Monitor from top to bottom in the range from 0 to 1.
         /// 0 is flush to the top, 0.5 is centered, and 1 is flush to the bottom.
+        /// </summary>
         public float PositionTopToBottom
         {
             get => m_PositionTopToBottom;

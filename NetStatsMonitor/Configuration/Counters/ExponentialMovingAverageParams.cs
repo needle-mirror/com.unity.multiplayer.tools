@@ -17,6 +17,10 @@ namespace Unity.Multiplayer.Tools.NetStatsMonitor
         [field: Min((float)ConfigurationLimits.k_ExponentialMovingAverageHalfLifeMin)]
         double m_HalfLife = 1;
 
+        /// <summary>
+        /// The half-life (in seconds) by which samples should decay.
+        /// By default, this is set to one second.
+        /// </summary>
         public double HalfLife
         {
             get => m_HalfLife;

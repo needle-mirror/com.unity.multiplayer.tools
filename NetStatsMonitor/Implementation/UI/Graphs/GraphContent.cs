@@ -19,11 +19,14 @@ using Unity.Multiplayer.Tools.NetStats;
 
 namespace Unity.Multiplayer.Tools.NetStatsMonitor.Implementation
 {
-    internal class GraphContent : VisualElement
+    class GraphContent : VisualElement
     {
         GraphParameters m_GraphParams;
-        readonly GraphBuffers m_Buffers = new();
         Color[] m_VariableColors;
+
+        readonly GraphBuffers m_Buffers = new();
+        readonly GraphInputSynchronizer m_InputSynchronizer = new();
+        readonly GraphDataSampler m_DataSampler = new();
         IGraphRenderer m_Renderer;
 
         public GraphContent()
@@ -54,6 +57,8 @@ namespace Unity.Multiplayer.Tools.NetStatsMonitor.Implementation
                     }
                     break;
             }
+
+            m_DataSampler.UpdateConfiguration(config.Stats);
             m_Renderer.UpdateConfiguration(config);
         }
 
@@ -74,20 +79,37 @@ namespace Unity.Multiplayer.Tools.NetStatsMonitor.Implementation
                 return new();
             }
 
-            var newBufferParam = new GraphBufferParameters(
+            var bufferParams = new GraphBufferParameters(
                 m_GraphParams,
                 graphWidth,
                 m_Renderer.MaxPointsPerPixel);
 
-            // We need to do this each time we draw, as even if the configuration hasn't changed,
-            // the contentRect may have
-            m_Buffers.UpdateIfNeeded(newBufferParam, m_VariableColors);
+            var graphWidthSamples = m_GraphParams.SamplesPerStat;
+            var graphWidthPoints = bufferParams.GraphWidthPoints;
+            var graphSamplesPerPoint = ((float)graphWidthSamples) / graphWidthPoints;
+            var pointsToAdvance = m_InputSynchronizer.ComputeNumberOfPointsToAdvance(
+                history.TimeStamps,
+                graphSamplesPerPoint);
 
-            var minAndMaxPlotValue = m_Renderer.UpdateVertices(
+            m_DataSampler.ResizeBuffersIfNeeded(bufferParams);
+            m_DataSampler.SampleNewPoints(
                 history,
                 stats,
-                minPlotValue,
-                maxPlotValue,
+                graphWidthPoints: graphWidthPoints,
+                graphWidthSamples: graphWidthSamples,
+                graphSamplesPerPoint: graphSamplesPerPoint,
+                pointsToAdvance: pointsToAdvance);
+
+            // We need to do this each time we draw, as even if the configuration hasn't changed,
+            // the contentRect may have
+            m_Buffers.UpdateIfNeeded(bufferParams, m_VariableColors);
+
+            var minAndMaxPlotValue = m_Renderer.UpdateVertices(
+                stats,
+                m_DataSampler,
+                pointsToAdvance: pointsToAdvance,
+                yAxisMin: minPlotValue,
+                yAxisMax: maxPlotValue,
                 m_GraphParams,
                 m_Buffers.Parameters,
                 renderBoundsXMin: graphContentRect.xMin,

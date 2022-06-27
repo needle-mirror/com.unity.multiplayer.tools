@@ -1,7 +1,7 @@
 {
   "name": "com.unity.multiplayer.tools",
   "displayName": "Multiplayer Tools",
-  "version": "1.0.0-pre.8",
+  "version": "1.0.0",
   "unity": "2020.3",
   "description": "Adds a suite of tools that improve workflows for multiplayer development",
   "dependencies": {
@@ -21,12 +21,12 @@
   "repository": {
     "url": "https://github.com/Unity-Technologies/com.unity.multiplayer.tools.git",
     "type": "git",
-    "revision": "bd02ac4b1799b3c071ceecb19b4478612b97ecff"
+    "revision": "3928615cbda6dd5201995c76b9ee68af8cd0f73a"
   },
   "_upm": {
-    "changelog": "### *Runtime Net Stats Monitor*\n- Clamping numerical values to acceptable limits for public APIs\n- Improve generated counter labels\n- Prevent an exception when there's only one sample\n- Added spacing between divider graph and axis number alignment\n- Reusing existing numerical labels when the value doesn't change or barely changed\n- Fix incorrect values for gauges in counter display elements using SMA\n- Ensure RNSM counters display 1 rather than 1,000 milli\n- Use infinity rather than float.Min for counter config bounds\n- Reduce vertices in graphs with large sample count"
+    "changelog": "### *Runtime Net Stats Monitor*\n- Doc-comment fixes based on 1.0 release XML doc validation"
   },
   "upmCi": {
-    "footprint": "91683c23a73e75e69eb0208907fb82e879ce9e61"
+    "footprint": "f55e2a03ff173609fa08c15d8171ff31efadb231"
   }
 }

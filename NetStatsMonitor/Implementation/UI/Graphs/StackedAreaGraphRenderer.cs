@@ -31,7 +31,6 @@ namespace Unity.Multiplayer.Tools.NetStatsMonitor.Implementation
         /// any per-frame allocations
         RingBuffer<float> m_PointSums;
 
-        readonly GraphInputSynchronizer m_InputSynchronizer = new();
         GraphBoundsTransformer m_BoundsTransformer;
 
         float m_PointValueMax;
@@ -52,8 +51,9 @@ namespace Unity.Multiplayer.Tools.NetStatsMonitor.Implementation
         }
 
         public MinAndMax UpdateVertices(
-            MultiStatHistory history,
             List<MetricId> stats,
+            GraphDataSampler dataSampler,
+            int pointsToAdvance,
             float yAxisMin,
             float yAxisMax,
             in GraphParameters graphParams,
@@ -77,10 +77,6 @@ namespace Unity.Multiplayer.Tools.NetStatsMonitor.Implementation
             var graphWidthSamples = graphParams.SamplesPerStat;
             var graphSamplesPerPoint = ((float)graphWidthSamples) / pointsPerStat;
             var graphPointsPerSample = 1 / graphSamplesPerPoint;
-
-            var pointsToAdvance = m_InputSynchronizer.ComputeNumberOfPointsToAdvance(
-                history.TimeStamps,
-                graphSamplesPerPoint);
 
             m_BoundsTransformer ??= new GraphBoundsTransformer(
                 renderBoundsXMin, renderBoundsXMax, renderBoundsYMin, renderBoundsYMax,
@@ -110,12 +106,8 @@ namespace Unity.Multiplayer.Tools.NetStatsMonitor.Implementation
             for (var statIndex = 0; statIndex < statCount; ++statIndex)
             {
                 var statId = stats[statIndex];
-                var statData = history.Data[statId].RecentValues;
+                var pointValues = dataSampler.PointValues[statId];
                 var statVerticesBegin = statIndex * verticesPerStat;
-
-                // The actual number of samples available for this stat, which may be
-                // more or less than the number of samples shown on the graph
-                var sampleCount = statData.Length;
 
                 ShiftExistingGeometryAndRescaleIfNeeded(
                     vertices: vertices,
@@ -133,13 +125,10 @@ namespace Unity.Multiplayer.Tools.NetStatsMonitor.Implementation
                     renderBoundsXMin: renderBoundsXMin,
                     renderBoundsYMin: renderBoundsYMin,
                     pointsPerStat: pointsPerStat,
-                    graphWidthSamples: graphWidthSamples,
-                    graphSamplesPerPoint: graphSamplesPerPoint,
-                    graphPointsPerSample: graphPointsPerSample,
                     xScale: xScale,
                     yScale: yScale,
                     pointsToCopy: pointsToCopy,
-                    statData: statData
+                    pointValues: pointValues
                 );
             }
 
@@ -271,38 +260,16 @@ namespace Unity.Multiplayer.Tools.NetStatsMonitor.Implementation
             float renderBoundsYMin,
 
             int pointsPerStat,
-            int graphWidthSamples,
-            float graphSamplesPerPoint,
-            float graphPointsPerSample,
 
             float xScale,
             float yScale,
 
             int pointsToCopy,
-            RingBuffer<float> statData)
+            RingBuffer<float> pointValues)
         {
-            var sampleCount = statData.Length;
-
-            // pointZeroSampleIndex is the sample index corresponding to the zeroth point
-            // 1. It will be positive if there are excess samples outside the graph that will be skipped
-            // 2. It will be negative if there are not enough samples to fill the graph
-            // 3. It will be zero if there are exactly the right number of samples to fill the graph
-            var pointZeroSampleIndex = sampleCount - graphWidthSamples;
-
-            // SampleIndex is the index of the first sample corresponding to this point, and may be negative.
-            // It is a float because the ratio of samples to points may be fractional.
-            var sampleIndex = pointZeroSampleIndex + pointsToCopy * graphSamplesPerPoint;
-            var lastReadSample = 0f; // Avoid some accesses by remembering the most recently read value
-            var fractionOfPreviousSample = 0f; // Avoid recomputing by saving this from the end of the previous iteration
             for (var pointIndex = pointsToCopy; pointIndex < pointsPerStat; ++pointIndex)
             {
-                var pointValue = GraphDataSampler.SamplePointAndAdvance(
-                    graphSamplesPerPoint: graphSamplesPerPoint,
-                    sampleCount: sampleCount,
-                    statData: statData,
-                    sampleIndex: ref sampleIndex,
-                    lastReadSample: ref lastReadSample,
-                    fractionOfPreviousSample: ref fractionOfPreviousSample);
+                var pointValue = pointValues[pointIndex];
 
                 var prevSum = m_PointSums[pointIndex];
                 var nextSumUnclamped = prevSum + pointValue;
