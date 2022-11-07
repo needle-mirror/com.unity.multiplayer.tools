@@ -6,45 +6,17 @@ using UnityEngine.UIElements;
 
 namespace Unity.Multiplayer.Tools.NetStatsMonitor.Editor
 {
-    internal static class CustomInspectorUtils
+    static class CustomInspectorUtils
     {
-        internal static (SerializedProperty, PropertyField) CreatePropertyAndFieldRelative(
-            this SerializedProperty parentProperty,
-            string fieldName)
-        {
-            var property = parentProperty.FindPropertyRelative(fieldName);
-            var field = new PropertyField(property);
-            return (property, field);
-        }
-
         internal static (SerializedProperty, PropertyField) AddFieldForProperty(
             this VisualElement parentVisualElement,
             SerializedProperty parentProperty,
             string fieldName)
         {
-            var (property, field) = parentProperty.CreatePropertyAndFieldRelative(fieldName);
+            var property = parentProperty.FindPropertyRelative(fieldName);
+            var field = new PropertyField(property);
             parentVisualElement.Add(field);
             return (property, field);
-        }
-
-        internal static void AddOrRemovePropertyField(
-            this VisualElement parent,
-            SerializedProperty property,
-            PropertyField field,
-            bool parentShouldContainChild)
-        {
-            if (parentShouldContainChild != parent.Contains(field))
-            {
-                if (parentShouldContainChild)
-                {
-                    parent.Add(field);
-                    field.BindProperty(property);
-                }
-                else
-                {
-                    parent.Remove(field);
-                }
-            }
         }
 
         /// <summary>

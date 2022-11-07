@@ -2,7 +2,7 @@ using NUnit.Framework;
 
 namespace Unity.Multiplayer.Tools.NetStatsMonitor.Tests.Interface.Configuration
 {
-    public class CounterConfigurationTests
+    class CounterConfigurationTests
     {
         private CounterConfiguration m_CounterConfiguration = new();
         

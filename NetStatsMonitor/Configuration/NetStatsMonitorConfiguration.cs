@@ -1,8 +1,6 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
-using Unity.Multiplayer.Tools.MetricTypes;
-using Unity.Multiplayer.Tools.NetStats;
 
 namespace Unity.Multiplayer.Tools.NetStatsMonitor
 {

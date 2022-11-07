@@ -3,7 +3,7 @@ using UnityEngine.UIElements;
 
 namespace Unity.Multiplayer.Tools.NetStatsMonitor.Tests.Interface
 {
-    public static class RnsmHelper
+    static class RnsmHelper
     {
         public static RuntimeNetStatsMonitor CreateRnsm(
             NetStatsMonitorConfiguration netStatsMonitorConfiguration = null,

@@ -3,7 +3,7 @@ using Unity.Multiplayer.Tools.NetStatsMonitor.Implementation;
 
 namespace Unity.Multiplayer.Tools.NetStatsMonitor.Tests.Stats
 {
-    public class StatHistoryRequirementsTests
+    class StatHistoryRequirementsTests
     {
         [Test]
         public void ExponentialMovingAverageParamsSetDoesNotContainDuplicates()

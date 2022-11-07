@@ -1,5 +1,6 @@
 using System.Linq;
 using System.Reflection;
+using Unity.Multiplayer.Tools.Common;
 using UnityEditor;
 using UnityEditor.UIElements;
 using UnityEngine.UIElements;
@@ -65,27 +66,14 @@ namespace Unity.Multiplayer.Tools.NetStatsMonitor.Editor
             Content.AddFieldForProperty(configurationProp, k_HighlightLowerBoundFieldName);
             Content.AddFieldForProperty(configurationProp, k_HighlightUpperBoundFieldName);
 
-            var (emaProp, emaField) =
-                configurationProp.CreatePropertyAndFieldRelative(k_ExponentialMovingAverageFieldName);
-            var (smaProp, smaField) =
-                configurationProp.CreatePropertyAndFieldRelative(k_SimpleMovingAverageFieldName);
+            var (_, emaField) = Content.AddFieldForProperty(configurationProp, k_ExponentialMovingAverageFieldName);
+            var (_, smaField) = Content.AddFieldForProperty(configurationProp, k_SimpleMovingAverageFieldName);
 
             void UpdateFieldVisibility()
             {
                 var smoothingMethod = (SmoothingMethod)smoothingMethodProp.enumValueIndex;
-
-                var emaParamsVisible = smoothingMethod == SmoothingMethod.ExponentialMovingAverage;
-                var smaParamsVisible = smoothingMethod == SmoothingMethod.SimpleMovingAverage;
-
-                Content.AddOrRemovePropertyField(
-                    emaProp,
-                    emaField,
-                    emaParamsVisible);
-
-                Content.AddOrRemovePropertyField(
-                    smaProp,
-                    smaField,
-                    smaParamsVisible);
+                emaField.SetInclude(smoothingMethod == SmoothingMethod.ExponentialMovingAverage);
+                smaField.SetInclude(smoothingMethod == SmoothingMethod.SimpleMovingAverage);
             }
 
             UpdateFieldVisibility();

@@ -4,11 +4,9 @@
     "references": [
         "Unity.Collections",
         "Unity.Multiplayer.Tools.Common",
-        "Unity.Multiplayer.Tools.NetworkProfiler.Runtime",
-        "Unity.Multiplayer.Tools.NetStats",
         "Unity.Multiplayer.Tools.MetricTypes",
-        "Unity.Multiplayer.Tools.NetStatsMonitor.Component",
-        "Unity.Multiplayer.Tools.NetStatsMonitor.Implementation"
+        "Unity.Multiplayer.Tools.MetricEvents",
+        "Unity.Multiplayer.Tools.NetStats"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

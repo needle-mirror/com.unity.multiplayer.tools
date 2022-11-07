@@ -21,15 +21,27 @@ namespace Unity.Multiplayer.Tools.NetStatsMonitor.Implementation
 {
     class GraphVisualElement : VisualElement
     {
+        // Fields from configuration
+        // --------------------------------------------------------------------
         List<MetricId> m_Stats;
         int m_SampleCount;
+        public SampleRate SampleRate { get; private set; }
+
         GraphXAxisType m_XAxisType = GraphXAxisType.Samples;
+
+        // Fields computed from configuration
+        // --------------------------------------------------------------------
         BaseUnits m_YAxisUnits;
         bool m_YAxisDisplayAsPercentage;
+
+        // Runtime data
+        // --------------------------------------------------------------------
         MinAndMax m_PlotRange;
         MinAndMax m_LastYValues;
         double m_LastTimeSpan = Single.MinValue;
 
+        // Visual element children
+        // --------------------------------------------------------------------
         readonly Label m_Label = new();
 
         readonly VisualElement m_GraphAndYAxis = new();
@@ -76,10 +88,8 @@ namespace Unity.Multiplayer.Tools.NetStatsMonitor.Implementation
             var details = config.GraphConfiguration;
 
             m_Stats = new List<MetricId>(config.Stats);
-            m_SampleCount = Math.Clamp(details.SampleCount,
-                                       ConfigurationLimits.k_GraphSampleMin,
-                                       ConfigurationLimits.k_GraphSampleMax);
-
+            m_SampleCount = details.SampleCount;
+            SampleRate = details.SampleRate;
 
             m_XAxisType = details.XAxisType;
 
@@ -143,13 +153,13 @@ namespace Unity.Multiplayer.Tools.NetStatsMonitor.Implementation
             m_LastYValues.Min = minPlotValue;
             m_LastYValues.Max = maxPlotValue;
 
-            m_PlotRange = m_Content.UpdateDisplayData(history, m_Stats, minPlotValue, maxPlotValue);
+            m_PlotRange = m_Content.UpdateDisplayData(history, m_Stats, SampleRate, minPlotValue, maxPlotValue);
 
             m_YAxisLabels.SetLabels(yAxisMinLabel, yAxisMaxLabel);
 
             if (m_XAxisType == GraphXAxisType.Time)
             {
-                var timeSpan = history.TimeSpanOfLastNSamples(m_SampleCount);
+                var timeSpan = history.TimeSpanOfLastNSamples(SampleRate, m_SampleCount);
                 if (!NumericUtils.Approximately(timeSpan, m_LastTimeSpan, 1E-3))
                 {
                     m_LastTimeSpan = timeSpan;

@@ -1,5 +1,6 @@
 using System.Linq;
 using System.Reflection;
+using Unity.Multiplayer.Tools.Common;
 using UnityEditor;
 using UnityEditor.UIElements;
 using UnityEngine.UIElements;
@@ -7,7 +8,7 @@ using UnityEngine.UIElements;
 namespace Unity.Multiplayer.Tools.NetStatsMonitor.Editor
 {
     [CustomPropertyDrawer(typeof(PositionConfiguration))]
-    internal class PositionConfigurationDrawer : PropertyDrawer
+    class PositionConfigurationDrawer : PropertyDrawer
     {
         public override bool CanCacheInspectorGUI(SerializedProperty property)
         {
@@ -52,15 +53,14 @@ namespace Unity.Multiplayer.Tools.NetStatsMonitor.Editor
 
             var (overrideProp, overrideField) = Content.AddFieldForProperty(property, k_OverrideFieldName);
 
-            var (posLeftProp, posLeftField) = property.CreatePropertyAndFieldRelative(k_PositionLeftFieldName);
-            var (posTopProp, posTopField) = property.CreatePropertyAndFieldRelative(k_PositionTopFieldName);
+            var (_, posLeftField) = Content.AddFieldForProperty(property, k_PositionLeftFieldName);
+            var (_, posTopField)  = Content.AddFieldForProperty(property, k_PositionTopFieldName);
 
             void UpdateFieldVisibility()
             {
                 var overrideEnabled = overrideProp.boolValue;
-
-                Content.AddOrRemovePropertyField(posLeftProp, posLeftField, overrideEnabled);
-                Content.AddOrRemovePropertyField(posTopProp, posTopField, overrideEnabled);
+                posLeftField.SetInclude(overrideEnabled);
+                posTopField.SetInclude(overrideEnabled);
             }
 
             UpdateFieldVisibility();

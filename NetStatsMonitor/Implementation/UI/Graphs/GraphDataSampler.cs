@@ -68,6 +68,7 @@ namespace Unity.Multiplayer.Tools.NetStatsMonitor.Implementation
         public void SampleNewPoints(
             MultiStatHistory history,
             List<MetricId> stats,
+            SampleRate rate,
             int graphWidthPoints,
             int graphWidthSamples,
             float graphSamplesPerPoint,
@@ -77,10 +78,10 @@ namespace Unity.Multiplayer.Tools.NetStatsMonitor.Implementation
             {
                 return;
             }
-            var timeStamps = history.TimeStamps;
+            var timeStamps = history.TimeStamps[rate];
             foreach (var stat in stats)
             {
-                var statData = history.Data[stat].RecentValues;
+                var statData = history.Data[stat].SampleBuffers[rate];
 
                 var sampleCount = statData.Length;
 

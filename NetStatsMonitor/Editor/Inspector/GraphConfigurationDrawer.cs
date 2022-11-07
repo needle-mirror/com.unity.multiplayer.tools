@@ -1,14 +1,14 @@
 using System.Linq;
 using System.Reflection;
+using Unity.Multiplayer.Tools.Common;
 using UnityEditor;
-using UnityEditor.Graphs;
 using UnityEditor.UIElements;
 using UnityEngine.UIElements;
 
 namespace Unity.Multiplayer.Tools.NetStatsMonitor.Editor
 {
     [CustomPropertyDrawer(typeof(GraphConfiguration))]
-    internal class GraphConfigurationDrawer : PropertyDrawer
+    class GraphConfigurationDrawer : PropertyDrawer
     {
         public override bool CanCacheInspectorGUI(SerializedProperty property)
         {
@@ -24,6 +24,7 @@ namespace Unity.Multiplayer.Tools.NetStatsMonitor.Editor
     class GraphConfigurationInspector : VisualElement
     {
         static readonly string k_SampleCountFieldName;
+        static readonly string k_SampleRateFieldName;
         static readonly string k_XAxisTypeFieldName;
         static readonly string k_VariableColorsFieldName;
         static readonly string k_LineGraphConfigurationFieldName;
@@ -37,6 +38,7 @@ namespace Unity.Multiplayer.Tools.NetStatsMonitor.Editor
                 => fields.First(field => field.Name.Contains(propertyName)).Name;
 
             k_SampleCountFieldName = GetFieldName(nameof(GraphConfiguration.SampleCount));
+            k_SampleRateFieldName = GetFieldName(nameof(GraphConfiguration.SampleRate));
             k_XAxisTypeFieldName = GetFieldName(nameof(GraphConfiguration.XAxisType));
             k_VariableColorsFieldName = GetFieldName(nameof(GraphConfiguration.VariableColors));
             k_LineGraphConfigurationFieldName = GetFieldName(nameof(GraphConfiguration.LineGraphConfiguration));
@@ -48,30 +50,18 @@ namespace Unity.Multiplayer.Tools.NetStatsMonitor.Editor
         readonly SerializedProperty m_LineGraphProp;
         readonly PropertyField m_LineGraphField;
 
-        internal GraphConfigurationInspector(
-            SerializedProperty configurationProp,
-            PropertyField typeField = null)
+        internal GraphConfigurationInspector(SerializedProperty configurationProp)
         {
             m_Foldout = new Foldout();
             m_Foldout.text = configurationProp.displayName;
             Add(m_Foldout);
 
-
-            var help = new HelpBox(ConfigurationLimits.k_GraphMaxSampleWarningMessage, HelpBoxMessageType.Warning);
-            Content.Add(help);
-
-            var (samplesProperty, samplesField) = Content.AddFieldForProperty(configurationProp, k_SampleCountFieldName);
-            samplesField.RegisterValueChangeCallback(_ =>
-            {
-                help.style.display = GetWarningBoxDisplayStyle(samplesProperty.intValue);
-            });
-            help.style.display = GetWarningBoxDisplayStyle(samplesProperty.intValue);
-
+            Content.AddFieldForProperty(configurationProp, k_SampleCountFieldName);
+            Content.AddFieldForProperty(configurationProp, k_SampleRateFieldName);
             Content.AddFieldForProperty(configurationProp, k_XAxisTypeFieldName);
             Content.AddFieldForProperty(configurationProp, k_VariableColorsFieldName);
 
-            (m_LineGraphProp, m_LineGraphField) =
-                configurationProp.CreatePropertyAndFieldRelative(k_LineGraphConfigurationFieldName);
+            (_, m_LineGraphField) = Content.AddFieldForProperty(configurationProp, k_LineGraphConfigurationFieldName);
 
             var displayElementType = (DisplayElementType)configurationProp
                 .GetParent()
@@ -82,13 +72,7 @@ namespace Unity.Multiplayer.Tools.NetStatsMonitor.Editor
 
         public void OnTypeChanged(DisplayElementType type)
         {
-            var lineGraphOptionsVisible = type == DisplayElementType.LineGraph;
-            Content.AddOrRemovePropertyField(m_LineGraphProp, m_LineGraphField, lineGraphOptionsVisible);
-        }
-
-        DisplayStyle GetWarningBoxDisplayStyle(int value)
-        {
-            return ConfigurationLimits.k_GraphSampleMax < value ? DisplayStyle.Flex : DisplayStyle.None;
+            m_LineGraphField.SetInclude(type == DisplayElementType.LineGraph);
         }
     }
 }

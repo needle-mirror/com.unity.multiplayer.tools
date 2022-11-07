@@ -1,5 +1,6 @@
 using System.Linq;
 using System.Reflection;
+using Unity.Multiplayer.Tools.Common;
 using UnityEditor;
 using UnityEditor.UIElements;
 using UnityEngine.UIElements;
@@ -7,7 +8,7 @@ using UnityEngine.UIElements;
 namespace Unity.Multiplayer.Tools.NetStatsMonitor.Editor
 {
     [CustomPropertyDrawer(typeof(DisplayElementConfiguration))]
-    internal class DisplayElementConfigurationDrawer : PropertyDrawer
+    class DisplayElementConfigurationDrawer : PropertyDrawer
     {
         public override bool CanCacheInspectorGUI(SerializedProperty property)
         {
@@ -49,9 +50,7 @@ namespace Unity.Multiplayer.Tools.NetStatsMonitor.Editor
         int m_DisplayElementConfigurationCount;
 
         PropertyField m_LabelField;
-        SerializedProperty m_CounterProperty;
         PropertyField m_CounterField;
-        SerializedProperty m_GraphProperty;
         PropertyField m_GraphField;
 
         internal DisplayElementConfigurationInspector(SerializedProperty configurationProp)
@@ -68,8 +67,8 @@ namespace Unity.Multiplayer.Tools.NetStatsMonitor.Editor
             (_, m_LabelField) = Content.AddFieldForProperty(configurationProp, k_LabelFieldName);
             Content.AddFieldForProperty(configurationProp, k_StatsFieldName);
 
-            (m_CounterProperty, m_CounterField) = configurationProp.CreatePropertyAndFieldRelative(k_CounterFieldName);
-            (m_GraphProperty, m_GraphField) = configurationProp.CreatePropertyAndFieldRelative(k_GraphFieldName);
+            (_, m_CounterField) = Content.AddFieldForProperty(configurationProp, k_CounterFieldName);
+            (_, m_GraphField) = Content.AddFieldForProperty(configurationProp, k_GraphFieldName);
 
             OnTypeChanged(typeProp);
             typeField.RegisterValueChangeCallback(evt =>
@@ -111,8 +110,8 @@ namespace Unity.Multiplayer.Tools.NetStatsMonitor.Editor
             // is optional for graphs. A default of null will provide the default label for the Label field.
             m_LabelField.label = "Label" + (graphVisible ? " (Optional)" : "");
 
-            Content.AddOrRemovePropertyField(m_CounterProperty, m_CounterField, counterVisible);
-            Content.AddOrRemovePropertyField(m_GraphProperty, m_GraphField, graphVisible);
+            m_CounterField.SetInclude(counterVisible);
+            m_GraphField.SetInclude(graphVisible);
 
             if (graphVisible)
             {

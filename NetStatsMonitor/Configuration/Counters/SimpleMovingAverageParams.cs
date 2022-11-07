@@ -37,9 +37,27 @@ namespace Unity.Multiplayer.Tools.NetStatsMonitor
                 ConfigurationLimits.k_CounterSampleMax);
         }
 
+        /// <summary>
+        /// The sample rate of the Simple Moving Average counter.
+        /// </summary>
+        /// <remarks>
+        /// If the sample rate is <see cref="F:Unity.Multiplayer.Tools.NetStatsMonitor.SampleRate.PerSecond"/>
+        /// then each sample in the counter is collected over a full second, whereas
+        /// if the sample rate is <see cref="F:Unity.Multiplayer.Tools.NetStatsMonitor.SampleRate.PerFrame"/>
+        /// then each sample in the counter is collected during a single frame.
+        /// </remarks>
+        [field: SerializeField]
+        [Tooltip(
+            "The sample rate of the counter. " +
+            "If the sample rate is Per Second " +
+            "then each sample in the counter is collected over a full second, whereas " +
+            "if the sample rate is Per Frame " +
+            "then each sample in the counter is collected during a single frame.")]
+        public SampleRate SampleRate { get; set; } = SampleRate.PerFrame;
+
         internal int ComputeHashCode()
         {
-            return SampleCount;
+            return HashCode.Combine(SampleCount, SampleRate);
         }
     }
 }

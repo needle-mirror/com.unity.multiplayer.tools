@@ -10,18 +10,46 @@ namespace Unity.Multiplayer.Tools.Editor
             // Value is negated here because the define symbol itself is phrased in the negative.
             // The define symbol is phrased in the negative so that the absence of a define symbol
             // provides the correct default: that the RNSM is enabled in develop.
-            get => !NetStatsMonitorBuildSettings.GetSymbolInAllBuildTargets(
-                NetStatsMonitorBuildSymbol.DisableInDevelop);
-            set => NetStatsMonitorBuildSettings.SetSymbolForAllBuildTargets(
-                NetStatsMonitorBuildSymbol.DisableInDevelop, !value);
+            get => !BuildSettings.GetSymbolInAllBuildTargets(
+                Tool.RuntimeNetStatsMonitor,
+                BuildSymbol.DisableInDevelop);
+            set => BuildSettings.SetSymbolForAllBuildTargets(
+                Tool.RuntimeNetStatsMonitor,
+                BuildSymbol.DisableInDevelop,
+                !value);
         }
 
         public bool NetStatsMonitorEnabledInRelease
         {
-            get => NetStatsMonitorBuildSettings.GetSymbolInAllBuildTargets(
-                NetStatsMonitorBuildSymbol.EnableInRelease);
-            set => NetStatsMonitorBuildSettings.SetSymbolForAllBuildTargets(
-                NetStatsMonitorBuildSymbol.EnableInRelease, value);
+            get => BuildSettings.GetSymbolInAllBuildTargets(
+                Tool.RuntimeNetStatsMonitor,
+                BuildSymbol.EnableInRelease);
+            set => BuildSettings.SetSymbolForAllBuildTargets(
+                Tool.RuntimeNetStatsMonitor,
+                BuildSymbol.EnableInRelease,
+                value);
+        }
+
+        public bool NetworkSimulatorEnabledInDevelop
+        {
+            get => !BuildSettings.GetSymbolInAllBuildTargets(
+                Tool.NetworkSimulator,
+                BuildSymbol.DisableInDevelop);
+            set => BuildSettings.SetSymbolForAllBuildTargets(
+                Tool.NetworkSimulator,
+                BuildSymbol.DisableInDevelop,
+                !value);
+        }
+
+        public bool NetworkSimulatorEnabledInRelease
+        {
+            get => BuildSettings.GetSymbolInAllBuildTargets(
+                Tool.NetworkSimulator,
+                BuildSymbol.EnableInRelease);
+            set => BuildSettings.SetSymbolForAllBuildTargets(
+                Tool.NetworkSimulator,
+                BuildSymbol.EnableInRelease,
+                value);
         }
     }
 }

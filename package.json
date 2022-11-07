@@ -1,7 +1,7 @@
 {
   "name": "com.unity.multiplayer.tools",
   "displayName": "Multiplayer Tools",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "unity": "2020.3",
   "description": "Adds a suite of tools that improve workflows for multiplayer development",
   "dependencies": {
@@ -18,15 +18,22 @@
     "Tools"
   ],
   "type": "tool",
+  "samples": [
+    {
+      "displayName": "Network Scenario Samples",
+      "description": "Samples showcasing the different ways of building custom network simulator scenarios.",
+      "path": "Samples~/NetworkSimulator"
+    }
+  ],
+  "relatedPackages": {
+    "com.unity.multiplayer.tools.tests": "1.1.0"
+  },
+  "upmCi": {
+    "footprint": "e658d3ad3487f792d253b3a7f97bb456a482766c"
+  },
   "repository": {
     "url": "https://github.com/Unity-Technologies/com.unity.multiplayer.tools.git",
     "type": "git",
-    "revision": "3928615cbda6dd5201995c76b9ee68af8cd0f73a"
-  },
-  "_upm": {
-    "changelog": "### *Runtime Net Stats Monitor*\n- Doc-comment fixes based on 1.0 release XML doc validation"
-  },
-  "upmCi": {
-    "footprint": "f55e2a03ff173609fa08c15d8171ff31efadb231"
+    "revision": "3ac1c04a8a9f6bd7a75572380019c0661b7d0f2c"
   }
 }

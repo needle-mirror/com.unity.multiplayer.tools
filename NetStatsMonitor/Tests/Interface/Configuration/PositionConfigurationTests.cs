@@ -3,10 +3,10 @@ using UnityEngine;
 
 namespace Unity.Multiplayer.Tools.NetStatsMonitor.Tests.Interface.Configuration
 {
-    public class PositionConfigurationTests
+    class PositionConfigurationTests
     {
-        private GameObject m_RnsmGameObject;
-        private RuntimeNetStatsMonitor m_NetStatsMonitor;
+        GameObject m_RnsmGameObject;
+        RuntimeNetStatsMonitor m_NetStatsMonitor;
 
         [OneTimeSetUp]
         public void Setup()
@@ -20,7 +20,7 @@ namespace Unity.Multiplayer.Tools.NetStatsMonitor.Tests.Interface.Configuration
         {
             Object.DestroyImmediate(m_RnsmGameObject);
         }
-        
+
         [TestCase(0,0)]
         [TestCase(-0.01f,ConfigurationLimits.k_PositionMin)]
         [TestCase(1.01f,ConfigurationLimits.k_PositionMax)]

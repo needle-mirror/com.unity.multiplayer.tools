@@ -1,84 +1,55 @@
 ﻿#if UNITY_EDITOR
 
-using System.Collections.Generic;
-using System.Linq;
-using Unity.Multiplayer.Tools.TestData.Definitions;
-using Random = System.Random;
+using System;
 
 namespace Unity.Multiplayer.Tools.NetStatsReporting
 {
-    // Words from https://github.com/dariusk/corpora CC0 license
+    [Obsolete("This test class has been marked obsolete because it was not intended to be a public API", false)]
     public class TestDataDefinition
     {
-        readonly IReadOnlyList<string> m_VariableTypes = new[] { "count", "size", "state" };
+        [Obsolete("This constructor has been marked obsolete because it was not intended to be part of the public API", false)]
+        public TestDataDefinition(int seed) { }
 
-        readonly Random m_Random;
-
-        public TestDataDefinition(int seed)
-        {
-            m_Random = new Random(seed);
-        }
-
+        [Obsolete("This test method has been marked obsolete because it was not intended to be part of the public API", false)]
         public string GenerateGameObjectName()
         {
-            return $"{Capitalize(GetRandomValue(Adjectives.Values))} {Capitalize(GetRandomValue(Adjectives.Values))} {Capitalize(GetRandomValue(Nouns.Values))}";
+            return "";
         }
 
+        [Obsolete("This test method has been marked obsolete because it was not intended to be part of the public API", false)]
         public string GenerateComponentName()
         {
-            return $"{Capitalize(GetRandomValue(Nouns.Values))}{Capitalize(GetRandomValue(Verbs.Values))}Component";
+            return "";
         }
 
+        [Obsolete("This test method has been marked obsolete because it was not intended to be part of the public API", false)]
         public string GenerateVariableName()
         {
-            return $"{Capitalize(GetRandomValue(Nouns.Values))}{Capitalize(GetRandomValue(Nouns.Values))}{Capitalize(GetRandomValue(m_VariableTypes))}";
+            return "";
         }
 
+        [Obsolete("This test method has been marked obsolete because it was not intended to be part of the public API", false)]
         public string GenerateNamedMessageName()
         {
-            return $"{Capitalize(GetRandomValue(Verbs.Values))}{Capitalize(GetRandomValue(Nouns.Values))}";
+            return "";
         }
 
+        [Obsolete("This test method has been marked obsolete because it was not intended to be part of the public API", false)]
         public string GenerateRpcName()
         {
-            return GenerateNamedMessageName();
+            return "";
         }
 
+        [Obsolete("This test method has been marked obsolete because it was not intended to be part of the public API", false)]
         public long GenerateByteCount()
         {
-            // Generate mostly byte-sized, a few kilo-sized and sometimes mega-sized
-            var magnitudeSelector = m_Random.Next(0, 10);
-            if (magnitudeSelector == 10)
-            {
-                return m_Random.Next(1000000, 2000000);
-            }
-
-            if (magnitudeSelector > 7)
-            {
-                return m_Random.Next(1000, 999999);
-            }
-
-            return m_Random.Next(1, 999);
+            return 0;
         }
 
-
+        [Obsolete("This test method has been marked obsolete because it was not intended to be part of the public API", false)]
         public string GenerateSceneName()
         {
-            return $"{Capitalize(GetRandomValue(Adjectives.Values))}{Capitalize(GetRandomValue(Adjectives.Values))}Scene";
-        }
-
-        string GetRandomValue(IReadOnlyList<string> collection)
-        {
-            return !collection.Any()
-                ? string.Empty
-                : collection[m_Random.Next(0, collection.Count)];
-        }
-
-        static string Capitalize(string input)
-        {
-            return string.IsNullOrEmpty(input)
-                ? string.Empty
-                : $"{char.ToUpper(input[0])}{input.Substring(1)}";
+            return "";
         }
     }
 }

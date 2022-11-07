@@ -2,9 +2,10 @@
     "name": "Unity.Multiplayer.Tools.NetworkProfiler.Runtime",
     "rootNamespace": "Unity.Multiplayer.Tools.NetworkProfiler.Runtime",
     "references": [
+        "Unity.Multiplayer.Tools.Adapters",
+        "Unity.Multiplayer.Tools.MetricTypes",
         "Unity.Multiplayer.Tools.NetStats",
-        "Unity.Profiling.Core",
-        "Unity.Multiplayer.Tools.MetricTypes"
+        "Unity.Profiling.Core"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

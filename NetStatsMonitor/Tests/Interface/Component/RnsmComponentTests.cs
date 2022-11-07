@@ -2,7 +2,7 @@ using NUnit.Framework;
 
 namespace Unity.Multiplayer.Tools.NetStatsMonitor.Tests.Interface
 {
-    public class RnsmComponentTests
+    class RnsmComponentTests
     {
         [Test]
         public void ClampRefreshRateWhenBelowMinimum()

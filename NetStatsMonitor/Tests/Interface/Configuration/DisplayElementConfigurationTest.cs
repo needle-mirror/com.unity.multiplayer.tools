@@ -4,10 +4,10 @@ using Object = UnityEngine.Object;
 
 namespace Unity.Multiplayer.Tools.NetStatsMonitor.Tests.Interface.Configuration
 {
-    public class DisplayElementConfigurationTest
+    class DisplayElementConfigurationTest
     {
-        private GameObject m_RnsmGameObject;
-        private RuntimeNetStatsMonitor m_NetStatsMonitor;
+        GameObject m_RnsmGameObject;
+        RuntimeNetStatsMonitor m_NetStatsMonitor;
         
         [OneTimeSetUp]
         public void Setup()

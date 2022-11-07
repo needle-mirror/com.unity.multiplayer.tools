@@ -24,7 +24,7 @@ namespace Unity.Multiplayer.Tools.NetStatsMonitor.Implementation
             {
                 hashCode = HashCode.Combine(hashCode, metricId.GetHashCode());
             }
-            hashCode = HashCode.Combine(hashCode, config.SampleCount, config.HalfLife);
+            hashCode = HashCode.Combine(hashCode, config.SampleCount, config.SampleRate, config.HalfLife);
             return hashCode;
         }
     }

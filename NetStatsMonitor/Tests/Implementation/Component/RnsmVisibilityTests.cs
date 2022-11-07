@@ -34,7 +34,7 @@ namespace Unity.Multiplayer.Tools.NetStatsMonitor.Tests
             => rnsm.GetRnsmVisualElement()?.visible ?? false;
     }
 
-    public class RnsmVisibilityTests
+    class RnsmVisibilityTests
     {
         [Test]
         public void EnsureVisibilityIsAppliedToTheRootVisualElement()

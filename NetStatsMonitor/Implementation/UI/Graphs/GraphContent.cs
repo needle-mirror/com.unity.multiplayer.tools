@@ -65,6 +65,7 @@ namespace Unity.Multiplayer.Tools.NetStatsMonitor.Implementation
         public MinAndMax UpdateDisplayData(
             MultiStatHistory history,
             List<MetricId> stats,
+            SampleRate rate,
             float minPlotValue,
             float maxPlotValue)
         {
@@ -88,13 +89,14 @@ namespace Unity.Multiplayer.Tools.NetStatsMonitor.Implementation
             var graphWidthPoints = bufferParams.GraphWidthPoints;
             var graphSamplesPerPoint = ((float)graphWidthSamples) / graphWidthPoints;
             var pointsToAdvance = m_InputSynchronizer.ComputeNumberOfPointsToAdvance(
-                history.TimeStamps,
+                history.TimeStamps[rate],
                 graphSamplesPerPoint);
 
             m_DataSampler.ResizeBuffersIfNeeded(bufferParams);
             m_DataSampler.SampleNewPoints(
                 history,
                 stats,
+                rate,
                 graphWidthPoints: graphWidthPoints,
                 graphWidthSamples: graphWidthSamples,
                 graphSamplesPerPoint: graphSamplesPerPoint,

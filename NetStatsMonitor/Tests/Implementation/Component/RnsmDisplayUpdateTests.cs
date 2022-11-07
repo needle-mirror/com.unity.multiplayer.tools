@@ -1,9 +1,27 @@
+using System;
 using NUnit.Framework;
+
+using Unity.Multiplayer.Tools.Adapters;
+using Unity.Multiplayer.Tools.NetStats;
 
 namespace Unity.Multiplayer.Tools.NetStatsMonitor.Tests
 {
-    public class RnsmDisplayUpdateTests
+    class RnsmDisplayUpdateTests
     {
+        MockNgo1Adapter m_MockNgo1Adapter;
+        [OneTimeSetUp]
+        public void Setup()
+        {
+            m_MockNgo1Adapter = new MockNgo1Adapter();
+        }
+
+        [OneTimeTearDown]
+        public void Teardown()
+        {
+            m_MockNgo1Adapter?.Uninitialize();
+            m_MockNgo1Adapter = null;
+        }
+
         [Test]
         public void EnsureRnsmDisplayOnlyUpdatesWhenNewDataIsReceived()
         {
@@ -138,5 +156,33 @@ namespace Unity.Multiplayer.Tools.NetStatsMonitor.Tests
 
             rnsmTestHarness.Teardown();
         }
+    }
+
+    class MockNgo1Adapter : INetworkAdapter, IMetricCollectionEvent
+    {
+        public MockNgo1Adapter()
+        {
+            MetricEvents.MetricEventPublisher.OnMetricsReceived += OnMetricsReceived;
+            NetworkAdapters.AddAdapter(this);
+        }
+
+        public void Uninitialize()
+        {
+            MetricEvents.MetricEventPublisher.OnMetricsReceived -= OnMetricsReceived;
+            NetworkAdapters.RemoveAdapter(this);
+        }
+
+        void OnMetricsReceived(MetricCollection metricCollection)
+        {
+            MetricCollectionEvent?.Invoke(metricCollection);
+        }
+
+        public AdapterMetadata Metadata { get; }
+        public T GetComponent<T>() where T : class, IAdapterComponent
+        {
+            return this as T;
+        }
+
+        public event Action<MetricCollection> MetricCollectionEvent;
     }
 }

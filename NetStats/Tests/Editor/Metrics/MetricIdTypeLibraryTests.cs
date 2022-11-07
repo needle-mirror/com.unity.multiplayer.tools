@@ -1,57 +1,24 @@
-﻿using NUnit.Framework;
+﻿using System;
+using NUnit.Framework;
 
 namespace Unity.Multiplayer.Tools.NetStats.Tests
 {
+    [Obsolete("This test class has been marked obsolete because it was not intended to be a public API", false)]
     public class MetricIdTypeLibraryTests
     {
-        [Test]
-        // This test validates that the test metric is included in the type library
-        //   which is an outcome of the Assembly processing code,
-        //   which is difficult to test on its own so we just verify that the outcome is correct
-        // If this test fails, the problem is most likely in `MetricIdTypeRegistrationAssemblyProcessor.cs`
-        public void VerifyTestMetricsIncludedInLibrary()
-        {
-            Assert.IsTrue(MetricIdTypeLibrary.ContainsType(typeof(TestMetricId)));
-        }
+        [Obsolete("This test method has been marked obsolete because it was not intended to be part of the public API", false)]
+        public void VerifyTestMetricsIncludedInLibrary() { }
 
-        [Test]
-        public void VerifyCorrectDisplayName()
-        {
-            Assert.AreEqual(
-                MetricIdTypeLibrary.GetEnumDisplayName(
-                    MetricIdTypeLibrary.GetTypeIndex(typeof(TestMetricId)),
-                    TestMetricIdConstants.Test1Value),
-                TestMetricIdConstants.Test1DisplayName);
-        }
+        [Obsolete("This test method has been marked obsolete because it was not intended to be part of the public API", false)]
+        public void VerifyCorrectDisplayName() { }
         
-        [Test]
-        public void VerifyCorrectUnits()
-        {
-            Assert.AreEqual(
-                MetricIdTypeLibrary.GetEnumUnit(
-                    MetricIdTypeLibrary.GetTypeIndex(typeof(TestMetricId)),
-                    TestMetricIdConstants.Test1Value),
-                TestMetricIdConstants.Test1Units.GetBaseUnits());
-        }
+        [Obsolete("This test method has been marked obsolete because it was not intended to be part of the public API", false)]
+        public void VerifyCorrectUnits() { }
         
-        [Test]
-        public void VerifyCorrectMetricKind()
-        {
-            Assert.AreEqual(
-                MetricIdTypeLibrary.GetEnumMetricKind(
-                    MetricIdTypeLibrary.GetTypeIndex(typeof(TestMetricId)),
-                    TestMetricIdConstants.Test1Value),
-                TestMetricIdConstants.Test1MetricKind);
-        }
+        [Obsolete("This test method has been marked obsolete because it was not intended to be part of the public API", false)]
+        public void VerifyCorrectMetricKind() { }
         
-        [Test]
-        public void VerifyCorrectName()
-        {
-            Assert.AreEqual(
-                MetricIdTypeLibrary.GetEnumName(
-                    MetricIdTypeLibrary.GetTypeIndex(typeof(TestMetricId)),
-                    TestMetricIdConstants.Test1Value),
-                TestMetricIdConstants.Test1Name);
-        }
+        [Obsolete("This test method has been marked obsolete because it was not intended to be part of the public API", false)]
+        public void VerifyCorrectName() { }
     }
 }

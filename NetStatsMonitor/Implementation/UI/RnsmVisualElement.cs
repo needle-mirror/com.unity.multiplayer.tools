@@ -11,6 +11,7 @@
 
 using System;
 using System.Collections.Generic;
+using Unity.Multiplayer.Tools.Common;
 using UnityEngine.UIElements;
 
 namespace Unity.Multiplayer.Tools.NetStatsMonitor.Implementation
@@ -101,7 +102,7 @@ namespace Unity.Multiplayer.Tools.NetStatsMonitor.Implementation
 
 
         /// Update the display data with new network data.
-        public void UpdateDisplayData(MultiStatHistory stats, double time)
+        public void UpdateDisplayData(MultiStatHistory stats, EnumMap<SampleRate, bool> newDataAvailable, double time)
         {
             if (m_DisplayElementsContainer.Contains(m_NoDataReceivedMessage))
             {
@@ -109,11 +110,17 @@ namespace Unity.Multiplayer.Tools.NetStatsMonitor.Implementation
             }
             foreach (var counter in m_Counters)
             {
-                counter.UpdateDisplayData(stats, time);
+                if (newDataAvailable[counter.SampleRate])
+                {
+                    counter.UpdateDisplayData(stats, time);
+                }
             }
             foreach (var graph in m_Graphs)
             {
-                graph.UpdateDisplayData(stats);
+                if (newDataAvailable[graph.SampleRate])
+                {
+                    graph.UpdateDisplayData(stats);
+                }
             }
         }
 

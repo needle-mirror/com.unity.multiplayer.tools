@@ -11,6 +11,7 @@
 
 using System;
 using JetBrains.Annotations;
+using Unity.Multiplayer.Tools.Adapters;
 using Unity.Multiplayer.Tools.Common;
 using Unity.Multiplayer.Tools.NetStats;
 using UnityEngine;
@@ -19,27 +20,50 @@ using Object = UnityEngine.Object;
 
 namespace Unity.Multiplayer.Tools.NetStatsMonitor.Implementation
 {
-    internal class RnsmComponentImplementation
+    class RnsmComponentImplementation
     {
-        const double k_MinStatsCollectionInterval = 5e-3;
-
         /// The amount of time in seconds to wait before displaying a network timeout message when no
         /// data is received. A delay of 0 can be used to suppress this message.
         const double k_NoDataReceivedMessageDelaySeconds = 1;
+
+        const double k_MinCollectionInterval_PerFrame = 5e-3;
+        const double k_MinCollectionInterval_PerSecond = 1;
+        static double MinCollectionInterval(SampleRate rate)
+        {
+            switch (rate)
+            {
+                case SampleRate.PerFrame:
+                    return k_MinCollectionInterval_PerFrame;
+                case SampleRate.PerSecond:
+                    return k_MinCollectionInterval_PerSecond;
+                default:
+                    throw new ArgumentOutOfRangeException($"Unhandled {nameof(SampleRate)} {rate}");
+            }
+        }
 
         static readonly PanelSettings k_DefaultPanelSettings;
         static readonly StyleSheet k_DefaultStyleSheet;
 
         internal event Action OnDisplayUpdate;
 
-        double m_LastDisplayUpdateTime = double.MinValue;
+        double m_LastDisplayUpdateTime = Constants.k_DefaultTimestamp;
 
         /// Property to get the current time, which can be mocked for testing purposes
         [NotNull]
         internal Func<double> GetCurrentTime { get; set; } = () => Time.timeAsDouble;
 
         [NotNull]
-        readonly StatsAccumulator m_StatsAccumulator = new();
+        readonly EnumMap<SampleRate, StatsAccumulator> m_Accumulators = new EnumMap<SampleRate, StatsAccumulator>()
+        {
+            { SampleRate.PerFrame, new StatsAccumulator() },
+            { SampleRate.PerSecond, new StatsAccumulator() },
+        };
+
+        /// <remarks>
+        /// This data is overwritten each frame in update. The only reason it's a member variable
+        /// and not a local variable is to avoid reallocating space for it each frame
+        /// </remarks>>
+        readonly EnumMap<SampleRate, bool> m_NewDataAvailable = new EnumMap<SampleRate, bool>(false);
 
         [NotNull]
         readonly MultiStatHistory m_MultiStatHistory = new();
@@ -51,7 +75,7 @@ namespace Unity.Multiplayer.Tools.NetStatsMonitor.Implementation
         int? m_PreviousConfigurationHash;
 
         /// Previous hash of all configuration fields that could impact history requirements
-        int? m_PreviousHistoryRequirementsHash = 0;
+        int? m_PreviousHistoryRequirementsHash;
 
         internal UIDocument UiDoc { get; private set; }
 
@@ -73,7 +97,33 @@ namespace Unity.Multiplayer.Tools.NetStatsMonitor.Implementation
 
         internal RnsmComponentImplementation()
         {
-            RnsmMetricObserver.Instance.OnMetricsReceived += OnMetricsReceived;
+            SubscribeToAllAdapters();
+        }
+
+        UnsubscribeFromAllAdapters m_UnsubscribeFromAllAdapters;
+        void SubscribeToAllAdapters()
+        {
+            m_UnsubscribeFromAllAdapters = NetworkAdapters.SubscribeToAll(
+                SubscribeToAdapter,
+                UnsubscribeFromAdapter);
+        }
+
+        void SubscribeToAdapter(INetworkAdapter adapter)
+        {
+            var metricEvent = adapter.GetComponent<IMetricCollectionEvent>();
+            if (metricEvent != null)
+            {
+                metricEvent.MetricCollectionEvent += OnMetricsReceived;
+            }
+        }
+
+        void UnsubscribeFromAdapter(INetworkAdapter adapter)
+        {
+            var metricEvent = adapter.GetComponent<IMetricCollectionEvent>();
+            if (metricEvent != null)
+            {
+                metricEvent.MetricCollectionEvent -= OnMetricsReceived;
+            }
         }
 
         void SetupUiDoc()
@@ -125,13 +175,16 @@ namespace Unity.Multiplayer.Tools.NetStatsMonitor.Implementation
             var curFrameTime = GetCurrentTime();
             var prevFrameTime = curFrameTime - (1 / maxRefreshRate) - Double.Epsilon;
             m_LastDisplayUpdateTime = prevFrameTime;
-            m_StatsAccumulator.LastAccumulationTime = prevFrameTime;
-            m_StatsAccumulator.LastCollectionTime = prevFrameTime;
+            for (var rate = SampleRates.k_First; rate <= SampleRates.k_Last; rate = rate.Next())
+            {
+                m_Accumulators[rate].LastAccumulationTime = prevFrameTime;
+                m_Accumulators[rate].LastCollectionTime = prevFrameTime;
+            }
         }
 
         internal void Teardown()
         {
-            RnsmMetricObserver.Instance.OnMetricsReceived -= OnMetricsReceived;
+            m_UnsubscribeFromAllAdapters?.Invoke();
 
             m_MultiStatHistory.Clear();
 
@@ -191,7 +244,11 @@ namespace Unity.Multiplayer.Tools.NetStatsMonitor.Implementation
                 {
                     m_PreviousHistoryRequirementsHash = newHistoryRequirementsHash;
                     var requirements = MultiStatHistoryRequirements.FromConfiguration(configuration);
-                    m_StatsAccumulator.UpdateRequirements(requirements);
+                    for (var rate = SampleRates.k_First; rate <= SampleRates.k_Last; rate = rate.Next())
+                    {
+                        m_Accumulators[rate].UpdateRequirements(requirements, rate);
+                    }
+
                     m_MultiStatHistory.UpdateRequirements(requirements);
                 }
 
@@ -200,31 +257,36 @@ namespace Unity.Multiplayer.Tools.NetStatsMonitor.Implementation
 
         }
 
-        void CollectStatsIfEnoughTimeHasElapsed(double time)
+        void CollectStatsIfEnoughTimeHasElapsed(SampleRate rate, double time)
         {
-            var timeSinceLastCollection = time - m_StatsAccumulator.LastCollectionTime;
-            var statsCollectionPending = timeSinceLastCollection > k_MinStatsCollectionInterval;
+            var accumulator = m_Accumulators[rate];
+            var timeSinceLastCollection = time - accumulator.LastCollectionTime;
+            var minCollectionInterval = MinCollectionInterval(rate);
+            var statsCollectionPending = timeSinceLastCollection > minCollectionInterval;
             if (!statsCollectionPending)
             {
                 return;
             }
-            m_MultiStatHistory.Collect(m_StatsAccumulator, time);
+            m_MultiStatHistory.Collect(rate, accumulator, time);
         }
 
-        void OnMetricsReceived(MetricCollection metrics)
+        void OnMetricsReceived(MetricCollection metricCollection)
         {
             var time = GetCurrentTime();
 
-            // This additional call to CollectStatsIfEnoughTimeHasElapsed is beneficial in the following scenario:
-            // 1. A long time passes without receiving data (so no samples are recorded).
-            // 2. After this long empty interval, data is received (possibly following a reconnect).
-            // 3. If the new data is included along with the many empty frames, then the new data would be
-            //    flattened in the graph over this long period of time.
-            // 4. Instead it seems better to first collect this long empty interval, and then start
-            //    accumulating from this newly received data.
-            CollectStatsIfEnoughTimeHasElapsed(time);
+            for (var rate = SampleRates.k_First; rate <= SampleRates.k_Last; rate = rate.Next())
+            {
+                // This additional call to CollectStatsIfEnoughTimeHasElapsed is beneficial in the following scenario:
+                // 1. A long time passes without receiving data (so no samples are recorded).
+                // 2. After this long empty interval, data is received (possibly following a reconnect).
+                // 3. If the new data is included along with the many empty frames, then the new data would be
+                //    flattened in the graph over this long period of time.
+                // 4. Instead it seems better to first collect this long empty interval, and then start
+                //    accumulating from this newly received data.
+                CollectStatsIfEnoughTimeHasElapsed(rate, time);
 
-            StatsAggregator.UpdateAccumulatorWithStatsFromMetrics(metrics, m_StatsAccumulator, time);
+                StatsAggregator.UpdateAccumulatorWithStatsFromMetrics(metricCollection, m_Accumulators[rate], time);
+            }
         }
 
         internal void Update(NetStatsMonitorConfiguration configuration, double maxRefreshRate)
@@ -232,10 +294,23 @@ namespace Unity.Multiplayer.Tools.NetStatsMonitor.Implementation
             ApplyConfigurationChangesIfHashHasChanged(configuration);
 
             var time = GetCurrentTime();
-            if (m_StatsAccumulator.HasAccumulatedStats)
+
+            var lastAccumulationTime = double.MinValue;
+            var anyNewDataAvailable = false;
+            for (var rate = SampleRates.k_First; rate <= SampleRates.k_Last; rate = rate.Next())
             {
-                CollectStatsIfEnoughTimeHasElapsed(time);
+                var accumulator = m_Accumulators[rate];
+                if (accumulator.HasAccumulatedStats)
+                {
+                    CollectStatsIfEnoughTimeHasElapsed(rate, time);
+                }
+                lastAccumulationTime = Math.Max(lastAccumulationTime, accumulator.LastAccumulationTime);
+
+                var newDataAvailable = accumulator.LastAccumulationTime > m_LastDisplayUpdateTime;
+                m_NewDataAvailable[rate] = newDataAvailable;
+                anyNewDataAvailable |= newDataAvailable;
             }
+
             var timeSinceLastDisplayUpdate = time - m_LastDisplayUpdateTime;
             var displayUpdatePending = maxRefreshRate * timeSinceLastDisplayUpdate >= 1;
             if (!displayUpdatePending)
@@ -243,11 +318,9 @@ namespace Unity.Multiplayer.Tools.NetStatsMonitor.Implementation
                 return;
             }
 
-            var statsCollectedSinceLastDisplayUpdate =
-                m_StatsAccumulator.LastCollectionTime > m_LastDisplayUpdateTime;
-            if (!statsCollectedSinceLastDisplayUpdate)
+            if (!anyNewDataAvailable)
             {
-                var secondsSinceDataReceived = time - m_StatsAccumulator.LastAccumulationTime;
+                var secondsSinceDataReceived = time - lastAccumulationTime;
                 if (secondsSinceDataReceived > k_NoDataReceivedMessageDelaySeconds)
                 {
                     RnsmVisualElement.DisplayDataNotReceivedMessage(secondsSinceDataReceived);
@@ -255,7 +328,7 @@ namespace Unity.Multiplayer.Tools.NetStatsMonitor.Implementation
             }
             else
             {
-                RnsmVisualElement.UpdateDisplayData(m_MultiStatHistory, time);
+                RnsmVisualElement.UpdateDisplayData(m_MultiStatHistory, m_NewDataAvailable, time);
                 OnDisplayUpdate?.Invoke();
                 m_LastDisplayUpdateTime = time;
             }
@@ -263,25 +336,29 @@ namespace Unity.Multiplayer.Tools.NetStatsMonitor.Implementation
 
         public void AddCustomValue(MetricId metricId, float value)
         {
-            if (!m_StatsAccumulator.Contains(metricId))
-            {
-                // There is no display element configured to display
-                // this stat, so there is no point in storing it.
-                return;
-            }
             var time = GetCurrentTime();
+            for (var rate = SampleRates.k_First; rate <= SampleRates.k_Last; rate = rate.Next())
+            {
+                var accumulator = m_Accumulators[rate];
+                if (!accumulator.Contains(metricId))
+                {
+                    // There is no display element configured to display
+                    // this stat, so there is no point in storing it.
+                    return;
+                }
 
-            // This additional call to CollectStatsIfEnoughTimeHasElapsed is beneficial in the following scenario:
-            // 1. A long time passes without receiving data (so no samples are recorded).
-            // 2. After this long empty interval, data is received (possibly following a reconnect).
-            // 3. If the new data is included along with the many empty frames, then the new data would be
-            //    flattened in the graph over this long period of time.
-            // 4. Instead it seems better to first collect this long empty interval, and then start
-            //    accumulating from this newly received data.
-            CollectStatsIfEnoughTimeHasElapsed(time);
+                // This additional call to CollectStatsIfEnoughTimeHasElapsed is beneficial in the following scenario:
+                // 1. A long time passes without receiving data (so no samples are recorded).
+                // 2. After this long empty interval, data is received (possibly following a reconnect).
+                // 3. If the new data is included along with the many empty frames, then the new data would be
+                //    flattened in the graph over this long period of time.
+                // 4. Instead it seems better to first collect this long empty interval, and then start
+                //    accumulating from this newly received data.
+                CollectStatsIfEnoughTimeHasElapsed(rate, time);
 
-            m_StatsAccumulator.Accumulate(metricId, value);
-            m_StatsAccumulator.LastAccumulationTime = time;
+                accumulator.Accumulate(metricId, value);
+                accumulator.LastAccumulationTime = time;
+            }
         }
     }
 }

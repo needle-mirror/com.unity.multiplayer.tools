@@ -7,7 +7,7 @@ namespace Unity.Multiplayer.Tools.NetStatsMonitor.Tests
 {
     /// These tests are virtually identical to RnsmDisplayUpdateTests only using the custom data API
     /// rather than the TestDataGenerator
-    public class RnsmCustomDataDisplayUpdateTests
+    class RnsmCustomDataDisplayUpdateTests
     {
         static readonly List<MetricId> k_CustomStatsDisplayed = new List<MetricId>
         {

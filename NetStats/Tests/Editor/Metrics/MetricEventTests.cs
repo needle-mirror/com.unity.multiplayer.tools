@@ -126,7 +126,7 @@ namespace Unity.Multiplayer.Tools.NetStats.Tests
         public void MarkMetricEvent_WhenNumberOfValuesDoesNotGoOverLimit_DoesNotSetWentOverLimitFlag()
         {
             // Arrange
-            var metricLimit = 10U;
+            var metricLimit = 10;
             var id = MetricId.Create(DirectedMetricType.NetworkVariableDeltaReceived);
             var metric = new EventMetric<int>(id)
             {
@@ -141,14 +141,14 @@ namespace Unity.Multiplayer.Tools.NetStats.Tests
 
             // Assert
             Assert.AreEqual(id, metric.Id);
-            Assert.False(metric.WentOverLimit);
+            Assert.False(metric.WentOverLimit());
         }
 
         [Test]
         public void MarkMetricEvent_WhenNumberOfValuesGoesOverLimit_SetsWentOverLimitFlag()
         {
             // Arrange
-            var metricLimit = 10U;
+            var metricLimit = 10;
             var id = MetricId.Create(DirectedMetricType.RpcSent);
             var metric = new EventMetric<int>(id)
             {
@@ -163,14 +163,14 @@ namespace Unity.Multiplayer.Tools.NetStats.Tests
 
             // Assert
             Assert.AreEqual(id, metric.Id);
-            Assert.True(metric.WentOverLimit);
+            Assert.True(metric.WentOverLimit());
         }
 
         [Test]
         public void Reset_Always_ResetsWentOverLimitFlag()
         {
             // Arrange
-            var metricLimit = 10U;
+            var metricLimit = 10;
             var id = MetricId.Create(DirectedMetricType.TotalBytesReceived);
             var metric = new EventMetric<int>(id)
             {
@@ -183,14 +183,14 @@ namespace Unity.Multiplayer.Tools.NetStats.Tests
                 metric.Mark(k_MetricValue1);
             }
 
-            Assert.True(metric.WentOverLimit);
+            Assert.True(metric.WentOverLimit());
 
             // Act
             metric.Reset();
 
             // Assert
             Assert.AreEqual(id, metric.Id);
-            Assert.False(metric.WentOverLimit);
+            Assert.False(metric.WentOverLimit());
         }
 
         [Serializable]

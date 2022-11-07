@@ -1,17 +1,20 @@
 using System.Collections.Generic;
+using System.Text;
+using JetBrains.Annotations;
 using UnityEngine;
 
 namespace Unity.Multiplayer.Tools.NetStats
 {
     class MetricDispatcher : IMetricDispatcher
     {
-        internal const string k_ThrottlingWarning = "Some metrics in the collection went over the configured values limit. Some values were ignored.";
-
         readonly MetricCollection m_Collection;
         readonly IReadOnlyList<IResettable> m_Resettables;
         readonly IReadOnlyList<IEventMetric> m_EventMetrics;
 
         readonly IList<IMetricObserver> m_Observers = new List<IMetricObserver>();
+
+        [CanBeNull]
+        StringBuilder m_OverLimitMessageStringBuilder;
 
         internal MetricDispatcher(
             MetricCollection collection,
@@ -35,19 +38,19 @@ namespace Unity.Multiplayer.Tools.NetStats
 
         public void Dispatch()
         {
-            var wentOverLimit = false;
             for (var i = 0; i < m_EventMetrics.Count; i++)
             {
-                if (m_EventMetrics[i].WentOverLimit)
+                var metric = m_EventMetrics[i];
+                if (metric.WentOverLimit())
                 {
-                    wentOverLimit = true;
-                    break;
+                    m_OverLimitMessageStringBuilder ??= new StringBuilder();
+                    m_OverLimitMessageStringBuilder.AppendLine(metric.WentOverLimitMessage());
                 }
             }
-
-            if (wentOverLimit)
+            if (m_OverLimitMessageStringBuilder?.Length > 0)
             {
-                Debug.LogWarning(k_ThrottlingWarning);
+                Debug.LogWarning(m_OverLimitMessageStringBuilder);
+                m_OverLimitMessageStringBuilder.Clear();
             }
 
             for (var i = 0; i < m_Observers.Count; i++)

@@ -13,33 +13,42 @@ using System;
 using System.Collections.Generic;
 using Unity.Multiplayer.Tools.NetStats;
 using Unity.Multiplayer.Tools.NetStatsMonitor.Configuration;
-using UnityEngine;
 using UnityEngine.Assertions;
 using UnityEngine.UIElements;
 
 namespace Unity.Multiplayer.Tools.NetStatsMonitor.Implementation
 {
-    internal class CounterVisualElement : VisualElement
+    class CounterVisualElement : VisualElement
     {
-        readonly Label m_Label = new();
-        readonly Label m_Value = new();
-
+        // Fields from configuration
+        // --------------------------------------------------------------------
         List<MetricId> m_Stats;
-        BaseUnits m_Units;
-        bool m_DisplayAsPercentage;
-
         SmoothingMethod m_SmoothingMethod = SmoothingMethod.ExponentialMovingAverage;
         AggregationMethod m_AggregationMethod = AggregationMethod.Sum;
 
         double? m_DecayConstant;
         int m_SampleCount;
+        public SampleRate SampleRate { get; private set; }
+
 
         int m_SignificantDigits;
 
         float m_HighlightThresholdMin = float.MinValue;
         float m_HighlightThresholdMax = float.MaxValue;
 
+        // Fields computed from configuration
+        // --------------------------------------------------------------------
+        BaseUnits m_Units;
+        bool m_DisplayAsPercentage;
+
+        // Runtime data
+        // --------------------------------------------------------------------
         double m_DisplayValue = double.NaN;
+
+        // Visual element children
+        // --------------------------------------------------------------------
+        readonly Label m_Label = new();
+        readonly Label m_Value = new();
 
         internal double DisplayValue
         {
@@ -49,7 +58,7 @@ namespace Unity.Multiplayer.Tools.NetStatsMonitor.Implementation
                 var mantissaExponent = m_DisplayAsPercentage
                     ? NumericUtils.ToBase10(value)
                     : NumericUtils.Base10ToBase1000(NumericUtils.ToBase10(value));
-                
+
                 var digitsAboveDecimal = NumericUtils.GetDigitsAboveDecimal(mantissaExponent, m_DisplayAsPercentage);
                 var roundedValue = NumericUtils.RoundToSignificantDigits(mantissaExponent.Mantissa, m_SignificantDigits, digitsAboveDecimal);
 
@@ -57,7 +66,7 @@ namespace Unity.Multiplayer.Tools.NetStatsMonitor.Implementation
                 {
                     return;
                 }
-                
+
                 m_DisplayValue = value;
                 m_Value.text = m_DisplayAsPercentage
                     ? NumericUtils.Base10ToPercentageNotation(
@@ -71,7 +80,7 @@ namespace Unity.Multiplayer.Tools.NetStatsMonitor.Implementation
                         digitsBelowdecimal: NumericUtils.GetDigitsBelowDecimal(
                             m_SignificantDigits,
                             digitsAboveDecimal));
-                
+
                 UpdateHighlightUssClasses();
             }
         }
@@ -104,6 +113,7 @@ namespace Unity.Multiplayer.Tools.NetStatsMonitor.Implementation
             m_SampleCount = Math.Clamp(config.SampleCount,
                 ConfigurationLimits.k_CounterSampleMin,
                 ConfigurationLimits.k_CounterSampleMax);
+            SampleRate = config.SampleRate;
             m_SignificantDigits = Math.Max(details.SignificantDigits, 1);
 
             m_HighlightThresholdMin = details.HighlightLowerBound;
@@ -176,7 +186,7 @@ namespace Unity.Multiplayer.Tools.NetStatsMonitor.Implementation
                 {
                     foreach (var stat in m_Stats)
                     {
-                        var statValue = history.GetSimpleMovingAverage(stat, m_SampleCount, time);
+                        var statValue = history.GetSimpleMovingAverage(stat, SampleRate, m_SampleCount, time);
                         if (!statValue.HasValue)
                         {
                             continue;

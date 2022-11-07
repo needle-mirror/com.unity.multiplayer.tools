@@ -13,6 +13,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using JetBrains.Annotations;
+using Unity.Multiplayer.Tools.Common;
 using Unity.Multiplayer.Tools.NetStats;
 
 namespace Unity.Multiplayer.Tools.NetStatsMonitor.Implementation
@@ -31,7 +32,7 @@ namespace Unity.Multiplayer.Tools.NetStatsMonitor.Implementation
     /// memory usage by as much as 1 - (8 + N * 4) / (N * 16), where N is the number of stats. For N = 8 this is a ~69%
     /// reduction. For arbitrarily large N this is a 75% reduction.
     /// </remarks>
-    internal class StatsAccumulator
+    class StatsAccumulator
     {
         [NotNull]
         readonly Dictionary<MetricId, float> m_Sums = new();
@@ -40,15 +41,25 @@ namespace Unity.Multiplayer.Tools.NetStatsMonitor.Implementation
         readonly Dictionary<MetricId, int> m_GaugeCounts = new();
 
         internal bool HasAccumulatedStats => LastAccumulationTime > LastCollectionTime;
-        internal double LastAccumulationTime { get; set; } = double.MinValue;
-        internal double LastCollectionTime { get; set; } = double.MinValue;
+        internal double LastAccumulationTime { get; set; } = Constants.k_DefaultTimestamp;
+        internal double LastCollectionTime { get; set; } = Constants.k_DefaultTimestamp;
 
         internal bool Contains(MetricId metricId)
         {
             return m_Sums.ContainsKey(metricId);
         }
 
-        internal IEnumerable<MetricId> Metrics => m_Sums.Keys;
+        /// <summary>
+        /// Array of Metrics that are required by this accumulator,
+        /// according to the MultiStatHistoryRequirements.
+        /// </summary>
+        /// <remarks>
+        /// This is stored separately from the keys of the dictionary
+        /// so that it is possible to iterate over them while updating
+        /// the contents without allocating a new list of the keys each
+        /// time.
+        /// </remarks>
+        internal MetricId[] RequiredMetrics { get; private set; } = Array.Empty<MetricId>();
 
         /// <exception cref="KeyNotFoundException">
         /// Thrown if the accumulator does not contain an entry for this StatName
@@ -80,17 +91,34 @@ namespace Unity.Multiplayer.Tools.NetStatsMonitor.Implementation
             return 0;
         }
 
-        internal void UpdateRequirements(MultiStatHistoryRequirements requirements)
+        /// <summary>
+        /// Update the data stored in this accumulator based on the overall
+        /// requirements and the sample rate of this accumulator
+        /// </summary>
+        /// <param name="requirements"> The overall requirements of the history </param>
+        /// <param name="sampleRate"> The sample rate of this particular accumulator </param>
+        internal void UpdateRequirements(MultiStatHistoryRequirements requirements, SampleRate sampleRate)
         {
+            bool Required(MetricId metric)
+            {
+                // Whether a metric is required depends not only on whether it appears in the requirements,
+                // but also on the sample rate that is required
+                if (!requirements.Data.TryGetValue(metric, out StatHistoryRequirements statRequirements))
+                {
+                    return false;
+                }
+                return (statRequirements.SampleCounts[sampleRate] > 0)
+                    || (statRequirements.DecayConstants.Count > 0 && sampleRate == SampleRate.PerFrame);
+            }
             var unrequiredSums = m_Sums.Keys
-                .Where(key => !requirements.Data.ContainsKey(key))
+                .Where(key => !Required(key))
                 .ToList();
             foreach (var key in unrequiredSums)
             {
                 m_Sums.Remove(key);
             }
             var unrequiredGauges = m_GaugeCounts.Keys
-                .Where(key => !requirements.Data.ContainsKey(key))
+                .Where(key => !Required(key))
                 .ToList();
             foreach (var key in unrequiredGauges)
             {
@@ -98,6 +126,10 @@ namespace Unity.Multiplayer.Tools.NetStatsMonitor.Implementation
             }
             foreach (var metricId in requirements.Data.Keys)
             {
+                if (!Required(metricId))
+                {
+                    continue;
+                }
                 if (!m_Sums.ContainsKey(metricId))
                 {
                     m_Sums.Add(metricId, 0f);
@@ -108,6 +140,7 @@ namespace Unity.Multiplayer.Tools.NetStatsMonitor.Implementation
                     m_GaugeCounts.Add(metricId, 0);
                 }
             }
+            RequiredMetrics = m_Sums.Keys.ToArray();
         }
     }
 }

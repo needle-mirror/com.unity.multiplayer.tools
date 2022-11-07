@@ -8,6 +8,8 @@ namespace Unity.Multiplayer.Tools.NetStats
     class EventMetric<TValue> : IEventMetric<TValue>, IResettable
         where TValue : unmanaged
     {
+        const int k_DefaultMaxNumberOfValues = 1000;
+
         readonly List<TValue> m_Values = new List<TValue>();
 
         public int Count => m_Values.Count;
@@ -60,15 +62,15 @@ namespace Unity.Multiplayer.Tools.NetStats
 
         public bool ShouldResetOnDispatch { get; set; } = true;
 
-        public uint MaxNumberOfValues { get; set; } = 100;
+        public int MaxNumberOfValues { get; set; } = k_DefaultMaxNumberOfValues;
 
-        public bool WentOverLimit { get; private set; }
+        public int NumberOfValuesReceived { get; private set; } = 0;
 
         public void Mark(TValue value)
         {
+            ++NumberOfValuesReceived;
             if (m_Values.Count >= MaxNumberOfValues)
             {
-                WentOverLimit = true;
                 return;
             }
             m_Values.Add(value);
@@ -77,7 +79,7 @@ namespace Unity.Multiplayer.Tools.NetStats
         public void Reset()
         {
             m_Values.Clear();
-            WentOverLimit = false;
+            NumberOfValuesReceived = 0;
         }
     }
 }

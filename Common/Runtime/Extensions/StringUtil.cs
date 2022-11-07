@@ -8,5 +8,10 @@ namespace Unity.Multiplayer.Tools.Common
         {
             return string.Concat(s.Select(x => char.IsUpper(x) ? " " + x : x.ToString())).TrimStart(' ');
         }
+
+        internal static string RemoveSpaces(string s)
+        {
+            return s.Replace(" ", "");
+        }
     }
 }

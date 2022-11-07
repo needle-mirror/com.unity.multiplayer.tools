@@ -6,16 +6,16 @@ using Object = UnityEngine.Object;
 
 namespace Unity.Multiplayer.Tools.NetStatsMonitor.Tests.Interface.Configuration
 {
-    public class RuntimeNetStatsMonitorTest
+    class RuntimeNetStatsMonitorTest
     {
-        private GameObject m_RnsmGameObject;
-        private RuntimeNetStatsMonitor m_NetStatsMonitor;
-        private StyleSheet m_StyleSheet;
-        private string m_StyleSheetPath = "Assets/styleSheet.asset";
-        private PanelSettings m_PanelSettings;
-        private string m_PanelSettingsPath = "Assets/panelSettings.asset";
-        private NetStatsMonitorConfiguration m_NetStatsMonitorConfiguration;
-        private string m_NetStatsMonitorConfigPath = "Assets/NetStatsMonitorConfiguration.asset";
+        GameObject m_RnsmGameObject;
+        RuntimeNetStatsMonitor m_NetStatsMonitor;
+        StyleSheet m_StyleSheet;
+        string m_StyleSheetPath = "Assets/styleSheet.asset";
+        PanelSettings m_PanelSettings;
+        string m_PanelSettingsPath = "Assets/panelSettings.asset";
+        NetStatsMonitorConfiguration m_NetStatsMonitorConfiguration;
+        string m_NetStatsMonitorConfigPath = "Assets/NetStatsMonitorConfiguration.asset";
 
         [OneTimeSetUp]
         public void Setup()
@@ -36,7 +36,7 @@ namespace Unity.Multiplayer.Tools.NetStatsMonitor.Tests.Interface.Configuration
             AssetDatabase.DeleteAsset(m_StyleSheetPath);
             AssetDatabase.DeleteAsset(m_NetStatsMonitorConfigPath);
         }
-        
+
         [TestCase(true)]
         [TestCase(false)]
         public void SetRnsmVisibility_WhenGivenBoolean_SetCorrectly(bool input)
@@ -66,7 +66,7 @@ namespace Unity.Multiplayer.Tools.NetStatsMonitor.Tests.Interface.Configuration
             Assert.AreEqual(m_NetStatsMonitor.CustomStyleSheet.name, "styleSheet");
             Assert.AreEqual(m_NetStatsMonitor.CustomStyleSheet.contentHash, m_StyleSheet.contentHash);
         }
-        
+
         [Test]
         public void SetRnsmPanelSettingsOverride_WithPanelSettings_ReturnCorrectPanelSettingNameAndStyleSheet()
         {
@@ -77,7 +77,7 @@ namespace Unity.Multiplayer.Tools.NetStatsMonitor.Tests.Interface.Configuration
             Assert.AreEqual(m_NetStatsMonitor.PanelSettingsOverride.name, "panelSettings");
             Assert.AreEqual(m_NetStatsMonitor.PanelSettingsOverride.themeStyleSheet, m_PanelSettings.themeStyleSheet);
         }
-        
+
         [Test]
         public void SetRnsmNetStatsMonitorConfiguration_WithNetStatConfig_ReturnCorrectNetStatConfigNameAndConfigurationHash()
         {

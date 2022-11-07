@@ -28,8 +28,7 @@ namespace Unity.Multiplayer.Tools.NetStatsMonitor.Implementation
             StatsAccumulator statsAccumulator,
             double time)
         {
-            var metricIds = new List<MetricId>(statsAccumulator.Metrics);
-            foreach (var metricId in metricIds)
+            foreach (var metricId in statsAccumulator.RequiredMetrics)
             {
                 var metricKind = metricId.MetricKind;
                 switch (metricKind)

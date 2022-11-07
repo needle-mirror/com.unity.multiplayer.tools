@@ -255,7 +255,7 @@ namespace Unity.Multiplayer.Tools.NetStatsMonitor.Implementation
                 for (var pointIndex = firstNewPointIndex; pointIndex < graphWidthPoints; ++pointIndex)
                 {
                     var pointValue = pointValues[pointIndex];
-                    m_MaxPointValues[pointIndex] = Math.Max(pointValues[pointIndex], pointValue);
+                    m_MaxPointValues[pointIndex] = Math.Max(m_MaxPointValues[pointIndex], pointValue);
                     m_MaxPointValue = Math.Max(m_MaxPointValue, pointValue);
                 }
             }

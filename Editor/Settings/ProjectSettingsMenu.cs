@@ -37,8 +37,11 @@ namespace Unity.Multiplayer.Tools.Editor
             contents.AddToClassList(UssClassNames.k_SettingsContents);
             Add(contents);
 
-            var netStatsMonitorSettings = new NetStatsMonitorSettingsMenu(settings);
+            var netStatsMonitorSettings = new ToolSettingsMenu(settings, Tool.RuntimeNetStatsMonitor);
             contents.Add(netStatsMonitorSettings);
+
+            var netSimSettings = new ToolSettingsMenu(settings, Tool.NetworkSimulator);
+            contents.Add(netSimSettings);
         }
     }
 }

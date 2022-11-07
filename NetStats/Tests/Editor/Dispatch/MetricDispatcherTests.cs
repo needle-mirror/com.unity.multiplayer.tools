@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using System.Text.RegularExpressions;
 using NUnit.Framework;
 using Unity.Multiplayer.Tools.MetricTypes;
 using UnityEngine;
@@ -201,7 +202,11 @@ namespace Unity.Multiplayer.Tools.NetStats.Tests
             metric.Mark(1234);
 
             // Act & Assert
-            LogAssert.Expect(LogType.Warning, MetricDispatcher.k_ThrottlingWarning);
+            Assert.True(metric.WentOverLimit());
+            const string k_RegexWhitespaceZeroOrMore = "\\s*";
+            LogAssert.Expect(
+                LogType.Warning,
+                new Regex(Regex.Escape(metric.WentOverLimitMessage()) + k_RegexWhitespaceZeroOrMore));
             metricDispatcher.Dispatch();
         }
 
@@ -216,7 +221,7 @@ namespace Unity.Multiplayer.Tools.NetStats.Tests
             public int Value { get; }
         }
 
-        private class TestObserver : IMetricObserver
+        class TestObserver : IMetricObserver
         {
             private readonly Action<MetricCollection> m_Assertion;
 

@@ -39,6 +39,24 @@ namespace Unity.Multiplayer.Tools.NetStatsMonitor
         }
 
         /// <summary>
+        /// The sample rate of the graph.
+        /// </summary>
+        /// <remarks>
+        /// If the sample rate is <see cref="F:Unity.Multiplayer.Tools.NetStatsMonitor.SampleRate.PerSecond"/>
+        /// then each point in the graph corresponds to data collected over a full second, whereas
+        /// if the sample rate is <see cref="F:Unity.Multiplayer.Tools.NetStatsMonitor.SampleRate.PerFrame"/>
+        /// then each point in the graph corresponds to data collected within a single frame.
+        /// </remarks>
+        [field: SerializeField]
+        [Tooltip(
+            "The sample rate of the graph. " +
+            "If the sample rate is Per Second " +
+            "then each point in the graph corresponds to data collected over a full second, whereas " +
+            "if the sample rate is Per Frame " +
+            "then each point in the graph corresponds to data collected within a single frame.")]
+        public SampleRate SampleRate { get; set; } = SampleRate.PerSecond;
+
+        /// <summary>
         /// List of colors to override the default colors of the graph.
         /// </summary>
         [field: SerializeField]
@@ -61,7 +79,7 @@ namespace Unity.Multiplayer.Tools.NetStatsMonitor
 
         internal int ComputeHashCode()
         {
-            var hash = HashCode.Combine(SampleCount, (int)XAxisType, LineGraphConfiguration.ComputeHashCode());
+            var hash = HashCode.Combine(SampleCount, (int)SampleRate, (int)XAxisType, LineGraphConfiguration.ComputeHashCode());
             if (VariableColors != null)
             {
                 foreach (var color in VariableColors)

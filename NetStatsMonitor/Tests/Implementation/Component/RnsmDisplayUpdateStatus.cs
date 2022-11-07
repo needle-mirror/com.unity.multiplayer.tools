@@ -2,7 +2,7 @@ using System;
 
 namespace Unity.Multiplayer.Tools.NetStatsMonitor.Tests
 {
-    public enum RnsmDisplayUpdateStatus
+    enum RnsmDisplayUpdateStatus
     {
         /// No new data received; display should not be updated
         NoDataReceived,

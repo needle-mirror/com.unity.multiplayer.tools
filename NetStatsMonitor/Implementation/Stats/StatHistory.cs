@@ -21,35 +21,40 @@ namespace Unity.Multiplayer.Tools.NetStatsMonitor.Implementation
 
     /// A class for storing an RNSM stat over multiple frames,
     /// to facilitate moving averages and graphs over time
-    internal class StatHistory
+    class StatHistory
     {
         /// Array of exponential moving averages that are being maintained, can be empty
         public ContinuousExponentialMovingAverage[] ContinuousExponentialMovingAverages { get; private set; }
 
+        /// A ring buffer of recent values for each sample rate.
+        /// Entries may be null or empty if not required.
+        public EnumMap<SampleRate, RingBuffer<float>> SampleBuffers { get; } = new();
+
         /// Ring buffer of most recent values.
         /// Will have capacity zero and not store any values if the number of past values required is zero
-        public RingBuffer<float> RecentValues { get; }
+        // public RingBuffer<float> RecentValues { get; }
 
-        /// <exception cref="IndexOutOfRangeException"> will be thrown if RecentValues contains no values </exception>
-        public float MostRecentValue => RecentValues.MostRecent;
-
-        public StatHistory(
-            StatHistoryRequirements requirements,
-             float exponentialMovingAverageInitialValue = 0)
+        public StatHistory(StatHistoryRequirements requirements)
         {
             ContinuousExponentialMovingAverages = requirements
                 .DecayConstants
                 .Select(decayConstant => new ContinuousExponentialMovingAverage(decayConstant))
                 .ToArray();
-            RecentValues = new RingBuffer<float>(requirements.SampleCount);
+            for (var rate = SampleRates.k_First; rate <= SampleRates.k_Last; rate = rate.Next())
+            {
+                SampleBuffers[rate] = new RingBuffer<float>(requirements.SampleCounts[rate]);
+            }
         }
 
-        public StatHistory(
-            RingBuffer<float> recentValues,
-            ContinuousExponentialMovingAverage[] continuousExponentialMovingAverages = null)
+        static EnumMap<SampleRate, int> GetSampleBufferCapacities(
+            EnumMap<SampleRate, RingBuffer<float>> sampleBuffers)
         {
-            RecentValues = recentValues;
-            ContinuousExponentialMovingAverages = continuousExponentialMovingAverages;
+            var requirements = new EnumMap<SampleRate, int>();
+            for (var rate = SampleRates.k_First; rate <= SampleRates.k_Last; rate = rate.Next())
+            {
+                requirements[rate] = sampleBuffers[rate].Capacity;
+            }
+            return requirements;
         }
 
         StatHistoryRequirements GetRequirements()
@@ -57,7 +62,7 @@ namespace Unity.Multiplayer.Tools.NetStatsMonitor.Implementation
             // It's possible to infer the requirements from the kind of data we're storing
             return new StatHistoryRequirements(
                 ContinuousExponentialMovingAverages.Select(cema => cema.DecayConstant),
-                RecentValues.Capacity);
+                GetSampleBufferCapacities(SampleBuffers));
         }
 
         /// Can be called to update the requirements, while preserving all existing
@@ -67,7 +72,10 @@ namespace Unity.Multiplayer.Tools.NetStatsMonitor.Implementation
         {
             // Writing to the capacity resizes the ring buffer if needed,
             // while preserving all values that are still within capacity
-            RecentValues.Capacity = requirements.SampleCount;
+            for (var rate = SampleRates.k_First; rate <= SampleRates.k_Last; rate = rate.Next())
+            {
+                SampleBuffers[rate].Capacity = requirements.SampleCounts[rate];
+            }
 
             var existingAverages = ContinuousExponentialMovingAverages;
             ContinuousExponentialMovingAverages = requirements
@@ -86,28 +94,32 @@ namespace Unity.Multiplayer.Tools.NetStatsMonitor.Implementation
                 .ToArray();
         }
 
-        public void Update(MetricId metric, float value, double time)
+        public void Update(MetricId metric, SampleRate rate, float value, double time)
         {
-            switch (metric.MetricKind)
+            SampleBuffers[rate].PushBack(value);
+            if (rate == SampleRate.PerFrame)
             {
-                case MetricKind.Counter:
+                // EMA counters only receive per-frame values
+                switch (metric.MetricKind)
                 {
-                    foreach (var cema in ContinuousExponentialMovingAverages)
+                    case MetricKind.Counter:
                     {
-                        cema.AddSampleForCounter(value, time);
+                        foreach (var cema in ContinuousExponentialMovingAverages)
+                        {
+                            cema.AddSampleForCounter(value, time);
+                        }
+                        break;
                     }
-                    break;
-                }
-                case MetricKind.Gauge:
-                {
-                    foreach (var cema in ContinuousExponentialMovingAverages)
+                    case MetricKind.Gauge:
                     {
-                        cema.AddSampleForGauge(value, time);
+                        foreach (var cema in ContinuousExponentialMovingAverages)
+                        {
+                            cema.AddSampleForGauge(value, time);
+                        }
+                        break;
                     }
-                    break;
                 }
             }
-            RecentValues.PushBack(value);
         }
     }
 }

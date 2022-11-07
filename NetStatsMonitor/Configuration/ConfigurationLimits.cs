@@ -4,9 +4,7 @@ namespace Unity.Multiplayer.Tools.NetStatsMonitor
     {
         internal const int k_GraphSampleMin = 8;
         internal const int k_GraphSampleMax = 4096;
-        internal static readonly string k_GraphMaxSampleWarningMessage = "The samples count is set to a very high value."
-                                                                        + " This may have negative impacts on rendering or memory usage."
-                                                                        + $" The sampling count will be clamped to {k_GraphSampleMax}.";
+
         internal const int k_CounterSampleMin = 8;
         internal const int k_CounterSampleMax = 4096;
 

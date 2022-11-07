@@ -87,6 +87,29 @@ namespace Unity.Multiplayer.Tools.NetStatsMonitor
             }
         }
 
+        /// The sample rate of this visual element
+        internal SampleRate SampleRate
+        {
+            get
+            {
+                switch (Type)
+                {
+                    case DisplayElementType.Counter:
+                    {
+                        return CounterConfiguration.SampleRate;
+                    }
+                    case DisplayElementType.LineGraph:
+                    case DisplayElementType.StackedAreaGraph:
+                    {
+                        return GraphConfiguration.SampleRate;
+                    }
+                    default:
+                        throw new NotSupportedException(
+                            $"Unhandled {nameof(DisplayElementType)} {Type}");
+                }
+            }
+        }
+
         /// The HalfLife required for the Continuous Exponential Moving Average
         /// of this DisplayElement (if any)
         internal double? HalfLife

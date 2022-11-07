@@ -33,7 +33,8 @@ namespace Unity.Multiplayer.Tools.NetStatsMonitor.Implementation
             var allStatRequirements = multiStatHistoryRequirements.Data;
             foreach (var displayElement in configuration.DisplayElements)
             {
-                var recentValuesCapacity = displayElement.SampleCount;
+                var sampleCount = displayElement.SampleCount;
+                var sampleRate = displayElement.SampleRate;
                 var decayConstant = displayElement.DecayConstant;
                 foreach (var metricId in displayElement.Stats)
                 {
@@ -41,13 +42,13 @@ namespace Unity.Multiplayer.Tools.NetStatsMonitor.Implementation
                     {
                         allStatRequirements[metricId] = new StatHistoryRequirements(
                             decayConstants: new HashSet<double>(),
-                            sampleCount: 0);
+                            sampleCounts: new());
                     }
                     var requirements = multiStatHistoryRequirements.Data[metricId];
 
-                    requirements.SampleCount = Math.Max(
-                        requirements.SampleCount,
-                        recentValuesCapacity);
+                    requirements.SampleCounts[sampleRate] = Math.Max(
+                        requirements.SampleCounts[sampleRate],
+                        sampleCount);
 
                     if (decayConstant.HasValue)
                     {

@@ -1,7 +1,7 @@
 using NUnit.Framework;
 namespace Unity.Multiplayer.Tools.NetStatsMonitor.Tests.Interface.Configuration
 {
-    public class LineGraphConfigurationTests
+    class LineGraphConfigurationTests
     {
         [TestCase(0.99f ,ConfigurationLimits.k_GraphLineThicknessMin)]
         [TestCase(10.01f ,ConfigurationLimits.k_GraphLineThicknessMax)]
@@ -14,7 +14,7 @@ namespace Unity.Multiplayer.Tools.NetStatsMonitor.Tests.Interface.Configuration
             var displayElementConfiguration = new DisplayElementConfiguration();
             var graphConfig = displayElementConfiguration.GraphConfiguration;
             graphConfig.LineGraphConfiguration.LineThickness = lineThicknessInput;
-            
+
             Assert.IsNotNull(graphConfig.LineGraphConfiguration);
             Assert.AreEqual(lineThicknessExpected, graphConfig.LineGraphConfiguration.LineThickness);
             Assert.That(graphConfig.LineGraphConfiguration.LineThickness, Is.InRange(ConfigurationLimits.k_GraphLineThicknessMin, ConfigurationLimits.k_GraphLineThicknessMax));

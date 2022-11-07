@@ -11,6 +11,7 @@
 
 using System.Collections.Generic;
 using System.Linq;
+using Unity.Multiplayer.Tools.Common;
 
 namespace Unity.Multiplayer.Tools.NetStatsMonitor.Implementation
 {
@@ -27,28 +28,28 @@ namespace Unity.Multiplayer.Tools.NetStatsMonitor.Implementation
         /// In practice, this will be the capacity of the ring-buffer used to store past values.
         /// If multiple widgets need to display historical values of a stat, then the number of past
         /// values required will be the maximum of the individual requirements.
-        public int SampleCount { get; set; } = 0;
+        public EnumMap<SampleRate, int> SampleCounts { get; set; }// = new();
 
         public StatHistoryRequirements()
         {
             DecayConstants = new HashSet<double>();
-            SampleCount = 0;
+            SampleCounts = new();
         }
 
         public StatHistoryRequirements(
             HashSet<double> decayConstants,
-            int sampleCount)
+            EnumMap<SampleRate, int> sampleCounts)
         {
             DecayConstants = decayConstants;
-            SampleCount = sampleCount;
+            SampleCounts = sampleCounts;
         }
 
         public StatHistoryRequirements(
             IEnumerable<double> decayConstants,
-            int sampleCount)
+            EnumMap<SampleRate, int> sampleCounts)
         {
             DecayConstants = decayConstants.ToHashSet();
-            SampleCount = sampleCount;
+            SampleCounts = sampleCounts;
         }
     }
 }

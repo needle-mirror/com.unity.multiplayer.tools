@@ -16,6 +16,7 @@ using JetBrains.Annotations;
 
 using Unity.Multiplayer.Tools.Common;
 using Unity.Multiplayer.Tools.NetStats;
+using UnityEngine.Assertions;
 
 namespace Unity.Multiplayer.Tools.NetStatsMonitor.Implementation
 {
@@ -32,20 +33,26 @@ namespace Unity.Multiplayer.Tools.NetStatsMonitor.Implementation
         /// Record sample time-stamps for graphs and counters, so that
         /// we can gracefully handle irregularly-timed metric dispatches.
         [NotNull]
-        public RingBuffer<double> TimeStamps { get; } = new(0);
+        public EnumMap<SampleRate, RingBuffer<double>> TimeStamps { get; } = new EnumMap<SampleRate, RingBuffer<double>>()
+        {
+            { SampleRate.PerFrame,  new(0) },
+            { SampleRate.PerSecond, new(0) },
+        };
 
         public void Clear()
         {
             m_Data.Clear();
         }
 
-        public void Collect(StatsAccumulator statsAccumulator, double time)
+        public void Collect(SampleRate rate, StatsAccumulator statsAccumulator, double time)
         {
-            TimeStamps.PushBack(time);
-            foreach (var (metricId, history) in m_Data)
+            TimeStamps[rate].PushBack(time);
+            foreach (var metricId in statsAccumulator.RequiredMetrics)
             {
+                var history = m_Data[metricId];
+                Assert.IsNotNull(history);
                 var collectedValue = statsAccumulator.Collect(metricId);
-                history.Update(metricId, collectedValue, time);
+                history.Update(metricId, rate, collectedValue, time);
             }
             statsAccumulator.LastCollectionTime = time;
         }
@@ -65,10 +72,13 @@ namespace Unity.Multiplayer.Tools.NetStatsMonitor.Implementation
             }
 
             // Add and update stats according to the requirements
-            var maxSampleCount = 0;
+            var maxSampleCounts = new EnumMap<SampleRate, int>(0);
             foreach (var (statName, statRequirements) in allStatRequirements)
             {
-                maxSampleCount = Math.Max(maxSampleCount, statRequirements.SampleCount);
+                for (var rate = SampleRates.k_First; rate <= SampleRates.k_Last; rate = rate.Next())
+                {
+                    maxSampleCounts[rate] = Math.Max(maxSampleCounts[rate], statRequirements.SampleCounts[rate]);
+                }
                 if (m_Data.ContainsKey(statName))
                 {
                     m_Data[statName].UpdateRequirements(statRequirements);
@@ -82,111 +92,98 @@ namespace Unity.Multiplayer.Tools.NetStatsMonitor.Implementation
             // Include a surplus of one timestamp so that the duration of the oldest sample
             // can still be computed
             const int k_TimeStampSurplus = 1;
-            TimeStamps.Capacity = maxSampleCount + k_TimeStampSurplus;
-            for (int i = 0; i < k_TimeStampSurplus; ++i)
+
+            for (var rate = SampleRates.k_First; rate <= SampleRates.k_Last; rate = rate.Next())
             {
-                TimeStamps.PushBack(0);
+                TimeStamps[rate].Capacity = maxSampleCounts[rate] + k_TimeStampSurplus;
+                for (int i = 0; i < k_TimeStampSurplus; ++i)
+                {
+                    TimeStamps[rate].PushBack(0);
+                }
             }
         }
 
-        internal double? GetSimpleMovingAverageForCounter(MetricId metricId, int maxSampleCount, double time)
+        double? GetSimpleMovingAverageForCounter(
+            MetricId metricId,
+            SampleRate sampleRate,
+            int maxSampleCount,
+            double time)
         {
             if (!Data.TryGetValue(metricId, out StatHistory statHistory))
             {
                 return null;
             }
 
-            var sampleCount = Math.Min(maxSampleCount, statHistory.RecentValues.Length);
+            var samples = statHistory.SampleBuffers[sampleRate];
+            var sampleCount = Math.Min(maxSampleCount, samples.Length);
             if (sampleCount <= 1)
             {
                 return null;
             }
-            var sampleSum = statHistory.RecentValues.SumLastN(sampleCount);
+            var sampleSum = samples.SumLastN(sampleCount);
 
-            var startTime = TimeStamps[^(sampleCount - 1)];
-
-            var timeSpan = time - startTime;
+            var timeSpan = TimeSpanOfLastNSamples(sampleRate, sampleCount);
 
             var rate = sampleSum / timeSpan;
             return rate;
         }
 
-        public double? GetSimpleMovingAverageForGauge(MetricId metricId, int maxSampleCount)
+        double? GetSimpleMovingAverageForGauge(
+            MetricId metricId,
+            SampleRate sampleRate,
+            int maxSampleCount)
         {
             if (!Data.TryGetValue(metricId, out StatHistory statHistory))
             {
                 return null;
             }
 
-            var sampleCount = Math.Min(maxSampleCount, statHistory.RecentValues.Length);
+            var samples = statHistory.SampleBuffers[sampleRate];
+
+            var sampleCount = Math.Min(maxSampleCount, samples.Length);
             if (sampleCount <= 0)
             {
                 return null;
             }
-            var sampleSum = statHistory.RecentValues.SumLastN(sampleCount);
+            var sampleSum = samples.SumLastN(sampleCount);
 
             var average = sampleSum / sampleCount;
             return average;
         }
 
-        public double? GetSimpleMovingAverage(MetricId metricId, int maxSampleCount, double time)
+        public double? GetSimpleMovingAverage(
+            MetricId metricId,
+            SampleRate sampleRate,
+            int maxSampleCount,
+            double time)
         {
             var metricKind = metricId.MetricKind;
             switch (metricKind)
             {
                 case MetricKind.Counter:
-                    return GetSimpleMovingAverageForCounter(metricId, maxSampleCount, time);
+                    return GetSimpleMovingAverageForCounter(metricId, sampleRate, maxSampleCount, time);
                 case MetricKind.Gauge:
-                    return GetSimpleMovingAverageForGauge(metricId, maxSampleCount);
+                    return GetSimpleMovingAverageForGauge(metricId, sampleRate, maxSampleCount);
                 default:
                     throw new NotSupportedException($"Unhandled {nameof(MetricKind)} {metricKind}");
             }
         }
 
         /// The length of the history in seconds
-        internal double TimeSpanOfLastNSamples(int sampleCount)
+        internal double TimeSpanOfLastNSamples(SampleRate sampleRate, int sampleCount)
         {
-            var validSampleCount = Math.Min(sampleCount, TimeStamps.Length);
+            var timeStamps = TimeStamps[sampleRate];
+
+            var validSampleCount = Math.Min(sampleCount + 1, timeStamps.Length);
             if (validSampleCount <= 1)
             {
                 return 0;
             }
-            var firstTimeStamp = TimeStamps[^(validSampleCount - 1)];
-            var lastTimeStamp = TimeStamps[^1];
+
+            var firstTimeStamp = timeStamps[^validSampleCount];
+            var lastTimeStamp = timeStamps.MostRecent;
             return lastTimeStamp - firstTimeStamp;
         }
-
-#if UNITY_INCLUDE_TESTS
-        public static MultiStatHistory CreateMockMultiStatHistoryForTest(
-            MetricId metricId,
-            StatHistory statHistory,
-            double[] timeStamps = null)
-        {
-            var history = new MultiStatHistory();
-            history.m_Data[metricId] = statHistory;
-
-            if (timeStamps != null)
-            {
-                var timeStampCount = timeStamps.Length;
-                history.TimeStamps.Capacity = timeStampCount;
-                foreach (var timeStamp in timeStamps)
-                {
-                    history.TimeStamps.PushBack(timeStamp);
-                }
-            }
-            else
-            {
-                var sampleCapacity = statHistory.RecentValues.Capacity;
-                var sampleCount = statHistory.RecentValues.Length;
-                history.TimeStamps.Capacity = sampleCapacity;
-                for (var i = 0; i < sampleCount; ++i)
-                {
-                    history.TimeStamps.PushBack(i);
-                }
-            }
-            return history;
-        }
-#endif
     }
 }
 #endif

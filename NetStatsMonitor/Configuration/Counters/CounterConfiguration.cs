@@ -89,6 +89,17 @@ namespace Unity.Multiplayer.Tools.NetStatsMonitor
             ? SimpleMovingAverageParams.SampleCount
             : 0;
 
+        /// <summary>
+        /// The current configured sample rate.
+        /// </summary>
+        /// <remarks>
+        /// Note that if the <see cref="SmoothingMethod"/> is set to ExponentialMovingAverage
+        /// the <see cref="SampleRate"/> will be PerFrame.
+        /// </remarks>
+        internal SampleRate SampleRate => SmoothingMethod == SmoothingMethod.SimpleMovingAverage
+            ? SimpleMovingAverageParams.SampleRate
+            : SampleRate.PerFrame;
+
         internal int ComputeHashCode()
         {
             return HashCode.Combine(

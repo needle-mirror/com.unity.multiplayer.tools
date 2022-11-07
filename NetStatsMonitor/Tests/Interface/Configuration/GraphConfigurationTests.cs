@@ -4,10 +4,10 @@ using System.Collections.Generic;
 
 namespace Unity.Multiplayer.Tools.NetStatsMonitor.Tests.Interface.Configuration
 {
-    public class GraphConfigurationTests
+    class GraphConfigurationTests
     {
-        private GraphConfiguration m_GraphConfiguration = new();
-        
+        GraphConfiguration m_GraphConfiguration = new();
+
         [TestCase(7, ConfigurationLimits.k_GraphSampleMin)]
         [TestCase(-1, ConfigurationLimits.k_GraphSampleMin)]
         [TestCase(8, 8)]
@@ -28,8 +28,8 @@ namespace Unity.Multiplayer.Tools.NetStatsMonitor.Tests.Interface.Configuration
         {
             m_GraphConfiguration.XAxisType = input;
             Assert.AreEqual(input, m_GraphConfiguration.XAxisType);
-        } 
-        
+        }
+
         [Test]
         [Description("Test the graph configuration color by adding them to a list")]
         public void AddGraphColor_GivenColorList_ShouldContainAddedColor()
