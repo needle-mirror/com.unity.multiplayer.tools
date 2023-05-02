@@ -1,7 +1,5 @@
-﻿using System;
-using Mono.Cecil;
+﻿using Mono.Cecil;
 using Unity.CompilationPipeline.Common.ILPostProcessing;
-using UnityEngine;
 
 namespace Unity.Multiplayer.Tools.NetStats.CodeGen
 {

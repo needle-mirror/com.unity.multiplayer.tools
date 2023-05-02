@@ -2,7 +2,7 @@
 using Unity.Multiplayer.Tools.NetworkSimulator.Runtime;
 using UnityEngine;
 
-namespace Samples.NetworkScenarios
+namespace Unity.Multiplayer.Tools.Samples.NetworkScenario
 {
     [Serializable]
     public class ConnectionParametersWithCurves : NetworkScenarioBehaviour

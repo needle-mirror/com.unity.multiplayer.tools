@@ -1,5 +1,3 @@
-using System;
-
 namespace Unity.Multiplayer.Tools.NetStatsMonitor
 {
     /// <summary>

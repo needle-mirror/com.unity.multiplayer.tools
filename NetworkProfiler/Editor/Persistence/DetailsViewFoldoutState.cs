@@ -21,7 +21,7 @@ namespace Unity.Multiplayer.Tools.NetworkProfiler.Editor
                 // If default is expanded, then exception means contracted
                 return !m_FoldoutExceptions.Contains(locator);
             }
-            
+
             return m_FoldoutExceptions.Contains(locator);
         }
 
@@ -50,7 +50,7 @@ namespace Unity.Multiplayer.Tools.NetworkProfiler.Editor
         }
 
         void Contract(string locator)
-        { 
+        {
             if (m_DefaultFoldoutStateExpanded)
             {
                 m_FoldoutExceptions.Add(locator);

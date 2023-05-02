@@ -13,20 +13,19 @@ namespace Unity.Multiplayer.Tools.NetStatsMonitor
         /// The number of samples that are maintained for the purpose of smoothing.
         /// </summary>
         /// <remarks>
-        /// The value is clamped to the range [8, 4096].
+        /// The value is clamped to the range [8, 512].
         /// </remarks>
         [field: SerializeField]
-        [field: Min(1)]
         [field: Tooltip("The number of samples that are maintained for the purpose of smoothing." +
-                        "The value is clamped to the range [8, 4096].")]
+                        "The value is clamped to the range [8, 512].")]
         [field: Range(ConfigurationLimits.k_CounterSampleMin, ConfigurationLimits.k_CounterSampleMax)]
-        int m_SampleCount = 64;
+        int m_SampleCount = ConfigurationLimits.k_CounterSampleDefault;
 
         /// <summary>
         /// The number of samples that are maintained for the purpose of smoothing.
         /// </summary>
         /// <remarks>
-        /// The value is clamped to the range [8, 4096].
+        /// The value is clamped to the range [8, 512].
         /// </remarks>
         public int SampleCount
         {

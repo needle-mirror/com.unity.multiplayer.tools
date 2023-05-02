@@ -130,7 +130,7 @@ namespace Unity.Multiplayer.Tools.NetworkSimulator.Editor.UI
                 min += max - k_MaxDelay;
                 max = k_MaxDelay;
             }
-            
+
             PacketDelayRange.value = new(min, max);
         }
 
@@ -138,7 +138,7 @@ namespace Unity.Multiplayer.Tools.NetworkSimulator.Editor.UI
         {
             var min = PacketDelaySlider.value - change.newValue;
             var max = PacketDelaySlider.value + change.newValue;
-            
+
             if (min < 0)
             {
                 max -= min;
@@ -149,7 +149,7 @@ namespace Unity.Multiplayer.Tools.NetworkSimulator.Editor.UI
                 min -= max - k_MaxDelay;
                 max = k_MaxDelay;
             }
-            
+
             PacketDelayRange.value = new(min, max);
         }
 
@@ -255,7 +255,7 @@ namespace Unity.Multiplayer.Tools.NetworkSimulator.Editor.UI
         {
             PacketDelayRangeMinValue.SetValueWithoutNotify(value);
         }
-        
+
         void UpdatePacketDelayRangeMaxValue(int value)
         {
             PacketDelayRangeMaxValue.SetValueWithoutNotify(value);

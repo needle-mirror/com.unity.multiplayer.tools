@@ -1,6 +1,6 @@
 using System;
 using JetBrains.Annotations;
-using Unity.Multiplayer.Tools.NetworkProfiler.Runtime;
+using Unity.Multiplayer.Tools.Common;
 
 namespace Unity.Multiplayer.Tools.NetworkProfiler.Editor
 {

@@ -40,7 +40,7 @@ namespace Unity.Multiplayer.Tools.NetStatsMonitor.Implementation
             UpdateColor(color);
         }
 
-        internal void Update(string name, Color32 color)
+        internal void Update(string name, Color color)
         {
             UpdateName(name);
             UpdateColor(color);
@@ -52,9 +52,9 @@ namespace Unity.Multiplayer.Tools.NetStatsMonitor.Implementation
             m_KeyLabel.text = name;
         }
 
-        internal void UpdateColor(Color32 color)
+        internal void UpdateColor(Color color)
         {
-            m_Swatch.style.backgroundColor = (Color)color;
+            m_Swatch.style.backgroundColor = color;
         }
     }
 }

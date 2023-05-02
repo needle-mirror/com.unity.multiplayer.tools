@@ -26,7 +26,7 @@ namespace Unity.Multiplayer.Tools.MetricTypes
         public NetworkObjectIdentifier NetworkId { get; }
 
         public FixedString64Bytes Name { get; }
-        
+
         public FixedString64Bytes NetworkBehaviourName { get; }
 
         public long BytesCount { get; }

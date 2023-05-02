@@ -1,11 +1,10 @@
-﻿#if UNITY_2021_2_OR_NEWER
-using System.Linq;
+﻿using System.Linq;
 using Unity.Profiling;
 using Unity.Profiling.Editor;
 
 namespace Unity.Multiplayer.Tools.NetworkProfiler.Editor
 {
-    internal static class ProfilerModuleDefinitionExtensions
+    static class ProfilerModuleDefinitionExtensions
     {
         public static ProfilerCounterDescriptor[] CountersAsDescriptors(this ProfilerModuleDefinition moduleDefinition)
         {
@@ -15,4 +14,3 @@ namespace Unity.Multiplayer.Tools.NetworkProfiler.Editor
         }
     }
 }
-#endif

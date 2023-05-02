@@ -7,7 +7,7 @@ namespace Unity.Multiplayer.Tools.NetworkProfiler.Runtime
     {
         static ProfilerCounters s_Singleton;
         public static ProfilerCounters Instance => s_Singleton ??= new ProfilerCounters();
-        
+
         public readonly MetricByteCounters totalBytes;
         public readonly MetricCounters rpc;
         public readonly MetricCounters namedMessage;
@@ -23,9 +23,9 @@ namespace Unity.Multiplayer.Tools.NetworkProfiler.Runtime
 
         ICounterFactory m_ByteCounterFactory;
         ICounterFactory m_EventCounterFactory;
-        
+
         public ProfilerCounters(
-            ICounterFactory byteCounterFactory = null, 
+            ICounterFactory byteCounterFactory = null,
             ICounterFactory eventCounterFactory = null)
         {
             m_ByteCounterFactory = byteCounterFactory ?? new ByteCounterFactory();

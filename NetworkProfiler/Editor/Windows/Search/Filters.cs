@@ -1,8 +1,8 @@
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text.RegularExpressions;
-using System.Collections.ObjectModel;
 
 namespace Unity.Multiplayer.Tools.NetworkProfiler.Editor
 {

@@ -1,6 +1,7 @@
 using System;
 using System.Globalization;
 using JetBrains.Annotations;
+using Unity.Multiplayer.Tools.Common;
 using UnityEngine;
 
 namespace Unity.Multiplayer.Tools.NetStats
@@ -53,10 +54,10 @@ namespace Unity.Multiplayer.Tools.NetStats
         /// <typeparam name="T">An enum with the <see cref="MetricTypeEnumAttribute"/></typeparam>
         /// <returns></returns>
         public static MetricId Create<T>(T value)
-            where T: struct, IConvertible
+            where T : unmanaged, Enum
         {
             var enumType = typeof(T);
-            var enumValue = value.ToInt32(CultureInfo.InvariantCulture);
+            var enumValue = CheckedEnumUtils<T, int>.CheckedCastToUnderlying(value);
             return new MetricId(enumType, enumValue);
         }
 
@@ -86,10 +87,7 @@ namespace Unity.Multiplayer.Tools.NetStats
         /// Serves as the default hash function.
         /// </summary>
         /// <returns>A hash code for the current <see cref="MetricId"/>.</returns>
-        public override int GetHashCode()
-        {
-            return 173 * TypeIndex + 13 * EnumValue;
-        }
+        public override int GetHashCode() => HashCode.Combine(TypeIndex, EnumValue);
 
         /// <summary>
         /// Returns a string that represents the current <see cref="MetricId"/>.

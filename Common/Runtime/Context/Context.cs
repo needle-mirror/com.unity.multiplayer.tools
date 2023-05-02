@@ -40,7 +40,7 @@ namespace Unity.Multiplayer.Tools.Common
             EnabledInEditor,
             EnabledInRuntime
         }
-        
+
         protected ContextStatus Status { get; private set; }
 
         void IEditorSetupHandler.EditorSetup()

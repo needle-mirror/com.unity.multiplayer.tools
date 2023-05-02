@@ -3,6 +3,7 @@
     "rootNamespace": "Unity.Multiplayer.Tools.NetworkProfiler.Editor",
     "references": [
         "Unity.Profiling.Core",
+        "Unity.Multiplayer.Tools.Common",
         "Unity.Multiplayer.Tools.NetworkProfiler.Runtime",
         "Unity.Multiplayer.Tools.NetStats",
         "Unity.Multiplayer.Tools.MetricTypes",

@@ -1,10 +1,9 @@
 using System;
 using System.Collections.Generic;
-
-using UnityEngine;
 using Unity.Multiplayer.Tools.Common;
 using Unity.Multiplayer.Tools.NetStats;
 using Unity.Multiplayer.Tools.NetStatsMonitor.Configuration;
+using UnityEngine;
 
 namespace Unity.Multiplayer.Tools.NetStatsMonitor
 {
@@ -325,7 +324,6 @@ namespace Unity.Multiplayer.Tools.NetStatsMonitor
             }
         }
 
-#if UNITY_2021_2_OR_NEWER // HashCode isn't defined in Unity < 2021.2
         internal int ComputeStatsHashCode()
         {
             var hash = 0;
@@ -353,6 +351,5 @@ namespace Unity.Multiplayer.Tools.NetStatsMonitor
             }
             return hash;
         }
-#endif
     }
 }

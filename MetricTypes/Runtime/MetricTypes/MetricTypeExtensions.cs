@@ -1,5 +1,5 @@
-﻿using Unity.Multiplayer.Tools.MetricTypes;
-using Unity.Multiplayer.Tools.Common;
+﻿using Unity.Multiplayer.Tools.Common;
+using Unity.Multiplayer.Tools.MetricTypes;
 
 namespace Unity.Multiplayer.Tools.NetStats
 {

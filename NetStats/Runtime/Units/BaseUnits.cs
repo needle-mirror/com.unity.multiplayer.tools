@@ -1,6 +1,4 @@
 using System;
-using System.Collections.Generic;
-using UnityEngine;
 
 namespace Unity.Multiplayer.Tools.NetStats
 {
@@ -35,18 +33,7 @@ namespace Unity.Multiplayer.Tools.NetStats
             return obj is BaseUnits other && Equals(other);
         }
 
-        public override int GetHashCode()
-        {
-            // Note: System.Hashcode functionality isn't available in Unity < 2021.2,
-            // so this custom hashing can be replaced when versions < 2021.2 no longer
-            // need to be supported
-
-            // By virtue of the fact that all four fields combined are less than 32 bits
-            // we can pack them all in a 32 bit HashCode, and don't even need to hash.
-            return
-                ((byte)BytesExponent << 8) |
-                (byte)SecondsExponent;
-        }
+        public override int GetHashCode() => HashCode.Combine(BytesExponent, SecondsExponent);
 
         internal sbyte GetExponent(BaseUnit unit)
         {

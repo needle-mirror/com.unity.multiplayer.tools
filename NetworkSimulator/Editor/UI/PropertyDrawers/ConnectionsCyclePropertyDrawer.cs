@@ -53,7 +53,7 @@ namespace Unity.Multiplayer.Tools.NetworkSimulator.Editor.UI.PropertyDrawers
             position.y += EditorGUIUtility.singleLineHeight;
 
             EditorGUI.ObjectField(position, customPresetProperty);
-            
+
             position.y += EditorGUIUtility.singleLineHeight;
             labelName = ObjectNames.NicifyVariableName(nameof(ConnectionsCycle.Configuration.ChangeIntervalMilliseconds));
             var guiContent = new GUIContent(labelName);

@@ -1,5 +1,4 @@
 using System;
-using JetBrains.Annotations;
 
 namespace Unity.Multiplayer.Tools.NetStats
 {

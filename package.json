@@ -1,15 +1,17 @@
 {
   "name": "com.unity.multiplayer.tools",
   "displayName": "Multiplayer Tools",
-  "version": "1.1.0",
-  "unity": "2020.3",
+  "version": "2.0.0-pre.2",
+  "unity": "2021.3",
   "description": "Adds a suite of tools that improve workflows for multiplayer development",
   "dependencies": {
     "com.unity.profiling.core": "1.0.0-pre.1",
     "com.unity.nuget.newtonsoft-json": "2.0.0",
     "com.unity.nuget.mono-cecil": "1.10.1",
     "com.unity.collections": "1.1.0",
-    "com.unity.modules.uielements": "1.0.0"
+    "com.unity.modules.uielements": "1.0.0",
+    "com.unity.burst": "1.6.6",
+    "com.unity.mathematics": "1.2.6"
   },
   "keywords": [
     "Multiplayer",
@@ -21,19 +23,22 @@
   "samples": [
     {
       "displayName": "Network Scenario Samples",
-      "description": "Samples showcasing the different ways of building custom network simulator scenarios.",
+      "description": "Samples showcasing the different ways of building custom network simulator scenarios.\n\nNote: In order to use these Samples, make sure you have Netcode for GameObjects (com.unity.netcode.gameobjects) 1.1.0 or later and Unity Transport (com.unity.transport) 2.0.0 or later. For more info, please check the Network Simulator documentation: https://docs-multiplayer.unity3d.com/tools/current/tools-network-simulator",
       "path": "Samples~/NetworkSimulator"
     }
   ],
   "relatedPackages": {
-    "com.unity.multiplayer.tools.tests": "1.1.0"
+    "com.unity.multiplayer.tools.tests": "2.0.0-pre.2"
+  },
+  "_upm": {
+    "changelog": "### *General*\n- Dropped support for Unity 2020.3; the next supported version is Unity 2021.3\n- Fixed ``Failed to load type initialization for assembly Unity.Multiplayer.Tools.MetricTypes`` runtime exception when building using Managed Stripping level set to high.\n\n### *Network Scene Visualization*\n\nThis release adds the Network Scene Visualization to the Multiplayer Tools Package. This tool allows users to visualize networking information (like bandwidth and ownership) on a per-object basis in the scene view using a number of visualizations, including mesh shading and a text overlay.\n\n### *Runtime Net Stats Monitor*\n- Fixed an issue that prevented using the ``RuntimeNetStatsMonitor.AddCustomValue`` API for stats that are only sampled per second.\n- Switched to a new color-blind friendly color-palette for default variable colors in graphs, which will provide increased contrast and more default values. This new color palette is the same one used in the new Network Scene Visualization tool.\n- Reduced the maximum sample count in Graphs and Simple Moving Average counters from 4096 to 512. Sample counts higher than 512 are no longer needed since per-second sampling was introduced in 1.1.0.\n- Deprecated public methods that could be used to control the conditional compilation of the RNSM. Conditional compilation of the RNSM will be removed in a future major release."
   },
   "upmCi": {
-    "footprint": "e658d3ad3487f792d253b3a7f97bb456a482766c"
+    "footprint": "6d92ba84eae702fc1df67f7f77fa78898245383a"
   },
   "repository": {
     "url": "https://github.com/Unity-Technologies/com.unity.multiplayer.tools.git",
     "type": "git",
-    "revision": "3ac1c04a8a9f6bd7a75572380019c0661b7d0f2c"
+    "revision": "fb081d7c8f313600fd47d8b3833519c5b0d8fb11"
   }
 }

@@ -137,12 +137,12 @@ namespace Unity.Multiplayer.Tools.NetStatsMonitor.Implementation
                 return (inputBase1000.Mantissa >= 0 ? "+∞" : "-∞", "");
             }
             var prefixSymbol = metricPrefix.GetSymbol();
-            
+
             var leadingNumber = roundedValue.ToString("N" + digitsBelowDecimal, CultureInfo.CurrentCulture);
 
             return (leadingNumber, prefixSymbol);
         }
-        
+
         /// Returns (string LeadingNumber, string PrefixSymbol)
         public static (string leadingNumber, string prefixSymbol) GetLeadingNumberAndPrefixSymbol(
             MantissaAndExponent inputBase1000,
@@ -158,7 +158,7 @@ namespace Unity.Multiplayer.Tools.NetStatsMonitor.Implementation
 
             var digitsAboveDecimal = GetDigitsAboveDecimal(inputBase1000, false);
             var digitsBelowDecimal = GetDigitsBelowDecimal(significantDigits, digitsAboveDecimal);
-            
+
             var roundedValue = RoundToSignificantDigits(
                 inputBase1000.Mantissa,
                 significantDigits,
@@ -181,7 +181,7 @@ namespace Unity.Multiplayer.Tools.NetStatsMonitor.Implementation
                 + (unitsNumerator == "" ? prefixSymbol : $"{k_SmallSpace}{prefixSymbol}{unitsNumerator}")
                 + (unitsDenominator == "" ? "" : $"{k_DivisionSlash}{unitsDenominator}");
         }
-        
+
         public static string Base1000ToEngineeringNotation(
             MantissaAndExponent inputBase1000,
             int significantDigits,
@@ -220,7 +220,7 @@ namespace Unity.Multiplayer.Tools.NetStatsMonitor.Implementation
                 + (unitsNumerator   == "" ? "" : $"{k_SmallSpace}{unitsNumerator}")
                 + (unitsDenominator == "" ? "" : $"{k_DivisionSlash}{unitsDenominator}");
         }
-        
+
         public static string Base10ToPercentageNotation(
             MantissaAndExponent inputBase10,
             int significantDigits,
@@ -259,10 +259,10 @@ namespace Unity.Multiplayer.Tools.NetStatsMonitor.Implementation
         {
             return Math.Abs(a - b) < tolerance;
         }
-        
+
         public static int GetDigitsAboveDecimal(MantissaAndExponent inputBase1000, bool displayAsPercentage)
         {
-            return displayAsPercentage ? 1 : 
+            return displayAsPercentage ? 1 :
                 inputBase1000.Mantissa >= 100f ? 3 :
                 inputBase1000.Mantissa >=  10f ? 2 :
                 1;

@@ -1,5 +1,4 @@
 using System;
-
 using Unity.Multiplayer.Tools.NetStats;
 
 namespace Unity.Multiplayer.Tools.Adapters

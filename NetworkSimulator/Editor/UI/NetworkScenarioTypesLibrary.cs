@@ -26,7 +26,7 @@ namespace Unity.Multiplayer.Tools.NetworkSimulator.Editor.UI
             {
                 return;
             }
-            
+
             Types = AppDomain.CurrentDomain.GetAssemblies()
                 .SelectMany(x => x.GetTypes())
                 .Where(TypeIsValidNetworkScenario)

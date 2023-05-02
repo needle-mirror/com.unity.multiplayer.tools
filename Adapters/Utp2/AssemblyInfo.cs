@@ -4,4 +4,6 @@ using System.Runtime.CompilerServices;
 [assembly: InternalsVisibleTo("Unity.Multiplayer.Tools.Adapters.Ngo1WithUtp2")]
 
 // Test assemblies
-[assembly: InternalsVisibleTo("Unity.Multiplayer.Tools.Adapters.Tests")]
+#if UNITY_INCLUDE_TESTS
+[assembly: InternalsVisibleTo("Unity.Multiplayer.Tools.Adapters.Tests.Editor")]
+#endif

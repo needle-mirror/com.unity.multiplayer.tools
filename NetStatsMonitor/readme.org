@@ -3,7 +3,7 @@
 * Getting Started
 ** Prerequisites
 - git
-- Unity 2021.2 or later
+- Unity 2021.3 or later
 
 ** Installing the Tools Package
 1. Clone this repository, and note the location:
@@ -11,7 +11,7 @@
 git clone https://github.com/Unity-Technologies/com.unity.multiplayer.tools.git
 #+END_SRC
 
-2. Open a project in Unity 2021.2 or later.
+2. Open a project in Unity 2021.3 or later.
 
 3. Open the Unity Package Manager: Window > Package Manager.
 

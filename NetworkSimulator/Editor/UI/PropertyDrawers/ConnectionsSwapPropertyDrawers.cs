@@ -23,7 +23,7 @@ namespace Unity.Multiplayer.Tools.NetworkSimulator.Editor.UI.PropertyDrawers
 
             var connections = property.FindPropertyRelative($"m_{nameof(RandomConnectionsSwap.Configurations)}");
             EditorGUILayout.PropertyField(connections, true);
-            
+
             if (EditorGUI.EndChangeCheck())
             {
                 changeInterval.intValue = Mathf.Clamp(changeInterval.intValue, 0, int.MaxValue);

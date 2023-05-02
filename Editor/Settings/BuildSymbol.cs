@@ -51,7 +51,7 @@ namespace Unity.Multiplayer.Tools.Editor
                     throw new ArgumentOutOfRangeException(nameof(symbol), symbol, null);
             }
         }
-        
+
         public static string GetBuildSymbolString(
             Tool tool,
             BuildSymbol symbol)

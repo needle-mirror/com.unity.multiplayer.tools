@@ -1,10 +1,11 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using UnityEngine;
-
+using System.Diagnostics.CodeAnalysis;
+using Unity.Multiplayer.Tools.Common;
+using Unity.Multiplayer.Tools.MetricEvents;
 using Unity.Multiplayer.Tools.NetStats;
 using Unity.Netcode;
+using UnityEngine;
 
 namespace Unity.Multiplayer.Tools.Adapters.Ngo1
 {
@@ -14,6 +15,7 @@ namespace Unity.Multiplayer.Tools.Adapters.Ngo1
 
         // Events
         // --------------------------------------------------------------------
+        , IGetConnectedClients
         , IMetricCollectionEvent
 
         // Queries
@@ -25,11 +27,66 @@ namespace Unity.Multiplayer.Tools.Adapters.Ngo1
         , IGetOwnership
         , IGetRpcCount
     {
-        // TODO: Get reference via OnSingletonReady when we have internal access to NGO
-        NetworkManager NetworkManager => NetworkManager.Singleton;
-        NetworkSpawnManager SpawnManager => NetworkManager.SpawnManager;
+        [NotNull]
+        readonly NetworkManager m_NetworkManager;
 
-        public AdapterMetadata Metadata { get; } = new AdapterMetadata{
+        [MaybeNull]
+        NetworkSpawnManager SpawnManager => m_NetworkManager.SpawnManager;
+
+        [MaybeNull]
+        Dictionary<ulong, NetworkObject> SpawnedObjects => SpawnManager?.SpawnedObjects;
+
+        public Ngo1Adapter([NotNull] NetworkManager networkManager)
+        {
+            DebugUtil.TraceMethodName();
+
+            Debug.Assert(networkManager != null, $"The parameter {nameof(networkManager)} can't be null.");
+
+            m_NetworkManager = networkManager;
+            m_NetworkManager.OnClientConnectedCallback += OnClientConnected;
+            m_NetworkManager.OnClientDisconnectCallback += OnClientDisconnected;
+            m_NetworkManager.NetworkTickSystem.Tick += OnTick;
+
+            MetricEventPublisher.OnMetricsReceived += OnMetricsReceived;
+        }
+
+        readonly List<ClientId> m_ClientIds = new();
+        readonly List<ObjectId> m_ObjectIds = new();
+
+        void OnTick()
+        {
+            RefreshClientIds();
+            RefreshObjectIds();
+        }
+
+        void RefreshClientIds()
+        {
+            m_ClientIds.Clear();
+
+            var clientIds = m_NetworkManager.ConnectedClientsIds;
+            foreach (var clientId in clientIds)
+            {
+                m_ClientIds.Add((ClientId)clientId);
+            }
+        }
+
+        void RefreshObjectIds()
+        {
+            m_ObjectIds.Clear();
+
+            var spawnedObjects = SpawnManager?.SpawnedObjectsList;
+            if (spawnedObjects == null)
+            {
+                return;
+            }
+            foreach (var spawnedObject in spawnedObjects)
+            {
+                m_ObjectIds.Add((ObjectId)spawnedObject.NetworkObjectId);
+            }
+        }
+
+        public AdapterMetadata Metadata { get; } = new AdapterMetadata
+        {
             PackageInfo = new PackageInfo
             {
                 PackageName = "com.unity.netcode.gameobjects",
@@ -50,34 +107,133 @@ namespace Unity.Multiplayer.Tools.Adapters.Ngo1
 
         // Events
         // --------------------------------------------------------------------
-        public event Action<MetricCollection> MetricCollectionEvent;
-        internal void OnMetricsReceived(MetricCollection metricCollection)
+        public IReadOnlyList<ClientId> ConnectedClients => m_ClientIds;
+        public event Action<ClientId> ClientConnectionEvent;
+        void OnClientConnected(ulong clientId)
         {
+            var typedClientId = (ClientId)clientId;
+            if (!m_ClientIds.Contains(typedClientId))
+            {
+                m_ClientIds.Add(typedClientId);
+            }
+            ClientConnectionEvent?.Invoke(typedClientId);
+        }
+
+        public event Action<ClientId> ClientDisconnectionEvent;
+        void OnClientDisconnected(ulong clientId)
+        {
+            var typedClientId = (ClientId)clientId;
+            m_ClientIds.RemoveAll(id => id == typedClientId);
+            ClientDisconnectionEvent?.Invoke(typedClientId);
+        }
+
+        public event Action<MetricCollection> MetricCollectionEvent;
+        void OnMetricsReceived(MetricCollection metricCollection)
+        {
+            UpdateNetworkTrafficCaches(metricCollection);
             MetricCollectionEvent?.Invoke(metricCollection);
         }
 
-        // Queries
+        // Simple Queries
         // --------------------------------------------------------------------
-        public int GetBandwidthBytes(ObjectId objectId)
-        {
-            throw new System.NotImplementedException();
-        }
-
-        public ClientId LocalClientId => (ClientId)NetworkManager.LocalClientId;
+        public ClientId LocalClientId => (ClientId)m_NetworkManager.LocalClientId;
         public ClientId ServerClientId => (ClientId)NetworkManager.ServerClientId;
 
-        public GameObject GetGameObject(ObjectId objectId) =>
-            SpawnManager.SpawnedObjects[(ulong)objectId].gameObject;
+        public IReadOnlyList<ObjectId> ObjectIds => m_ObjectIds;
 
-        public IEnumerable<ObjectId> ObjectIds =>
-            SpawnManager.SpawnedObjects.Keys.Select(ulongId => (ObjectId)ulongId);
+        public GameObject GetGameObject(ObjectId objectId)
+        {
+            var spawnedObjects = SpawnedObjects;
+            if (spawnedObjects.TryGetValue((ulong)objectId, out var networkObject))
+            {
+                return networkObject.gameObject;
+            }
+            return null;
+        }
 
-        public ClientId GetOwner(ObjectId objectId) =>
-            (ClientId)SpawnManager.SpawnedObjects[(ulong)objectId].OwnerClientId;
+        public ClientId GetOwner(ObjectId objectId)
+        {
+            var spawnedObjects = SpawnedObjects;
+            if (spawnedObjects.TryGetValue((ulong)objectId, out var networkObject))
+            {
+                return (ClientId)networkObject.OwnerClientId;
+            }
+            return 0;
+        }
+
+        // Cached Queries
+        // --------------------------------------------------------------------
+        ObjectBandwidthCache m_BandwidthCache;
+        ObjectRpcCountCache m_RpcCountCache;
+
+        void UpdateNetworkTrafficCaches(MetricCollection metricCollection)
+        {
+            if (m_OnBandwidthUpdated != null)
+            {
+                m_BandwidthCache.Update(metricCollection);
+                m_OnBandwidthUpdated.Invoke();
+            }
+
+            if (m_OnRpcCountUpdated != null)
+            {
+                m_RpcCountCache.Update(metricCollection);
+                m_OnRpcCountUpdated.Invoke();
+            }
+        }
+
+        // IGetBandwidth
+        // --------------------------------------------------------------------
+        event Action m_OnBandwidthUpdated;
+
+        public BandwidthTypes SupportedBandwidthTypes =>
+            BandwidthTypes.Other | BandwidthTypes.Rpc | BandwidthTypes.NetVar;
+
+        public event Action OnBandwidthUpdated
+        {
+            add
+            {
+                m_BandwidthCache ??= new();
+                m_OnBandwidthUpdated += value;
+            }
+            remove
+            {
+                m_OnBandwidthUpdated -= value;
+                if (m_OnBandwidthUpdated == null)
+                {
+                    m_BandwidthCache = null;
+                }
+            }
+        }
+
+        public float GetBandwidthBytes(
+            ObjectId objectId,
+            BandwidthTypes bandwidthTypes = BandwidthTypes.All,
+            NetworkDirection networkDirection = NetworkDirection.SentAndReceived)
+            => m_BandwidthCache?.GetBandwidth(objectId, bandwidthTypes, networkDirection)
+                ?? throw new NoSubscribersException(nameof(IGetBandwidth), nameof(OnBandwidthUpdated));
+
+        // IGetRpcCount
+        // --------------------------------------------------------------------
+        event Action m_OnRpcCountUpdated;
+        public event Action OnRpcCountUpdated
+        {
+            add
+            {
+                m_RpcCountCache ??= new();
+                m_OnRpcCountUpdated += value;
+            }
+            remove
+            {
+                m_OnRpcCountUpdated -= value;
+                if (m_OnRpcCountUpdated == null)
+                {
+                    m_RpcCountCache = null;
+                }
+            }
+        }
 
         public int GetRpcCount(ObjectId objectId)
-        {
-            throw new System.NotImplementedException();
-        }
+            => m_RpcCountCache?.GetRpcCount(objectId)
+               ?? throw new NoSubscribersException(nameof(IGetRpcCount), nameof(OnRpcCountUpdated));
     }
 }

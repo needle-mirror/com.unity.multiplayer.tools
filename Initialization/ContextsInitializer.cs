@@ -5,11 +5,8 @@
 // Runtime Contexts are correctly running or if Editor Only Contexts are disabled as expected.
 // #define UNITY_MP_TOOLS_SIMULATE_BUILD
 
-using System.Diagnostics;
-using System.Runtime.CompilerServices;
 using Unity.Multiplayer.Tools.Common;
 using UnityEngine;
-using Debug = UnityEngine.Debug;
 
 namespace Unity.Multiplayer.Tools.Context
 {
@@ -27,11 +24,11 @@ namespace Unity.Multiplayer.Tools.Context
 
         static ContextsInitializer()
         {
-            TraceCall();
+            DebugUtil.TraceMethodName();
 
             Application.quitting += DisableRuntimeContexts;
 
-            s_Contexts = ContextsDefinition.Get();
+            s_Contexts = ContextsDefinition.Contexts;
 
 #if UNITY_EDITOR && !UNITY_MP_TOOLS_SIMULATE_BUILD
             EnableEditorContexts();
@@ -40,7 +37,7 @@ namespace Unity.Multiplayer.Tools.Context
 
         static void EnableEditorContexts()
         {
-            TraceCall();
+            DebugUtil.TraceMethodName();
 
             foreach (var context in s_Contexts)
             {
@@ -54,7 +51,7 @@ namespace Unity.Multiplayer.Tools.Context
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
         static void EnableRuntimeContexts()
         {
-            TraceCall();
+            DebugUtil.TraceMethodName();
 
             foreach (var context in s_Contexts)
             {
@@ -67,7 +64,7 @@ namespace Unity.Multiplayer.Tools.Context
 
         static void DisableRuntimeContexts()
         {
-            TraceCall();
+            DebugUtil.TraceMethodName();
 
             foreach (var context in s_Contexts)
             {
@@ -76,12 +73,6 @@ namespace Unity.Multiplayer.Tools.Context
                     runtimeContext.RuntimeTeardown();
                 }
             }
-        }
-
-        [Conditional("UNITY_MP_TOOLS_CONTEXT_TRACE_CALLS")]
-        static void TraceCall([CallerMemberName] string methodName = "")
-        {
-            Debug.Log($"{nameof(ContextsInitializer)}.{methodName}");
         }
     }
 }

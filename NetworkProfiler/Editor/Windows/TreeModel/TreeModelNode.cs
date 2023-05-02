@@ -18,7 +18,7 @@ namespace Unity.Multiplayer.Tools.NetworkProfiler.Editor
             m_Children ?? (IReadOnlyList<TreeModelNode>)Array.Empty<TreeModelNode>();
 
         internal TreeModelNode Parent { get; private set; }
-        
+
         public void AddChild(TreeModelNode node)
         {
             m_Children ??= new List<TreeModelNode>();

@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using Unity.Multiplayer.Tools.Common;
 using Unity.Multiplayer.Tools.MetricTypes;
 using Unity.Multiplayer.Tools.NetStats;
-using Unity.Multiplayer.Tools.NetworkProfiler.Runtime;
 using UnityEditor;
 
 namespace Unity.Multiplayer.Tools.NetworkProfiler.Editor

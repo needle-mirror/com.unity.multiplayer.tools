@@ -30,7 +30,7 @@ namespace Unity.Multiplayer.Tools.NetworkProfiler.Editor
         }
 
         // These matches how NGO reports those message.
-        // They may match the MetricTypes enum but that is coincidental. 
+        // They may match the MetricTypes enum but that is coincidental.
         static readonly IReadOnlyCollection<string> k_ExcludedNetworkMessageTypeNames = new[]
         {
             "NamedMessage",

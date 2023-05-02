@@ -15,7 +15,7 @@ namespace Unity.Multiplayer.Tools.MetricTypes
             {
                 return string.Empty;
             }
-            
+
             if (FixedString64Bytes.UTF8MaxLengthInBytes < value.Length)
             {
                 var fixedString = new FixedString64Bytes();

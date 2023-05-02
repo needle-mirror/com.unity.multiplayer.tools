@@ -2,7 +2,6 @@ using System.Linq;
 using System.Reflection;
 using Unity.Multiplayer.Tools.Common;
 using UnityEditor;
-using UnityEditor.UIElements;
 using UnityEngine.UIElements;
 
 namespace Unity.Multiplayer.Tools.NetStatsMonitor.Editor

@@ -201,7 +201,7 @@ namespace Unity.Multiplayer.Tools.NetStats
         /// When you know you will be writing multiple fields back-to-back and you know the total size,
         /// you can call TryBeginWrite() once on the total size, and then follow it with calls to
         /// WriteValue() instead of WriteValueSafe() for faster serialization.
-        /// 
+        ///
         /// Unsafe write operations will throw OverflowException in editor and development builds if you
         /// go past the point you've marked using TryBeginWrite(). In release builds, OverflowException will not be thrown
         /// for performance reasons, since the point of using TryBeginWrite is to avoid bounds checking in the following
@@ -247,7 +247,7 @@ namespace Unity.Multiplayer.Tools.NetStats
         /// When you know you will be writing multiple fields back-to-back and you know the total size,
         /// you can call TryBeginWrite() once on the total size, and then follow it with calls to
         /// WriteValue() instead of WriteValueSafe() for faster serialization.
-        /// 
+        ///
         /// Unsafe write operations will throw OverflowException in editor and development builds if you
         /// go past the point you've marked using TryBeginWrite(). In release builds, OverflowException will not be thrown
         /// for performance reasons, since the point of using TryBeginWrite is to avoid bounds checking in the following

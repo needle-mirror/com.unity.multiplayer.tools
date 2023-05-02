@@ -31,7 +31,7 @@ namespace Unity.Multiplayer.Tools.NetworkProfiler.Editor
 
             var toolbar = new Toolbar();
             Add(toolbar);
-            
+
             m_TabsDropdown = new ToolbarMenu();
             m_TabsDropdown.style.width = k_TabDropdownWidth;
             toolbar.Add(m_TabsDropdown);

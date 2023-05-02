@@ -16,14 +16,14 @@ namespace Unity.Multiplayer.Tools.NetworkProfiler.Runtime
             m_SentCounter = counterFactory.Construct(Sent);
             m_ReceivedCounter = counterFactory.Construct(Received);
         }
-        
+
         public string Sent { get; }
 
         public string Received { get; }
 
         public void Sample<TEventData>(
-            IReadOnlyList<TEventData> sentMetrics, 
-            IReadOnlyList<TEventData> receivedMetrics) 
+            IReadOnlyList<TEventData> sentMetrics,
+            IReadOnlyList<TEventData> receivedMetrics)
             where TEventData : struct, INetworkMetricEvent
         {
             var sentValue  = 0L;

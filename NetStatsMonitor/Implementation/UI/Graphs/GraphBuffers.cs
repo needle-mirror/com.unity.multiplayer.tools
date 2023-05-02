@@ -10,7 +10,7 @@
 #if UNITY_MP_TOOLS_NET_STATS_MONITOR_IMPLEMENTATION_ENABLED
 
 using System;
-using Unity.Multiplayer.Tools.NetStatsMonitor.Implementation.Graphing;
+using Unity.Multiplayer.Tools.Common.Visualization;
 using UnityEngine;
 using UnityEngine.UIElements;
 
@@ -126,13 +126,13 @@ namespace Unity.Multiplayer.Tools.NetStatsMonitor.Implementation
             for (var statIndex = 0; statIndex < statCount; ++statIndex)
             {
                 var statVerticesBegin = statIndex * verticesPerStat;
-                Color32 statColor = (variableColors != null && statIndex < variableColors.Length)
+                var statColor = (variableColors != null && statIndex < variableColors.Length)
                     ? variableColors[statIndex]
-                    : GraphColorUtils.GetColorForIndex(statIndex, statCount);
+                    : CategoricalColorPalette.GetColor(statIndex);
                 for (var vertexIndex = 0; vertexIndex < verticesPerStat; ++vertexIndex)
                 {
                     var vertexIndexAbsolute = statVerticesBegin + vertexIndex;
-                    Vertices[vertexIndexAbsolute].tint = statColor;
+                    Vertices[vertexIndexAbsolute].tint = (Color32)statColor;
                 }
             }
         }

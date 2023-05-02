@@ -3,7 +3,10 @@
     "rootNamespace": "Unity.Multiplayer.Tools.Context",
     "references": [
         "Unity.Multiplayer.Tools.Common",
-        "Unity.Multiplayer.Tools.NetVis.Shared"
+        "Unity.Multiplayer.Tools.NetVis.Configuration",
+        "Unity.Multiplayer.Tools.NetVis.Editor.UI",
+        "Unity.Multiplayer.Tools.NetVis.Editor.Visualization",
+        "Unity.Multiplayer.Tools.Adapters"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

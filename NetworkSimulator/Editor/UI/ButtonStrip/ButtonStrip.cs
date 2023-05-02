@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using UnityEditor;
-using UnityEngine;
 using UnityEngine.UIElements;
 
 namespace Unity.Multiplayer.Tools.NetworkSimulator.Editor.UI
@@ -23,7 +22,7 @@ namespace Unity.Multiplayer.Tools.NetworkSimulator.Editor.UI
         static readonly string s_ButtonRightClassName = s_ButtonClassName + "--right";
         static readonly string s_ButtonIconClassName = s_UssClassName + "__button-icon";
         List<string> m_Choices = new List<string>();
-        
+
         public IEnumerable<string> choices
         {
             get { return m_Choices; }
@@ -38,11 +37,11 @@ namespace Unity.Multiplayer.Tools.NetworkSimulator.Editor.UI
         }
 
         public Action<EventBase> onButtonClick;
-        
+
         public ButtonStrip() : this(null)
         {
         }
-        
+
         public ButtonStrip(IList<string> choices)
         {
             AddToClassList(s_UssClassName);
@@ -97,7 +96,7 @@ namespace Unity.Multiplayer.Tools.NetworkSimulator.Editor.UI
                     button.text = choice;
                 }
             }
-            
+
         }
     }
 }

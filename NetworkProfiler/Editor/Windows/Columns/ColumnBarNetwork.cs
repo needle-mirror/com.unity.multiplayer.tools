@@ -33,7 +33,7 @@ namespace Unity.Multiplayer.Tools.NetworkProfiler.Editor
             internal const string TypeColumnLabel = nameof(TypeColumnLabel);
             internal const string BytesSentColumnLabel = nameof(BytesSentColumnLabel);
             internal const string BytesReceivedColumnLabel = nameof(BytesReceivedColumnLabel);
-            
+
             internal const string NameDirectionImage = nameof(NameDirectionImage);
             internal const string TypeDirectionImage = nameof(TypeDirectionImage);
             internal const string BytesSentDirectionImage = nameof(BytesSentDirectionImage);
@@ -62,7 +62,7 @@ namespace Unity.Multiplayer.Tools.NetworkProfiler.Editor
 
             var nameLabel = root.Q<Label>(VisualElementNames.NameColumnLabel);
             nameLabel.RegisterCallback<ClickEvent>(OnNameClicked);
-            
+
             var typeLabel = root.Q<Label>(VisualElementNames.TypeColumnLabel);
             typeLabel.RegisterCallback<ClickEvent>(OnTypeClicked);
 
@@ -71,10 +71,10 @@ namespace Unity.Multiplayer.Tools.NetworkProfiler.Editor
 
             var bytesReceivedLabel = root.Q<Label>(VisualElementNames.BytesReceivedColumnLabel);
             bytesReceivedLabel.RegisterCallback<ClickEvent>(OnBytesReceivedClicked);
-            
+
             m_NameImage = root.Q<Button>(VisualElementNames.NameDirectionImage);
             m_NameImage.RegisterCallback<ClickEvent>(OnNameClicked);
-            
+
             m_TypeImage = root.Q<Button>(VisualElementNames.TypeDirectionImage);
             m_TypeImage.RegisterCallback<ClickEvent>(OnTypeClicked);
 
@@ -87,7 +87,7 @@ namespace Unity.Multiplayer.Tools.NetworkProfiler.Editor
             m_State = new ColumnBarState();
 
             Add(root);
-            
+
             m_NameImage.visible = false;
             m_TypeImage.visible = false;
             m_BytesSentImage.visible = false;

@@ -1,11 +1,10 @@
 using System;
-using System.Linq;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using Mono.Cecil;
 using Mono.Cecil.Cil;
 using Unity.CompilationPipeline.Common.ILPostProcessing;
-using UnityEngine;
 
 namespace Unity.Multiplayer.Tools.NetStats.CodeGen
 {
@@ -28,10 +27,10 @@ namespace Unity.Multiplayer.Tools.NetStats.CodeGen
                         BindingFlags.Static | BindingFlags.Public));
             return true;
         }
-        
+
         public bool ProcessAssembly(
-            ICompiledAssembly compiledAssembly, 
-            AssemblyDefinition assemblyDefinition, 
+            ICompiledAssembly compiledAssembly,
+            AssemblyDefinition assemblyDefinition,
             ModuleDefinition mainModule,
             IAssemblyProcessingLogger logger)
         {

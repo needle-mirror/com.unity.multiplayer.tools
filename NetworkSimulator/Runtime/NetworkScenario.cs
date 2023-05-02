@@ -91,7 +91,7 @@ namespace Unity.Multiplayer.Tools.NetworkSimulator.Runtime
         {
 #if !UNITY_MP_TOOLS_NETSIM_IMPLEMENTATION_ENABLED
             return;
-#else
+#endif
             if (m_HasStarted)
             {
                 return;
@@ -105,7 +105,6 @@ namespace Unity.Multiplayer.Tools.NetworkSimulator.Runtime
                 m_HasStarted = true;
                 Start(networkEventsApi);
             }
-#endif
         }
 
         /// <summary>
@@ -141,14 +140,13 @@ namespace Unity.Multiplayer.Tools.NetworkSimulator.Runtime
         {
 #if !UNITY_MP_TOOLS_NETSIM_IMPLEMENTATION_ENABLED
             return;
-#else
+#endif
             if (IsPaused)
             {
                 return;
             }
 
             Update(deltaTime);
-#endif
         }
 
         /// <summary>
@@ -172,9 +170,8 @@ namespace Unity.Multiplayer.Tools.NetworkSimulator.Runtime
         {
 #if !UNITY_MP_TOOLS_NETSIM_IMPLEMENTATION_ENABLED
             return;
-#else
-            Run(networkEventsApi, m_Cancellation.Token).Forget();
 #endif
+            Run(networkEventsApi, m_Cancellation.Token).Forget();
         }
 
         /// <inheritdoc />

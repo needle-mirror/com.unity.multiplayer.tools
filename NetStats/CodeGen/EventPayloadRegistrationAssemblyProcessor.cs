@@ -1,6 +1,6 @@
 using System;
-using System.Linq;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using Mono.Cecil;
 using Mono.Cecil.Cil;
@@ -25,13 +25,13 @@ namespace Unity.Multiplayer.Tools.NetStats.CodeGen
                     typeof(EventMetricFactory).GetMethod(
                         nameof(EventMetricFactory.RegisterType),
                         BindingFlags.Static | BindingFlags.NonPublic));
-            
+
             return true;
         }
-        
+
         public bool ProcessAssembly(
-            ICompiledAssembly compiledAssembly, 
-            AssemblyDefinition assemblyDefinition, 
+            ICompiledAssembly compiledAssembly,
+            AssemblyDefinition assemblyDefinition,
             ModuleDefinition mainModule,
             IAssemblyProcessingLogger logger)
         {
@@ -62,7 +62,7 @@ namespace Unity.Multiplayer.Tools.NetStats.CodeGen
             {
                 CodeGenHelpers.InjectTypeRegistration(
                     assemblyDefinition,
-                    mainModule, 
+                    mainModule,
                     processor =>
                     {
                         var instructions = new List<Instruction>();

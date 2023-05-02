@@ -1,4 +1,3 @@
-#if UNITY_2021_2_OR_NEWER
 using Unity.Profiling.Editor;
 using UnityEditor;
 using UnityEngine.UIElements;
@@ -49,4 +48,3 @@ namespace Unity.Multiplayer.Tools.NetworkProfiler.Editor
         }
     }
 }
-#endif

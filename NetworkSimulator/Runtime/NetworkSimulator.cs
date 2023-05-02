@@ -18,7 +18,7 @@ namespace Unity.Multiplayer.Tools.NetworkSimulator.Runtime
     /// <summary>
     /// Add this component to any game object to configure network simulation parameters.
     /// </summary>
-    public partial class NetworkSimulator : MonoBehaviour, INotifyPropertyChanged
+    public class NetworkSimulator : MonoBehaviour, INotifyPropertyChanged
     {
         [SerializeField]
         internal NetworkSimulatorPresetAsset m_PresetAsset;
@@ -71,6 +71,16 @@ namespace Unity.Multiplayer.Tools.NetworkSimulator.Runtime
                 return m_NetworkEventsApi;
             }
         }
+
+        /// <summary>
+        /// Returns whether the underlying network transport is connected.
+        /// </summary>
+        public bool IsConnected => NetworkEventsApi.IsConnected;
+
+        /// <summary>
+        /// Returns whether the underlying network transport is available.
+        /// </summary>
+        public bool IsAvailable => NetworkEventsApi.IsAvailable;
 
         /// <summary>
         /// The Connection Preset used to define a set of connection parameters to simulate the network condition at runtime.

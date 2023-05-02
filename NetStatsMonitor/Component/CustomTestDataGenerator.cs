@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
-using Unity.Multiplayer.Tools.NetStats;
 using Unity.Multiplayer.Tools.Common;
+using Unity.Multiplayer.Tools.NetStats;
 using UnityEngine;
 
 namespace Unity.Multiplayer.Tools.NetStatsMonitor
@@ -44,7 +44,11 @@ namespace Unity.Multiplayer.Tools.NetStatsMonitor
 
         void Start()
         {
+#if UNITY_2023_1_OR_NEWER
+            m_Rnsm = FindFirstObjectByType<RuntimeNetStatsMonitor>();
+#else
             m_Rnsm = FindObjectOfType<RuntimeNetStatsMonitor>();
+#endif
         }
 
         void Update()

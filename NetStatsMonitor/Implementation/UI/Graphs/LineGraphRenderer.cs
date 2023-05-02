@@ -12,12 +12,10 @@
 
 using System;
 using System.Collections.Generic;
-
-using UnityEngine;
-using UnityEngine.UIElements;
-
 using Unity.Multiplayer.Tools.Common;
 using Unity.Multiplayer.Tools.NetStats;
+using UnityEngine;
+using UnityEngine.UIElements;
 
 namespace Unity.Multiplayer.Tools.NetStatsMonitor.Implementation
 {
@@ -247,7 +245,7 @@ namespace Unity.Multiplayer.Tools.NetStatsMonitor.Implementation
                 m_MaxPointValues.PushBack(0);
             }
 
-            var firstNewPointIndex = graphWidthPoints - pointsToAdvance;
+            var firstNewPointIndex = Math.Max(graphWidthPoints - pointsToAdvance, 0);
             foreach (var stat in stats)
             {
                 var pointValues = sampler.PointValues[stat];

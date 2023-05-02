@@ -5,11 +5,10 @@ using UnityEngine;
 namespace Unity.Multiplayer.Tools.NetworkSimulator.Editor.UI.PropertyDrawers
 {
     [CustomPropertyDrawer(typeof(MinMaxRangeAttribute))]
-    class MinMaxDrawer : PropertyDrawer
+    public class MinMaxDrawer : PropertyDrawer
     {
         const float k_HorizontalSpace = 5f;
-        
-        /// <inheritdoc />
+
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
         {
             var xProperty = property.FindPropertyRelative(nameof(Vector2.x));
@@ -19,16 +18,16 @@ namespace Unity.Multiplayer.Tools.NetworkSimulator.Editor.UI.PropertyDrawers
 
             label = EditorGUI.BeginProperty(position, label, property);
             position = EditorGUI.PrefixLabel(position, GUIUtility.GetControlID(FocusType.Passive), label);
-            
+
             var indent = EditorGUI.indentLevel;
             EditorGUI.indentLevel = 0;
-            
+
             var minValue = attr.RoundToInt ? Mathf.RoundToInt(xProperty.floatValue) : xProperty.floatValue;
             var maxValue = attr.RoundToInt ? Mathf.RoundToInt(yProperty.floatValue) : yProperty.floatValue;
-            
+
             var left = new Rect(position.x, position.y, fieldWidth, position.height);
             var right = new Rect(position.x + position.width - left.width, position.y, fieldWidth, position.height);
-            
+
             minValue = Mathf.Clamp(EditorGUI.FloatField(left, GUIContent.none, minValue), attr.Min, maxValue);
             maxValue = Mathf.Clamp(EditorGUI.FloatField(right, GUIContent.none, maxValue), minValue, attr.Max);
 

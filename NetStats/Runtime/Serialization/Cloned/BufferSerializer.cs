@@ -2,7 +2,7 @@ namespace Unity.Multiplayer.Tools.NetStats
 {
     /// <summary>
     /// Two-way serializer wrapping FastBufferReader or FastBufferWriter.
-    /// 
+    ///
     /// Implemented as a ref struct for two reasons:
     /// 1. The BufferSerializer cannot outlive the FBR/FBW it wraps or using it will cause a crash
     /// 2. The BufferSerializer must always be passed by reference and can't be copied
@@ -60,7 +60,7 @@ namespace Unity.Multiplayer.Tools.NetStats
 
         /// <summary>
         /// Serialize an INetworkSerializable
-        /// 
+        ///
         /// Throws OverflowException if the end of the buffer has been reached.
         /// Write buffers will grow up to the maximum allowable message size before throwing OverflowException.
         /// </summary>
@@ -74,7 +74,7 @@ namespace Unity.Multiplayer.Tools.NetStats
         /// Serialize a string.
         ///
         /// Note: Will ALWAYS allocate a new string when reading.
-        /// 
+        ///
         /// Throws OverflowException if the end of the buffer has been reached.
         /// Write buffers will grow up to the maximum allowable message size before throwing OverflowException.
         /// </summary>
@@ -94,11 +94,11 @@ namespace Unity.Multiplayer.Tools.NetStats
         /// Note: Will ALWAYS allocate a new array when reading.
         /// If you have a statically-sized array that you know is large enough, it's recommended to
         /// serialize the size yourself and iterate serializing array members.
-        /// 
+        ///
         /// (This is because C# doesn't allow setting an array's length value, so deserializing
         /// into an existing array of larger size would result in an array that doesn't have as many values
         /// as its Length indicates it should.)
-        /// 
+        ///
         /// Throws OverflowException if the end of the buffer has been reached.
         /// Write buffers will grow up to the maximum allowable message size before throwing OverflowException.
         /// </summary>
@@ -110,7 +110,7 @@ namespace Unity.Multiplayer.Tools.NetStats
 
         /// <summary>
         /// Serialize a single byte
-        /// 
+        ///
         /// Throws OverflowException if the end of the buffer has been reached.
         /// Write buffers will grow up to the maximum allowable message size before throwing OverflowException.
         /// </summary>
@@ -123,7 +123,7 @@ namespace Unity.Multiplayer.Tools.NetStats
         /// <summary>
         /// Serialize an unmanaged type. Supports basic value types as well as structs.
         /// The provided type will be copied to/from the buffer as it exists in memory.
-        /// 
+        ///
         /// Throws OverflowException if the end of the buffer has been reached.
         /// Write buffers will grow up to the maximum allowable message size before throwing OverflowException.
         /// </summary>
@@ -139,7 +139,7 @@ namespace Unity.Multiplayer.Tools.NetStats
         /// you can call PreCheck() once on the total size, and then follow it with calls to
         /// SerializeValuePreChecked() for faster serialization. Write buffers will grow during PreCheck()
         /// if needed.
-        /// 
+        ///
         /// PreChecked serialization operations will throw OverflowException in editor and development builds if you
         /// go past the point you've marked using PreCheck(). In release builds, OverflowException will not be thrown
         /// for performance reasons, since the point of using PreCheck is to avoid bounds checking in the following
@@ -157,7 +157,7 @@ namespace Unity.Multiplayer.Tools.NetStats
 
         /// <summary>
         /// Serialize a string.
-        /// 
+        ///
         /// Note: Will ALWAYS allocate a new string when reading.
         ///
         /// Using the PreChecked versions of these functions requires calling PreCheck() ahead of time, and they should only
@@ -180,7 +180,7 @@ namespace Unity.Multiplayer.Tools.NetStats
         /// Note: Will ALWAYS allocate a new array when reading.
         /// If you have a statically-sized array that you know is large enough, it's recommended to
         /// serialize the size yourself and iterate serializing array members.
-        /// 
+        ///
         /// (This is because C# doesn't allow setting an array's length value, so deserializing
         /// into an existing array of larger size would result in an array that doesn't have as many values
         /// as its Length indicates it should.)

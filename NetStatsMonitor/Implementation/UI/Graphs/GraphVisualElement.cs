@@ -11,11 +11,9 @@
 
 using System;
 using System.Collections.Generic;
-
-using UnityEngine.UIElements;
-
 using Unity.Multiplayer.Tools.Common;
 using Unity.Multiplayer.Tools.NetStats;
+using UnityEngine.UIElements;
 
 namespace Unity.Multiplayer.Tools.NetStatsMonitor.Implementation
 {

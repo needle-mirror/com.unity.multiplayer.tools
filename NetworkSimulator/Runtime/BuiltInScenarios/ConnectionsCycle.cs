@@ -4,7 +4,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using JetBrains.Annotations;
 using UnityEngine;
-using Debug = UnityEngine.Debug;
 
 namespace Unity.Multiplayer.Tools.NetworkSimulator.Runtime.BuiltInScenarios
 {

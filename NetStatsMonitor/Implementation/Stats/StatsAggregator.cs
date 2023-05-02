@@ -10,7 +10,6 @@
 #if UNITY_MP_TOOLS_NET_STATS_MONITOR_IMPLEMENTATION_ENABLED
 
 using System;
-using System.Collections.Generic;
 using Unity.Multiplayer.Tools.NetStats;
 
 namespace Unity.Multiplayer.Tools.NetStatsMonitor.Implementation

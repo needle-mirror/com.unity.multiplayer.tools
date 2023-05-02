@@ -21,8 +21,6 @@ namespace Unity.Multiplayer.Tools.NetworkSimulator.Runtime
         readonly IList<INetworkAvailability> m_NetworkAvailabilityComponents = new List<INetworkAvailability>();
         readonly IList<ISimulateDisconnectAndReconnect> m_DisconnectAndReconnectComponents = new List<ISimulateDisconnectAndReconnect>();
         readonly IList<IHandleNetworkParameters> m_HandleNetworkParametersComponents = new List<IHandleNetworkParameters>();
-        
-        NetworkParameters m_NetworkParameters;
 
         public NetworkTransportApi()
         {
@@ -58,7 +56,6 @@ namespace Unity.Multiplayer.Tools.NetworkSimulator.Runtime
 
         public void UpdateNetworkParameters(NetworkParameters networkParameters)
         {
-            m_NetworkParameters = networkParameters;
             foreach (var component in m_HandleNetworkParametersComponents)
             {
                 component.NetworkParameters = networkParameters;
@@ -105,11 +102,6 @@ namespace Unity.Multiplayer.Tools.NetworkSimulator.Runtime
             if (handleNetworkParameters != null)
             {
                 m_HandleNetworkParametersComponents.Add(handleNetworkParameters);
-            }
-
-            if (m_NetworkParameters != null)
-            {
-                UpdateNetworkParameters(m_NetworkParameters);
             }
         }
 

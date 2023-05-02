@@ -4,22 +4,29 @@ All notable changes to this package will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
-## [1.1.0] - 2022-11-07
+## [2.0.0-pre.2] - 2023-05-02
+
+### *General*
+- Dropped support for Unity 2020.3; the next supported version is Unity 2021.3
+- Fixed ``Failed to load type initialization for assembly Unity.Multiplayer.Tools.MetricTypes`` runtime exception when building using Managed Stripping level set to high.
+
+### *Network Scene Visualization*
+
+This release adds the Network Scene Visualization to the Multiplayer Tools Package. This tool allows users to visualize networking information (like bandwidth and ownership) on a per-object basis in the scene view using a number of visualizations, including mesh shading and a text overlay.
+
+### *Runtime Net Stats Monitor*
+- Fixed an issue that prevented using the ``RuntimeNetStatsMonitor.AddCustomValue`` API for stats that are only sampled per second.
+- Switched to a new color-blind friendly color-palette for default variable colors in graphs, which will provide increased contrast and more default values. This new color palette is the same one used in the new Network Scene Visualization tool.
+- Reduced the maximum sample count in Graphs and Simple Moving Average counters from 4096 to 512. Sample counts higher than 512 are no longer needed since per-second sampling was introduced in 1.1.0.
+- Deprecated public methods that could be used to control the conditional compilation of the RNSM. Conditional compilation of the RNSM will be removed in a future major release.
+
+## [1.1.0] - 2022-09-22
 
 ### *Metrics*
-- Improve the warning message for throttling, and increase the threshold for throttling a metric from 100 to 1,000 recorded events per frame
+- Improve the warning message for throttling, and increase the threshold for throttling a metric from 100 to 1,000 recorded events per frame.
 
 ### *Misc*
 - Fixed compilation warning related to unsupported build targets
-
-### *Network Simulator*
-
-This release adds the Network Simulator to the Multiplayer Tools Package. 
-This tool offers a configurable component to simulate adverse network condition. 
-Packet delay, jitter, packet loss and loss interval are all parameters that can be configured to simulate different kind of networks.
-A set of built-in network scenarios are provided to simulate more complex scenarios. User-defined scenarios are also supported.
-
-For more information about the Network Simulator, please see the [tools documentation](https://docs-multiplayer.unity3d.com/tools/current/install-tools/index.html).
 
 ### *Runtime Net Stats Monitor*
 - Graphs and Simple Moving Average counters can now be configured to be sampled per-second rather than per-frame

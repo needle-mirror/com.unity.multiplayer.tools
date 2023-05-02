@@ -124,8 +124,8 @@ namespace Unity.Multiplayer.Tools.NetworkProfiler.Editor
 
         public float itemHeight
         {
-            get { return m_ListView.GetItemHeight(); }
-            set { m_ListView.SetItemHeight(value); }
+            get => m_ListView.fixedItemHeight;
+            set => m_ListView.fixedItemHeight = value;
         }
 
         public bool horizontalScrollingEnabled
@@ -189,11 +189,11 @@ namespace Unity.Multiplayer.Tools.NetworkProfiler.Editor
 #if UNITY_2022_2_OR_NEWER
             m_ListView.itemsChosen += OnItemsChosen;
             m_ListView.selectionChanged += OnSelectionChange;
-#else        
+#else
             m_ListView.onItemsChosen += OnItemsChosen;
             m_ListView.onSelectionChange += OnSelectionChange;
 #endif
-            
+
             var scrollView = m_ListView.Q<ScrollView>();
             scrollView.contentContainer.RegisterCallback<KeyDownEvent>(OnKeyDown);
         }
@@ -205,7 +205,7 @@ namespace Unity.Multiplayer.Tools.NetworkProfiler.Editor
             Action<VisualElement, ITreeViewItem> bindItem)
             : this()
         {
-            m_ListView.SetItemHeight(itemHeight);
+            m_ListView.fixedItemHeight = itemHeight;
             m_MakeItem = makeItem;
             m_BindItem = bindItem;
             m_RootItems = items;
@@ -218,7 +218,7 @@ namespace Unity.Multiplayer.Tools.NetworkProfiler.Editor
             RegenerateWrappers();
             ListViewRefresh();
         }
-        
+
         static IEnumerable<ITreeViewItem> GetAllItems(IEnumerable<ITreeViewItem> rootItems)
         {
             if (rootItems == null)

@@ -1,7 +1,7 @@
 ﻿using Unity.Multiplayer.Tools.NetStats;
 using MT = Unity.Multiplayer.Tools.MetricTypes.MetricType;
-using ND = Unity.Multiplayer.Tools.MetricTypes.NetworkDirection;
-using NDC = Unity.Multiplayer.Tools.MetricTypes.NetworkDirectionConstants;
+using ND = Unity.Multiplayer.Tools.Common.NetworkDirection;
+using NDC = Unity.Multiplayer.Tools.Common.NetworkDirectionConstants;
 
 namespace Unity.Multiplayer.Tools.MetricTypes
 {

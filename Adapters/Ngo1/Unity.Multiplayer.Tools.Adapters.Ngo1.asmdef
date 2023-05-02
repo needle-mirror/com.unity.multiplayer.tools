@@ -4,7 +4,9 @@
   "references": [
     "com.unity.netcode.runtime",
     "Unity.Multiplayer.Tools.Adapters",
+    "Unity.Multiplayer.Tools.Common",
     "Unity.Multiplayer.Tools.MetricEvents",
+    "Unity.Multiplayer.Tools.MetricTypes",
     "Unity.Multiplayer.Tools.NetStats",
     "Unity.Netcode.Runtime"
   ],

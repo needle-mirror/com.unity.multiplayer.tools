@@ -3,10 +3,12 @@ namespace Unity.Multiplayer.Tools.NetStatsMonitor
     static class ConfigurationLimits
     {
         internal const int k_GraphSampleMin = 8;
-        internal const int k_GraphSampleMax = 4096;
+        internal const int k_GraphSampleDefault = 256;
+        internal const int k_GraphSampleMax = 512;
 
         internal const int k_CounterSampleMin = 8;
-        internal const int k_CounterSampleMax = 4096;
+        internal const int k_CounterSampleDefault = 64;
+        internal const int k_CounterSampleMax = 512;
 
         // Limited to 7 for now
         // Informed by the approximate base 10 precision of 32-bit floating point

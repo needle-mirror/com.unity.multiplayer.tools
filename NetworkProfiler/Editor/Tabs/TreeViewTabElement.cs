@@ -160,7 +160,7 @@ namespace Unity.Multiplayer.Tools.NetworkProfiler.Editor
             m_ShowFiltered = false;
             Add(m_ColumnBarNetwork);
             Add(m_TreeViewArea);
-            
+
             m_TreeView.RefreshSelected();
         }
 
@@ -174,7 +174,7 @@ namespace Unity.Multiplayer.Tools.NetworkProfiler.Editor
             m_FilteredResultsArea.CacheResults(results);
             m_FilteredResultsArea.ShowResults();
             Add(m_FilteredResultsArea);
-            
+
             m_TreeView.RefreshSelected();
         }
     }

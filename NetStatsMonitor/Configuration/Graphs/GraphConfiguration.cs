@@ -15,19 +15,19 @@ namespace Unity.Multiplayer.Tools.NetStatsMonitor
         /// The number of samples that are maintained for the purpose of graphing.
         /// </summary>
         /// <remarks>
-        /// The value is clamped to the range [8, 4096].
+        /// The value is clamped to the range [8, 512].
         /// </remarks>
         [field: SerializeField]
         [field: Tooltip("The number of samples that are maintained for the purpose of graphing. " +
-                        "The value is clamped to the range [8, 4096].")]
+                        "The value is clamped to the range [8, 512].")]
         [field: Range(ConfigurationLimits.k_GraphSampleMin, ConfigurationLimits.k_GraphSampleMax)]
-        int m_SampleCount = 256;
+        int m_SampleCount = ConfigurationLimits.k_GraphSampleDefault;
 
         /// <summary>
         /// The number of samples that are maintained for the purpose of graphing.
         /// </summary>
         /// <remarks>
-        /// The value is clamped to the range [8, 4096].
+        /// The value is clamped to the range [8, 512].
         /// </remarks>
         public int SampleCount
         {

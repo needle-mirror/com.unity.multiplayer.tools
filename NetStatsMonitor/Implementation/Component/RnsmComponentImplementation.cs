@@ -344,7 +344,7 @@ namespace Unity.Multiplayer.Tools.NetStatsMonitor.Implementation
                 {
                     // There is no display element configured to display
                     // this stat, so there is no point in storing it.
-                    return;
+                    continue;
                 }
 
                 // This additional call to CollectStatsIfEnoughTimeHasElapsed is beneficial in the following scenario:

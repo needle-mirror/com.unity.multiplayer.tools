@@ -9,9 +9,7 @@
 
 #if UNITY_MP_TOOLS_NET_STATS_MONITOR_IMPLEMENTATION_ENABLED
 
-using System;
 using System.Linq;
-
 using Unity.Multiplayer.Tools.Common;
 using Unity.Multiplayer.Tools.NetStats;
 
@@ -29,10 +27,6 @@ namespace Unity.Multiplayer.Tools.NetStatsMonitor.Implementation
         /// A ring buffer of recent values for each sample rate.
         /// Entries may be null or empty if not required.
         public EnumMap<SampleRate, RingBuffer<float>> SampleBuffers { get; } = new();
-
-        /// Ring buffer of most recent values.
-        /// Will have capacity zero and not store any values if the number of past values required is zero
-        // public RingBuffer<float> RecentValues { get; }
 
         public StatHistory(StatHistoryRequirements requirements)
         {

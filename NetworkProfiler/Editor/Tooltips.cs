@@ -7,7 +7,7 @@
 
 Type:
   t:text (Filter by type column - ex. t:RPC)
-    
+
 Direction:
   dir:in (Only received bytes)
   dir:out (Only sent bytes)

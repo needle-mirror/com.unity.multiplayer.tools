@@ -29,7 +29,7 @@ namespace Unity.Multiplayer.Tools.NetStats
         {
             TypeRegistration.RunIfNeeded();
         }
-        
+
         internal static void RegisterType<T>() where T : unmanaged
         {
             if(k_TypeNames.ContainsKey(typeof(T)))

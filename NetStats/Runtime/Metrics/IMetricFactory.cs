@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Unity.Multiplayer.Tools.NetStats
+﻿namespace Unity.Multiplayer.Tools.NetStats
 {
     interface IMetricFactory
     {

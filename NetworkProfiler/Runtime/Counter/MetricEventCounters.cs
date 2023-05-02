@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace Unity.Multiplayer.Tools.NetworkProfiler.Runtime
 {
@@ -7,7 +6,7 @@ namespace Unity.Multiplayer.Tools.NetworkProfiler.Runtime
     {
         public string Sent { get; }
         readonly ICounter m_SentCounter;
-        
+
         public string Received { get; }
         readonly ICounter m_ReceivedCounter;
 
@@ -19,9 +18,9 @@ namespace Unity.Multiplayer.Tools.NetworkProfiler.Runtime
             m_SentCounter = counterFactory.Construct(Sent);
             m_ReceivedCounter = counterFactory.Construct(Received);
         }
-        
+
         public void Sample<TEventData>(
-            IReadOnlyCollection<TEventData> sent, 
+            IReadOnlyCollection<TEventData> sent,
             IReadOnlyCollection<TEventData> received)
         {
             m_SentCounter.Sample(sent.Count);

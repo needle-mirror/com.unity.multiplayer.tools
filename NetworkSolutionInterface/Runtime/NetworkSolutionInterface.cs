@@ -4,11 +4,11 @@
     {
         public INetworkObjectProvider NetworkObjectProvider;
     }
-    
+
     static class NetworkSolutionInterface
     {
         static NetworkSolutionInterfaceParameters s_Parameters;
-        
+
         public static void SetInterface(NetworkSolutionInterfaceParameters parameters)
         {
             parameters.NetworkObjectProvider ??= new NullNetworkObjectProvider();

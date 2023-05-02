@@ -118,12 +118,10 @@ namespace Unity.Multiplayer.Tools.Common
             return 0 <= index && index < Length;
         }
 
-#if UNITY_2021_2_OR_NEWER // Index and ^i syntax are not available in lower versions
         bool ContainsIndex(Index index)
         {
             return ContainsIndex(index.IsFromEnd ? index.Value - 1 : index.Value);
         }
-#endif
 
         /// <exception cref="IndexOutOfRangeException">Thrown if the index is out of range</exception>
         void ThrowIfIndexOutOfRange(int index)
@@ -143,7 +141,6 @@ namespace Unity.Multiplayer.Tools.Common
             }
         }
 
-#if UNITY_2021_2_OR_NEWER // Index and ^i syntax are not available in lower versions
         /// <exception cref="IndexOutOfRangeException">Thrown if the index is out of range</exception>
         void ThrowIfIndexOutOfRange(Index index)
         {
@@ -152,7 +149,6 @@ namespace Unity.Multiplayer.Tools.Common
                 throw new IndexOutOfRangeException($"Index {index} is out of range [0, {Length})");
             }
         }
-#endif
 
         /// Translates a logical index into an index in the underlying buffer.
         int GetBufferIndex(int index)
@@ -166,7 +162,6 @@ namespace Unity.Multiplayer.Tools.Common
             return GetBufferIndex(Length - 1 - index);
         }
 
-#if UNITY_2021_2_OR_NEWER // Index and ^i syntax are not available in lower versions
         /// Translates a logical index into an index in the underlying buffer.
         int GetBufferIndex(Index index)
         {
@@ -179,7 +174,6 @@ namespace Unity.Multiplayer.Tools.Common
                 return GetBufferIndex(index.Value);
             }
         }
-#endif
 
         /// Ring buffer is indexed from least recent (beginning at 0) to most recent (ending at length - 1).
         /// <exception cref="IndexOutOfRangeException"></exception>
@@ -197,7 +191,6 @@ namespace Unity.Multiplayer.Tools.Common
             }
         }
 
-#if UNITY_2021_2_OR_NEWER // Index and ^i syntax are not available in lower versions
         /// Ring buffer is indexed from least recent (beginning at 0) to most recent (ending at length - 1).
         /// <exception cref="IndexOutOfRangeException"></exception>
         public T this[Index index]
@@ -213,7 +206,6 @@ namespace Unity.Multiplayer.Tools.Common
                 m_Buffer![GetBufferIndex(index)] = value;
             }
         }
-#endif
 
         public T GetValueOrDefault(int index)
         {
@@ -224,7 +216,6 @@ namespace Unity.Multiplayer.Tools.Common
             return default;
         }
 
-#if UNITY_2021_2_OR_NEWER // Index and ^i syntax are not available in lower versions
         public T GetValueOrDefault(Index index)
         {
             if (ContainsIndex(index))
@@ -233,17 +224,14 @@ namespace Unity.Multiplayer.Tools.Common
             }
             return default;
         }
-#endif
 
         /// <exception cref="IndexOutOfRangeException">Throws IndexOutOfRange if length is 0</exception>
         public T LeastRecent => this[0];
         public T LeastRecentOrDefault => Length > 0 ? LeastRecent : default;
 
-#if UNITY_2021_2_OR_NEWER // Index and ^i syntax are not available in lower versions
         /// <exception cref="IndexOutOfRangeException">Throws IndexOutOfRange if length is 0</exception>
         public T MostRecent => this[^1];
         public T MostRecentOrDefault => Length > 0 ? MostRecent : default;
-#endif
 
         /// Enumerator from least to most recent
         public IEnumerator<T> GetEnumerator()

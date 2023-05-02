@@ -1,7 +1,7 @@
 ﻿using System;
-using UnityEngine;
 using System.Collections.Generic;
 using UnityEditor;
+using UnityEngine;
 
 namespace Unity.Multiplayer.Tools.NetworkProfiler.Editor
 {

@@ -17,7 +17,7 @@ See guides below to install the Multiplayer Tools package and get started with u
 
 This version of Multiplayer Tools is compatible with the following Unity versions and platforms:
 
-* 2020.3 and later
+* 2021.3 and later
 * Windows, Mac, Linux platforms
 
 ## Document revision history

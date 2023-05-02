@@ -186,7 +186,7 @@ namespace Unity.Multiplayer.Tools.NetStats
 
         static T GetEnumMetadata<T>(List<T[]> data, int typeIndex, int enumValue)
         {
-            if (typeIndex > k_EnumValues.Count)
+            if (typeIndex >= k_EnumValues.Count)
             {
                 return default(T);
             }

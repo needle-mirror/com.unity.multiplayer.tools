@@ -11,12 +11,10 @@
 
 using System.Collections.Generic;
 using System.Linq;
-
+using Unity.Multiplayer.Tools.Common;
+using Unity.Multiplayer.Tools.Common.Visualization;
 using UnityEngine;
 using UnityEngine.UIElements;
-
-using Unity.Multiplayer.Tools.Common;
-using Unity.Multiplayer.Tools.NetStatsMonitor.Implementation.Graphing;
 
 namespace Unity.Multiplayer.Tools.NetStatsMonitor.Implementation
 {
@@ -50,9 +48,9 @@ namespace Unity.Multiplayer.Tools.NetStatsMonitor.Implementation
             {
                 var legendKey = m_LegendKeys[i];
                 var stat = stats[i];
-                Color32 color = (variableColors != null && i < variableColors.Count)
+                Color color = (variableColors != null && i < variableColors.Count)
                     ? variableColors[i]
-                    : GraphColorUtils.GetColorForIndex(i, stats.Count);
+                    : CategoricalColorPalette.GetColor(i);
                 legendKey.Update(stat.ToString(), color);
 
                 if (i >= childrenCount)

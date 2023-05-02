@@ -12,4 +12,6 @@ using System.Runtime.CompilerServices;
 // Listeners (tests)
 // should only include the NGO 1.0 Adapter.
 // Individual tools should listen through the adapter, rather than using this assembly directly.
-[assembly: InternalsVisibleTo("Unity.Multiplayer.Tools.NetStatsMonitor.Tests.Implementation")]
+#if UNITY_INCLUDE_TESTS
+[assembly: InternalsVisibleTo("Unity.Multiplayer.Tools.NetStatsMonitor.Implementation.Tests.Editor")]
+#endif

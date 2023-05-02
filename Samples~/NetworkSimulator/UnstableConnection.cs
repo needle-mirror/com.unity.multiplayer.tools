@@ -7,7 +7,7 @@ using Unity.Multiplayer.Tools.NetworkSimulator.Runtime;
 using UnityEngine;
 using Random = System.Random;
 
-namespace Samples.NetworkScenario
+namespace Unity.Multiplayer.Tools.Samples.NetworkScenario
 {
     [UsedImplicitly, Serializable]
     public class UnstableConnection : NetworkScenarioTask
@@ -175,7 +175,7 @@ namespace Samples.NetworkScenario
             Randomizer = m_RandomizerSeed == -1
                 ? new Random()
                 : new Random(m_RandomizerSeed);
-            
+
             m_SimulatorCache = networkEventsApi.CurrentPreset;
 
             ResetScenarioConfiguration();

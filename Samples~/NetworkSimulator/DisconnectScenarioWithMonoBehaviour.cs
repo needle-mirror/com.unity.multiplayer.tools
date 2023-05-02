@@ -1,6 +1,6 @@
 using Unity.Multiplayer.Tools.NetworkSimulator.Runtime;
 
-namespace Samples.NetworkScenarios
+namespace Unity.Multiplayer.Tools.Samples.NetworkScenario
 {
     public class DisconnectScenarioWithMonoBehaviour : NetworkScenarioBehaviour
     {

@@ -8,12 +8,11 @@
 // ---------------------------------------------------------------------------------------------------------------------
 
 
-using JetBrains.Annotations;
 using System;
+using JetBrains.Annotations;
 using Unity.Multiplayer.Tools.NetStats;
 using UnityEngine;
 using UnityEngine.UIElements;
-
 #if UNITY_MP_TOOLS_NET_STATS_MONITOR_IMPLEMENTATION_ENABLED
 using Unity.Multiplayer.Tools.NetStatsMonitor.Implementation;
 #endif

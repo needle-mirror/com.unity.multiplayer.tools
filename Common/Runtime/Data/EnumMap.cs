@@ -47,15 +47,7 @@ namespace Unity.Multiplayer.Tools.Common
         public EnumMap(TValue value)
             : this()
         {
-#if UNITY_2021_3_OR_NEWER
             Array.Fill(m_Values, value);
-#else
-            // Array.Fill doesn't appear to be available in Unity < 2021.3
-            for (var i = 0; i < m_Values.Length; ++i)
-            {
-                m_Values[i] = value;
-            }
-#endif
         }
 
         public EnumMap(TValue[] values)
@@ -66,8 +58,8 @@ namespace Unity.Multiplayer.Tools.Common
 
         public TValue this[TEnum key]
         {
-            get => m_Values[CastEnumToInt(key)];
-            set => m_Values[CastEnumToInt(key)] = value;
+            get => m_Values[key.UnsafeCastToInt()];
+            set => m_Values[key.UnsafeCastToInt()] = value;
         }
 
         public int Count => s_Count;
@@ -76,36 +68,14 @@ namespace Unity.Multiplayer.Tools.Common
 
         public void Add(TEnum key, TValue value)
         {
-            m_Values[CastEnumToInt(key)] = value;
-        }
-
-        /// <remarks>
-        /// Convert.ToInt32 is orders of magnitude slower than this method,
-        /// and allocates with each call, so this method is needed in order
-        /// for this class to perform better than a Dictionary.
-        /// <br/>
-        /// Using Convert.ToInt32 this class will perform a little worse
-        /// (maybe 20-30% worse) than a Dictionary, and will allocate with
-        /// each read and write.
-        /// <br/>
-        /// Using the unsafe CastEnumToInt method, this class performs
-        /// ~3.6 times faster than a dictionary, and allocates 8 times less.
-        /// </remarks>
-        static unsafe int CastEnumToInt(TEnum enumValue)
-        {
-            return *(int*)(&enumValue);
-        }
-
-        static unsafe TEnum CastIntToEnum(int value)
-        {
-            return *(TEnum*)(&value);
+            m_Values[key.UnsafeCastToInt()] = value;
         }
 
         public IEnumerator<KeyValuePair<TEnum, TValue>> GetEnumerator()
         {
             for (int i = 0; i < s_Count; ++i)
             {
-                yield return new KeyValuePair<TEnum, TValue>(CastIntToEnum(i), m_Values[i]);
+                yield return new KeyValuePair<TEnum, TValue>(i.UnsafeCastToEnum<TEnum>(), m_Values[i]);
             }
         }
 
@@ -119,7 +89,7 @@ namespace Unity.Multiplayer.Tools.Common
     {
         public static (int min, int max, int uniqueValueCount)
             GetMinMaxAndUniqueValueCount<TEnum>()
-            where TEnum : Enum
+            where TEnum : unmanaged, Enum
         {
             var enumValues = EnumUtil.GetValues<TEnum>();
 

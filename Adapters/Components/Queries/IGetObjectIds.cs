@@ -7,6 +7,6 @@ namespace Unity.Multiplayer.Tools.Adapters
     /// </summary>
     interface IGetObjectIds : IAdapterComponent
     {
-        IEnumerable<ObjectId> ObjectIds { get; }
+        IReadOnlyList<ObjectId> ObjectIds { get; }
     }
 }

@@ -37,7 +37,7 @@ namespace Unity.Multiplayer.Tools.NetworkProfiler.Editor
             {
                 return;
             }
-            
+
             m_Children ??= new List<ITreeViewItem>();
             m_Children.Add(treeChild);
             treeChild.m_Parent = this;

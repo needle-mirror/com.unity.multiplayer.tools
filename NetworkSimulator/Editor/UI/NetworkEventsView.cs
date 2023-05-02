@@ -63,7 +63,7 @@ namespace Unity.Multiplayer.Tools.NetworkSimulator.Editor.UI
             ConnectionToggle.SetValueWithoutNotify(m_NetworkEventsApi.IsConnected
                 ? k_ToggleConnectedString
                 : k_ToggleDisconnectedString);
-            
+
             ConnectionIndicator.EnableInClassList(k_DisconnectedClassName, !m_NetworkEventsApi.IsConnected);
         }
     }

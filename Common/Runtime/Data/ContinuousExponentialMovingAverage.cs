@@ -17,11 +17,12 @@ namespace Unity.Multiplayer.Tools.Common
     /// statistician Andreas Eckner describes something similar here: <br/>
     /// http://www.eckner.com/research.html
     /// </remarks>
-    internal class ContinuousExponentialMovingAverage
+    class ContinuousExponentialMovingAverage
     {
         const double k_DefaultInitialTime = double.NegativeInfinity;
 
         public static readonly double k_ln2 = Math.Log(2);
+        public static readonly float k_ln2F = MathF.Log(2);
 
         /// The decay constant is λ = ln(2) / HalfLife. A larger decay constant will results in a faster,
         /// more responsive CEMA with less smoothing, whereas a smaller decay constant will result in a slower,
@@ -41,6 +42,11 @@ namespace Unity.Multiplayer.Tools.Common
         /// more responsive CEMA with less smoothing, whereas a smaller decay constant will result in a slower,
         /// less responsive CEMA with more smoothing.
         public static double GetDecayConstantForHalfLife(double halfLife) => k_ln2 / halfLife;
+
+        /// The decay constant is λ = ln(2) / HalfLife. A larger decay constant will results in a faster,
+        /// more responsive CEMA with less smoothing, whereas a smaller decay constant will result in a slower,
+        /// less responsive CEMA with more smoothing.
+        public static float GetDecayConstantForHalfLife(float halfLife) => k_ln2F / halfLife;
 
         public ContinuousExponentialMovingAverage(double decayConstant, double value = 0d, double time = k_DefaultInitialTime)
         {

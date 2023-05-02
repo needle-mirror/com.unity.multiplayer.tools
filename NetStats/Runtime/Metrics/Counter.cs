@@ -14,7 +14,7 @@ namespace Unity.Multiplayer.Tools.NetStats
         {
             Value += increment;
         }
-        
+
         public override MetricContainerType MetricContainerType => MetricContainerType.Counter;
     }
 }
