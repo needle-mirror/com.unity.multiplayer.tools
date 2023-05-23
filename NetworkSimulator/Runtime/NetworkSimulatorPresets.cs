@@ -80,79 +80,69 @@
                 description: k_BroadbandDescription,
                 packetDelayMs: 32,
                 packetJitterMs: 12,
-                packetLossInterval: 0,
                 packetLossPercent: 2);
             Mobile2G = NetworkSimulatorPreset.Create(
                 name: "Mobile 2G [CDMA & GSM, '00]",
                 description: k_PoorMobileDescription,
-                packetDelayMs: 400,
-                packetJitterMs: 200,
-                packetLossInterval: 0,
-                packetLossPercent: 3
+                packetDelayMs: 520,
+                packetJitterMs: 50,
+                packetLossPercent: 7
             );
             Mobile2_5G = NetworkSimulatorPreset.Create(
                 name: "Mobile 2.5G [GPRS, G, '00]",
                 description: k_PoorMobileDescription,
-                packetDelayMs: 200,
-                packetJitterMs: 100,
-                packetLossInterval: 0,
-                packetLossPercent: 3
+                packetDelayMs: 480,
+                packetJitterMs: 40,
+                packetLossPercent: 7
             );
             Mobile2_75G = NetworkSimulatorPreset.Create(
                 name: "Mobile 2.75G [Edge, E, '06]",
                 description: k_PoorMobileDescription,
-                packetDelayMs: 200,
-                packetJitterMs: 100,
-                packetLossInterval: 0,
-                packetLossPercent: 3
+                packetDelayMs: 440,
+                packetJitterMs: 40,
+                packetLossPercent: 7
             );
             Mobile3G = NetworkSimulatorPreset.Create(
                 name: "Mobile 3G [WCDMA & UMTS, '03]",
                 description: k_PoorMobileDescription,
-                packetDelayMs: 200,
-                packetJitterMs: 100,
-                packetLossInterval: 0,
-                packetLossPercent: 3
+                packetDelayMs: 360,
+                packetJitterMs: 30,
+                packetLossPercent: 7
             );
             Mobile3_5G = NetworkSimulatorPreset.Create(
                 name: "Mobile 3.5G [HSDPA, H, '06]",
                 description: k_MediumMobileDescription,
-                packetDelayMs: 75,
-                packetJitterMs: 50,
-                packetLossInterval: 0,
-                packetLossPercent: 3
+                packetDelayMs: 160,
+                packetJitterMs: 30,
+                packetLossPercent: 6
             );
             Mobile3_75G = NetworkSimulatorPreset.Create(
                 name: "Mobile 3.75G [HDSDPA+, H+, '11]",
                 description: k_DecentMobileDescription,
-                packetDelayMs: 75,
-                packetJitterMs: 50,
-                packetLossInterval: 0,
-                packetLossPercent: 3
+                packetDelayMs: 130,
+                packetJitterMs: 30,
+                packetLossPercent: 6
             );
             Mobile4G = NetworkSimulatorPreset.Create(
                 name: "Mobile 4G [4G, LTE, '13]",
                 description: k_DecentMobileDescription,
-                packetDelayMs: 50,
-                packetJitterMs: 25,
-                packetLossInterval: 0,
-                packetLossPercent: 2
+                packetDelayMs: 100,
+                packetJitterMs: 20,
+                packetLossPercent: 4
             );
             Mobile4_5G = NetworkSimulatorPreset.Create(
                 name: "Mobile 4.5G [4G+, LTE-A, '16]",
                 description: k_DecentMobileDescription,
-                packetDelayMs: 50,
-                packetJitterMs: 25,
-                packetLossInterval: 0,
-                packetLossPercent: 2
+                packetDelayMs: 80,
+                packetJitterMs: 20,
+                packetLossPercent: 4
             );
             Mobile5G = NetworkSimulatorPreset.Create(
                 name: "Mobile 5G ['20]",
                 description: k_GoodMobileDescription,
-                packetDelayMs: 1,
-                packetJitterMs: 10,
-                packetLossInterval: 0,
-                packetLossPercent: 2
+                packetDelayMs: 30,
+                packetJitterMs: 20,
+                packetLossPercent: 4
             );
             Values = new []{
                 None,

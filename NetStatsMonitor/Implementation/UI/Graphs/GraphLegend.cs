@@ -18,7 +18,7 @@ using UnityEngine.UIElements;
 
 namespace Unity.Multiplayer.Tools.NetStatsMonitor.Implementation
 {
-    public class GraphLegend : VisualElement
+    class GraphLegend : VisualElement
     {
         List<LegendKey> m_LegendKeys = new List<LegendKey>();
         public GraphLegend()

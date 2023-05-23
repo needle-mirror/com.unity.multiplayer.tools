@@ -4,7 +4,15 @@ All notable changes to this package will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
-## [2.0.0-pre.2] - 2023-05-02
+## [2.0.0-pre.3] - 2023-05-23
+
+### *General*
+- Remove unintentionally public classes (such as test classes), most of which were already deprecated.
+
+### *Network Scene Visualization*
+- Fix to prevent NGO from throwing a NotServerException when visualizing ownership on a client that is not connected as the server or host.
+
+## [2.0.0-pre.2] - 2023-05-01
 
 ### *General*
 - Dropped support for Unity 2020.3; the next supported version is Unity 2021.3
@@ -13,6 +21,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### *Network Scene Visualization*
 
 This release adds the Network Scene Visualization to the Multiplayer Tools Package. This tool allows users to visualize networking information (like bandwidth and ownership) on a per-object basis in the scene view using a number of visualizations, including mesh shading and a text overlay.
+
+### *Network Simulator*
+- Fixed an `ObjectDisposedException` happening after disconnecting and reconnecting while using the Network Simulator.
+- Fixed duplicated `NetworkSimulatorPresets`.
 
 ### *Runtime Net Stats Monitor*
 - Fixed an issue that prevented using the ``RuntimeNetStatsMonitor.AddCustomValue`` API for stats that are only sampled per second.

@@ -6,7 +6,7 @@ using PopupWindow = UnityEditor.PopupWindow;
 namespace Unity.Multiplayer.Tools.NetVis.Editor.UI
 {
     [EditorToolbarElement(k_Id, typeof(SceneView))]
-    public class SettingsToolbarButton : EditorToolbarButton
+    class SettingsToolbarButton : EditorToolbarButton
     {
         public const string k_Id = "Network Visualization/Settings";
 

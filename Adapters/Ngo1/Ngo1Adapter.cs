@@ -55,26 +55,14 @@ namespace Unity.Multiplayer.Tools.Adapters.Ngo1
 
         void OnTick()
         {
-            RefreshClientIds();
             RefreshObjectIds();
-        }
-
-        void RefreshClientIds()
-        {
-            m_ClientIds.Clear();
-
-            var clientIds = m_NetworkManager.ConnectedClientsIds;
-            foreach (var clientId in clientIds)
-            {
-                m_ClientIds.Add((ClientId)clientId);
-            }
+            RefreshClientIds();
         }
 
         void RefreshObjectIds()
         {
             m_ObjectIds.Clear();
-
-            var spawnedObjects = SpawnManager?.SpawnedObjectsList;
+            var spawnedObjects = m_NetworkManager.SpawnManager?.SpawnedObjectsList;
             if (spawnedObjects == null)
             {
                 return;
@@ -82,6 +70,30 @@ namespace Unity.Multiplayer.Tools.Adapters.Ngo1
             foreach (var spawnedObject in spawnedObjects)
             {
                 m_ObjectIds.Add((ObjectId)spawnedObject.NetworkObjectId);
+            }
+        }
+
+        void RefreshClientIds()
+        {
+            if (m_NetworkManager.IsServer)
+            {
+                m_ClientIds.Clear();
+                foreach (var clientId in m_NetworkManager.ConnectedClientsIds)
+                {
+                    m_ClientIds.Add((ClientId)clientId);
+                }
+            }
+            else if (m_NetworkManager.SpawnManager != null)
+            {
+                // NetworkManager.ConnectedClientsIds is only available on the server
+                foreach (var clientId in m_NetworkManager.SpawnManager.OwnershipToObjectsTable.Keys)
+                {
+                    if (!m_ClientIds.Contains((ClientId)clientId))
+                    {
+                        m_ClientIds.Add((ClientId)clientId);
+                        OnClientConnected(clientId);
+                    }
+                }
             }
         }
 

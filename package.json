@@ -1,7 +1,7 @@
 {
   "name": "com.unity.multiplayer.tools",
   "displayName": "Multiplayer Tools",
-  "version": "2.0.0-pre.2",
+  "version": "2.0.0-pre.3",
   "unity": "2021.3",
   "description": "Adds a suite of tools that improve workflows for multiplayer development",
   "dependencies": {
@@ -28,17 +28,17 @@
     }
   ],
   "relatedPackages": {
-    "com.unity.multiplayer.tools.tests": "2.0.0-pre.2"
+    "com.unity.multiplayer.tools.tests": "2.0.0-pre.3"
   },
   "_upm": {
-    "changelog": "### *General*\n- Dropped support for Unity 2020.3; the next supported version is Unity 2021.3\n- Fixed ``Failed to load type initialization for assembly Unity.Multiplayer.Tools.MetricTypes`` runtime exception when building using Managed Stripping level set to high.\n\n### *Network Scene Visualization*\n\nThis release adds the Network Scene Visualization to the Multiplayer Tools Package. This tool allows users to visualize networking information (like bandwidth and ownership) on a per-object basis in the scene view using a number of visualizations, including mesh shading and a text overlay.\n\n### *Runtime Net Stats Monitor*\n- Fixed an issue that prevented using the ``RuntimeNetStatsMonitor.AddCustomValue`` API for stats that are only sampled per second.\n- Switched to a new color-blind friendly color-palette for default variable colors in graphs, which will provide increased contrast and more default values. This new color palette is the same one used in the new Network Scene Visualization tool.\n- Reduced the maximum sample count in Graphs and Simple Moving Average counters from 4096 to 512. Sample counts higher than 512 are no longer needed since per-second sampling was introduced in 1.1.0.\n- Deprecated public methods that could be used to control the conditional compilation of the RNSM. Conditional compilation of the RNSM will be removed in a future major release."
+    "changelog": "### *General*\n- Remove unintentionally public classes (such as test classes), most of which were already deprecated.\n\n### *Network Scene Visualization*\n- Fix to prevent NGO from throwing a NotServerException when visualizing ownership on a client that is not connected as the server or host."
   },
   "upmCi": {
-    "footprint": "6d92ba84eae702fc1df67f7f77fa78898245383a"
+    "footprint": "9e5eb4503f9ee27d6a7c5bf6aef853da9865cb29"
   },
   "repository": {
     "url": "https://github.com/Unity-Technologies/com.unity.multiplayer.tools.git",
     "type": "git",
-    "revision": "fb081d7c8f313600fd47d8b3833519c5b0d8fb11"
+    "revision": "488999cd61ff1b13b0e761ea359121a5ead23a21"
   }
 }

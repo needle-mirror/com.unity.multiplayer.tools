@@ -13,7 +13,7 @@ using System;
 
 namespace Unity.Multiplayer.Tools.NetStatsMonitor.Implementation
 {
-    public static class DisplayElementConfigurationExtensions
+    static class DisplayElementConfigurationExtensions
     {
         /// Returns a hash of display element configuration fields related to history requirements,
         /// for the purpose of determining if history requirements have changed and need to be updated

@@ -18,7 +18,7 @@ namespace Unity.Multiplayer.Tools.NetworkSimulator.Runtime
     /// <summary>
     /// Add this component to any game object to configure network simulation parameters.
     /// </summary>
-    public class NetworkSimulator : MonoBehaviour, INotifyPropertyChanged
+    public partial class NetworkSimulator : MonoBehaviour, INotifyPropertyChanged
     {
         [SerializeField]
         internal NetworkSimulatorPresetAsset m_PresetAsset;
@@ -63,6 +63,7 @@ namespace Unity.Multiplayer.Tools.NetworkSimulator.Runtime
                 {
                     return m_NetworkEventsApi;
                 }
+
 #if UNITY_MP_TOOLS_NETSIM_IMPLEMENTATION_ENABLED
                 m_NetworkEventsApi = new NetworkEventsApi(this, m_NetworkTransportApi);
 #else

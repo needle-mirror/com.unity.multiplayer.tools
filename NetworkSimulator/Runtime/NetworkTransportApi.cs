@@ -116,7 +116,7 @@ namespace Unity.Multiplayer.Tools.NetworkSimulator.Runtime
             var disconnectAndReconnect = adapter.GetComponent<ISimulateDisconnectAndReconnect>();
             if (disconnectAndReconnect != null)
             {
-                m_NetworkAvailabilityComponents.Remove(networkAvailability);
+                m_DisconnectAndReconnectComponents.Remove(disconnectAndReconnect);
             }
 
             var handleNetworkParameters = adapter.GetComponent<IHandleNetworkParameters>();

@@ -2,7 +2,7 @@
 
 namespace Unity.Multiplayer.Tools.Common
 {
-    public static class DictionaryExtensions
+    static class DictionaryExtensions
     {
         public static TValue GetValueOrCreateNew<TKey, TValue>(this Dictionary<TKey, TValue> dictionary, TKey key)
             where TValue : new()
