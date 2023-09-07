@@ -1,7 +1,7 @@
 {
   "name": "com.unity.multiplayer.tools",
   "displayName": "Multiplayer Tools",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "unity": "2020.3",
   "description": "Adds a suite of tools that improve workflows for multiplayer development",
   "dependencies": {
@@ -26,14 +26,17 @@
     }
   ],
   "relatedPackages": {
-    "com.unity.multiplayer.tools.tests": "1.1.0"
+    "com.unity.multiplayer.tools.tests": "1.1.1"
+  },
+  "_upm": {
+    "changelog": "### *Fix*\n\n- Removed empty directories that generated warnings during package import"
   },
   "upmCi": {
-    "footprint": "e658d3ad3487f792d253b3a7f97bb456a482766c"
+    "footprint": "53cdd81406146ef23b8e1deee66ac9899f26dd82"
   },
   "repository": {
     "url": "https://github.com/Unity-Technologies/com.unity.multiplayer.tools.git",
     "type": "git",
-    "revision": "3ac1c04a8a9f6bd7a75572380019c0661b7d0f2c"
+    "revision": "754df3fa286cf0d8caea715bf03685e80068cb7a"
   }
 }
