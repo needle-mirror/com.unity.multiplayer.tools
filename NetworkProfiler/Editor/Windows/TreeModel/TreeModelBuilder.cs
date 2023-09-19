@@ -142,7 +142,7 @@ namespace Unity.Multiplayer.Tools.NetworkProfiler.Editor
                     () =>
                     {
                         var foundNetworkObject =
-                            NetworkSolutionInterface.NetworkObjectProvider.GetNetworkObject(
+                            NetworkSolutionInterface.NetworkObjectProvider?.GetNetworkObject(
                                 networkObjectIdentifier.NetworkId);
                         if (foundNetworkObject)
                         {

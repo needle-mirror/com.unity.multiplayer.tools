@@ -44,7 +44,9 @@ namespace Unity.Multiplayer.Tools.NetworkProfiler.Editor
 
         void OnSelectedFrameChanged(long selectedFrameIndex)
         {
-            m_NetworkProfilerDetailsView?.PopulateView(m_NetworkProfilerDataProvider.GetDataForFrame(ProfilerWindow.selectedFrameIndex));
+            // Prevent an error when starting the profiler when the game is not running and no frame is selected
+            if(selectedFrameIndex != -1)
+                m_NetworkProfilerDetailsView?.PopulateView(m_NetworkProfilerDataProvider.GetDataForFrame(ProfilerWindow.selectedFrameIndex));
         }
     }
 }

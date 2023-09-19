@@ -11,9 +11,8 @@ namespace Unity.Multiplayer.Tools.NetworkProfiler.Editor
                 GetName(objectIdentifier),
                 string.Empty,
                 "gameobject",
-                onSelectedCallback)
-        {
-        }
+                onSelectedCallback,
+                objectIdentifier.TreeViewId) { }
 
         static string GetName(NetworkObjectIdentifier objectIdentifier)
         {

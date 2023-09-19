@@ -23,7 +23,7 @@ namespace Unity.Multiplayer.Tools.NetStatsMonitor
     /// The Runtime Net Stats Monitor component.
     /// Add this component to a game object in a scene to display network statistics on screen.
     /// </summary>
-    [AddComponentMenu("Netcode/" + nameof(RuntimeNetStatsMonitor), 1000)]
+    [AddComponentMenu("Netcode/Runtime Network Stats Monitor")]
     public class RuntimeNetStatsMonitor : MonoBehaviour
     {
         /// Visibility toggle to hide or show the on-screen display.

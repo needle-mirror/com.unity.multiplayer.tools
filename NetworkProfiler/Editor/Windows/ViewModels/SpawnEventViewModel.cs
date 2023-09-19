@@ -6,13 +6,12 @@ namespace Unity.Multiplayer.Tools.NetworkProfiler.Editor
 {
     internal class SpawnEventViewModel : ViewModelBase
     {
-        public SpawnEventViewModel(NetworkObjectIdentifier objectId, IRowData parent, Action onSelectedCallback = null)
+        public SpawnEventViewModel(ulong treeViewId, NetworkObjectIdentifier objectId, IRowData parent, Action onSelectedCallback = null)
             : base(
                 parent,
                 $"{MetricType.ObjectSpawned.GetDisplayNameString()}",
                 MetricType.ObjectSpawned,
-                onSelectedCallback)
-        {
-        }
+                onSelectedCallback,
+                treeViewId) { }
     }
 }

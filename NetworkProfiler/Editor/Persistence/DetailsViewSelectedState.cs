@@ -1,27 +1,42 @@
 using System;
 using System.Collections.Generic;
-using JetBrains.Annotations;
+using System.Linq;
 using UnityEngine;
 
 namespace Unity.Multiplayer.Tools.NetworkProfiler.Editor
 {
     [Serializable]
-    internal class DetailsViewSelectedState : ISerializationCallbackReceiver
+    class DetailsViewSelectedState : ISerializationCallbackReceiver
     {
         [SerializeField]
         List<string> m_SelectedSerialized = new List<string>();
+
+        /// <summary>
+        /// Holds the uniquepath(path+id) of the items that are selected
+        /// </summary>
         HashSet<string> m_Selected = new HashSet<string>();
 
-        [CanBeNull]
-        [field: SerializeField]
-        public string MostRecentlySelected { get; set; }
-
-        public void SetSelected(IReadOnlyCollection<string> locators)
+        public void SetSelected(IReadOnlyCollection<string> locators, IReadOnlyCollection<ulong> ids)
         {
             m_Selected.Clear();
-            foreach (var locator in locators)
+
+            var locatorList = locators.ToList();
+            var idList = ids.ToList();
+
+            if (locatorList.Count == 0)
             {
-                m_Selected.Add(locator);
+                return;
+            }
+
+            for (var i = 0; i < locators.Count; i++)
+            {
+                var uniquePath = locatorList[i] + idList[i];
+                if (m_Selected.Contains(uniquePath))
+                {
+                    continue;
+                }
+
+                m_Selected.Add(uniquePath);
             }
         }
 

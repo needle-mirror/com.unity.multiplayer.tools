@@ -36,5 +36,10 @@ namespace Unity.Multiplayer.Tools.Adapters
         /// by the underlying implementation.
         /// </summary>
         event Action OnBandwidthUpdated;
+        
+        /// <summary>
+        /// Returns true if the bandwidth cache is empty, which might happen short after starting recording metrics.
+        /// </summary>
+        bool IsCacheEmpty { get; }
     }
 }

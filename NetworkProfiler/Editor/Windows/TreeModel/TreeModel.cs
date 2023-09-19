@@ -5,7 +5,11 @@ namespace Unity.Multiplayer.Tools.NetworkProfiler.Editor
     class TreeModel
     {
         readonly List<TreeModelNode> m_Children = new List<TreeModelNode>();
-
+        
+        /// <summary>
+        /// Checks if there is upcoming info to show on DetailsView
+        /// </summary>
+        internal bool HasData => Children.Count > 0;
         public IReadOnlyList<TreeModelNode> Children => m_Children;
 
         public void SortChildren(SortDirection direction)

@@ -6,13 +6,12 @@ namespace Unity.Multiplayer.Tools.NetworkProfiler.Editor
 {
     internal class OwnershipChangeEventViewModel : ViewModelBase
     {
-        public OwnershipChangeEventViewModel(IRowData parent, Action onSelectedCallback = null)
+        public OwnershipChangeEventViewModel(ulong treeViewId, IRowData parent, Action onSelectedCallback = null)
             : base(
                 parent,
                 $"{MetricType.OwnershipChange.GetDisplayNameString()}",
                 MetricType.OwnershipChange,
-                onSelectedCallback)
-        {
-        }
+                onSelectedCallback,
+                treeViewId) { }
     }
 }

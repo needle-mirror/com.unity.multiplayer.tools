@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Unity.Multiplayer.Tools.Common;
+using Unity.Multiplayer.Tools.NetworkSimulator.Runtime;
 using UnityEditor;
 using UnityEditor.UIElements;
 using UnityEngine;
@@ -13,6 +14,7 @@ namespace Unity.Multiplayer.Tools.NetworkSimulator.Editor.UI
     {
         const string k_Uxml = "Packages/com.unity.multiplayer.tools/NetworkSimulator/Editor/UI/NetworkScenarioView.uxml";
         const string k_None = "None";
+        const string k_StartString = "Start";
         const string k_PauseString = "Pause";
         const string k_ResumeString = "Resume";
 
@@ -54,29 +56,35 @@ namespace Unity.Multiplayer.Tools.NetworkSimulator.Editor.UI
             AutoRunToggle.BindProperty(serializedObject.FindProperty(nameof(networkSimulator.AutoRunScenario)));
             AutoRunToggle.SetEnabled(!Application.isPlaying);
 
-            SetPauseResumeButtonString(m_NetworkSimulator.Scenario?.IsPaused ?? !networkSimulator.AutoRunScenario);
+            SetPauseResumeButton(m_NetworkSimulator.scenarioPlaybackState);
 
             this.AddEventLifecycle(OnAttach, OnDetach);
         }
 
         void OnAttach(AttachToPanelEvent evt)
         {
-            ScenarioDropdown.RegisterCallback<ChangeEvent<string>>(OnPresetSelected);
+            ScenarioDropdown.RegisterCallback<ChangeEvent<string>>(OnScenarioPresetSelected);
             SettingsFoldout.RegisterCallback<ChangeEvent<bool>>(OnSettingsFoldoutChange);
             PauseResumeButton.RegisterCallback<ClickEvent>(OnPauseResumeButtonClicked);
             EditorApplication.playModeStateChanged += OnPlayStateChanged;
 
             Undo.undoRedoPerformed += UndoRedoPerformed;
+            
+            m_NetworkSimulator.ScenarioPlaybackStateChangedEvent += OnScenarioPlaybackStateChanged;
+            m_NetworkSimulator.ScenarioChangedEvent += OnScenarioChanged;
         }
 
         void OnDetach(DetachFromPanelEvent evt)
         {
-            ScenarioDropdown.UnregisterCallback<ChangeEvent<string>>(OnPresetSelected);
+            ScenarioDropdown.UnregisterCallback<ChangeEvent<string>>(OnScenarioPresetSelected);
             SettingsFoldout.UnregisterCallback<ChangeEvent<bool>>(OnSettingsFoldoutChange);
             PauseResumeButton.UnregisterCallback<ClickEvent>(OnPauseResumeButtonClicked);
             EditorApplication.playModeStateChanged -= OnPlayStateChanged;
 
             Undo.undoRedoPerformed -= UndoRedoPerformed;
+            
+            m_NetworkSimulator.ScenarioPlaybackStateChangedEvent -= OnScenarioPlaybackStateChanged;
+            m_NetworkSimulator.ScenarioChangedEvent -= OnScenarioChanged;
         }
 
         void UndoRedoPerformed()
@@ -90,12 +98,11 @@ namespace Unity.Multiplayer.Tools.NetworkSimulator.Editor.UI
             m_NetworkScenarioProperty.serializedObject.ApplyModifiedProperties();
         }
 
-        void OnPresetSelected(ChangeEvent<string> changeEvent)
+        void OnScenarioPresetSelected(ChangeEvent<string> changeEvent)
         {
             if (changeEvent.newValue == k_None)
             {
-                SettingsContainer.DeselectScenario();
-                UpdateScenarioDropdown();
+                m_NetworkSimulator.Scenario = null;
                 return;
             }
 
@@ -106,8 +113,6 @@ namespace Unity.Multiplayer.Tools.NetworkSimulator.Editor.UI
             var selectedType = m_Types[selectedIndexWithoutNone];
             var networkScenario = NetworkScenarioTypesLibrary.GetInstanceForTypeName(selectedType.Name);
             m_NetworkSimulator.Scenario = networkScenario;
-            SettingsContainer.SelectScenario(networkScenario);
-            UpdateScenarioDropdown();
         }
 
         void UpdateScenarioDropdown()
@@ -131,6 +136,11 @@ namespace Unity.Multiplayer.Tools.NetworkSimulator.Editor.UI
 
         void OnPauseResumeButtonClicked(ClickEvent evt)
         {
+            if (!Application.isPlaying)
+            {
+                return;
+            }
+            
             var scenario = m_NetworkSimulator.Scenario;
 
             if (scenario == null)
@@ -139,17 +149,59 @@ namespace Unity.Multiplayer.Tools.NetworkSimulator.Editor.UI
             }
 
             scenario.IsPaused = !scenario.IsPaused;
-            SetPauseResumeButtonString(scenario.IsPaused);
+            SetPauseResumeButton(scenario.IsPaused);
         }
 
-        void SetPauseResumeButtonString(bool isPaused)
+        void SetPauseResumeButton(bool isPaused)
         {
-            PauseResumeButton.text = isPaused ? k_ResumeString : k_PauseString;
+            SetPauseResumeButtonString(isPaused ? k_ResumeString : k_PauseString);
+        }
+        
+        void SetPauseResumeButton(Runtime.NetworkSimulator.ScenarioPlaybackState state)
+        {
+            switch (state)
+            {
+                case Runtime.NetworkSimulator.ScenarioPlaybackState.Initial:
+                    SetPauseResumeButtonString(k_StartString);
+                    break;
+                case Runtime.NetworkSimulator.ScenarioPlaybackState.Paused:
+                    SetPauseResumeButtonString(k_ResumeString);
+                    break;
+                case Runtime.NetworkSimulator.ScenarioPlaybackState.Running:
+                    SetPauseResumeButtonString(k_PauseString);
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(state), state, "Not supported type");
+            }
+        }
+        
+        void SetPauseResumeButtonString(string text)
+        {
+            PauseResumeButton.text = text;
         }
 
         void OnPlayStateChanged(PlayModeStateChange playModeStateChange)
         {
             AutoRunToggle.SetEnabled(!Application.isPlaying);
+        }
+        
+        void OnScenarioPlaybackStateChanged(Runtime.NetworkSimulator.ScenarioPlaybackState newState)
+        {
+            SetPauseResumeButton(newState);
+        }
+        
+        void OnScenarioChanged(NetworkScenario newScenario)
+        {
+            if (newScenario == null)
+            {
+                SettingsContainer.DeselectScenario();
+            }
+            else
+            {
+                SettingsContainer.SelectScenario(newScenario);
+            }
+            
+            UpdateScenarioDropdown();
         }
     }
 }

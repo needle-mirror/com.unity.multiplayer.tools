@@ -16,19 +16,28 @@ namespace Unity.Multiplayer.Tools.NetworkProfiler.Editor
         DetailsViewSelectedState m_SelectedState = new DetailsViewSelectedState();
 
         [SerializeField]
-        string m_SearchBarString = null;
-
-        public static string MostRecentlySelected
-        {
-            get => GetOrCreateStateObject().m_SelectedState.MostRecentlySelected;
-            private set => GetOrCreateStateObject().m_SelectedState.MostRecentlySelected = value;
-        }
+        string m_SearchBarString;
 
         public static string SearchBarString
         {
             get => GetOrCreateStateObject().m_SearchBarString;
             set => GetOrCreateStateObject().m_SearchBarString = value;
         }
+#if !UNITY_2022_1_OR_NEWER
+        public class MostRecentlySelectedItem
+        {
+            public string path;
+            public ulong id;
+
+            public MostRecentlySelectedItem(string path, ulong id)
+            {
+                this.path = path;
+                this.id = id;
+            }
+        }
+
+        public static MostRecentlySelectedItem s_mostRecentlySelectedItem;
+#endif
 
         static int? StateObjectInstanceId
         {
@@ -79,8 +88,8 @@ namespace Unity.Multiplayer.Tools.NetworkProfiler.Editor
         public static bool IsFoldedOut(string locator)
             => GetOrCreateStateObject().m_FoldoutState.IsFoldedOut(locator);
 
-        public static void SetFoldout(string locator, bool isFoldedOut)
-            => GetOrCreateStateObject().m_FoldoutState.SetFoldout(locator, isFoldedOut);
+        public static void SetFoldout(string locator, bool isExpanded)
+            => GetOrCreateStateObject().m_FoldoutState.SetFoldout(locator, isExpanded);
 
         public static void SetFoldoutExpandAll()
             => GetOrCreateStateObject().m_FoldoutState.SetFoldoutExpandAll();
@@ -91,10 +100,15 @@ namespace Unity.Multiplayer.Tools.NetworkProfiler.Editor
         public static bool IsSelected(string locator)
             => GetOrCreateStateObject().m_SelectedState.IsSelected(locator);
 
-        public static void SetSelected(IReadOnlyList<string> locators)
+        public static void SetSelected(IReadOnlyList<string> pathList, IReadOnlyList<ulong> idList)
         {
-            GetOrCreateStateObject().m_SelectedState.SetSelected(locators);
-            MostRecentlySelected = locators.Count > 0 ? locators[locators.Count - 1] : null;
+            GetOrCreateStateObject().m_SelectedState.SetSelected(pathList, idList);
+#if !UNITY_2022_1_OR_NEWER
+            if (pathList.Count > 0)
+            {
+                s_mostRecentlySelectedItem = new MostRecentlySelectedItem(pathList[pathList.Count - 1], idList[idList.Count - 1]);
+            }
+#endif
         }
     }
 }

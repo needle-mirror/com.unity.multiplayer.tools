@@ -10,7 +10,6 @@
 
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
-using JetBrains.Annotations;
 using UnityEngine;
 
 namespace Unity.Multiplayer.Tools.NetworkSimulator.Runtime
@@ -18,8 +17,24 @@ namespace Unity.Multiplayer.Tools.NetworkSimulator.Runtime
     /// <summary>
     /// Add this component to any game object to configure network simulation parameters.
     /// </summary>
+    [AddComponentMenu("Netcode/Network Simulator")]
     public partial class NetworkSimulator : MonoBehaviour, INotifyPropertyChanged
     {
+        /// <summary>
+        /// Enum for representing the current state of the scenario playback.
+        /// </summary>
+        internal enum ScenarioPlaybackState
+        {
+            Initial,    // The scenario has not been started yet
+            Running,
+            Paused
+        }
+
+        void OnPauseStateChangedEvent(bool isPaused)
+        {
+            scenarioPlaybackState = isPaused ? ScenarioPlaybackState.Paused : ScenarioPlaybackState.Running;
+        }
+        
         [SerializeField]
         internal NetworkSimulatorPresetAsset m_PresetAsset;
 
@@ -46,6 +61,7 @@ namespace Unity.Multiplayer.Tools.NetworkSimulator.Runtime
         INetworkEventsApi m_NetworkEventsApi;
         INetworkSimulatorPreset m_CachedPreset;
         bool m_CachedScenarioIsPaused;
+        ScenarioPlaybackState m_ScenarioPlaybackState = ScenarioPlaybackState.Initial;
 
         internal PropertyChangedEventHandler m_PropertyChanged;
 
@@ -63,7 +79,6 @@ namespace Unity.Multiplayer.Tools.NetworkSimulator.Runtime
                 {
                     return m_NetworkEventsApi;
                 }
-
 #if UNITY_MP_TOOLS_NETSIM_IMPLEMENTATION_ENABLED
                 m_NetworkEventsApi = new NetworkEventsApi(this, m_NetworkTransportApi);
 #else
@@ -104,21 +119,96 @@ namespace Unity.Multiplayer.Tools.NetworkSimulator.Runtime
                     m_PresetAsset = null;
                 }
 
-                OnConnectionPresetChanged();
+                UpdateLiveParameters();
+                OnPropertyChanged();
             }
         }
 
         /// <summary>
+        /// Delegate for handling scenario changes.
+        /// </summary>
+        internal delegate void ScenarioChangedHandler(NetworkScenario newScenario);
+
+        /// <summary>
+        /// Event triggered when the active scenario is changed.
+        /// </summary>
+        internal event ScenarioChangedHandler ScenarioChangedEvent = delegate { };
+
+        /// <summary>
         /// The Network Scenario used to modify network connection parameters at runtime.
+        /// The new scenario will start automatically under specific circumstances:
+        /// If autorun is enabled and
+        /// the application is in playmode and
+        /// the new scenario is valid (not None/null) and
+        /// the previous scenario was a running valid one.
         /// </summary>
         public NetworkScenario Scenario
         {
             get => m_Scenario;
             set
             {
+                if (Equals(m_Scenario, value))
+                {
+                    return;
+                }
+
                 var previousValue = Scenario;
+
+                if (previousValue != null)
+                {
+                    previousValue.PauseStateChangedEvent -= OnPauseStateChangedEvent;
+                }
+
                 m_Scenario = value;
-                OnScenarioChanged(previousValue, value);
+
+                if (m_Scenario != null)
+                {
+                    m_Scenario.PauseStateChangedEvent += OnPauseStateChangedEvent;
+                }
+
+                scenarioPlaybackState = ScenarioPlaybackState.Initial;
+                
+                if (Application.isPlaying)
+                {
+                    previousValue?.Dispose();
+
+                    if (m_Scenario != null)
+                    {
+                        var shouldAutoRun = AutoRunScenario && previousValue != null && !previousValue.IsPaused;
+                        m_Scenario.InitializeScenario(NetworkEventsApi, shouldAutoRun);
+                    }
+                }
+
+                ScenarioChangedEvent(m_Scenario);
+                OnPropertyChanged();
+            }
+        }
+
+        /// <summary>
+        /// Delegate for handling scenario playback state changes.
+        /// </summary>
+        internal delegate void ScenarioPlaybackStateChangedHandler(ScenarioPlaybackState newState);
+
+        /// <summary>
+        /// Event triggered when the scenario playback state changes.
+        /// </summary>
+        internal event ScenarioPlaybackStateChangedHandler ScenarioPlaybackStateChangedEvent = delegate { };
+
+        /// <summary>
+        /// This state represents the state of the current scenario being used by the simulator.
+        /// </summary>
+        internal ScenarioPlaybackState scenarioPlaybackState
+        {
+            get => m_ScenarioPlaybackState;
+            private set
+            {
+                if (m_ScenarioPlaybackState == value)
+                {
+                    return;
+                }
+
+                m_ScenarioPlaybackState = value;
+                ScenarioPlaybackStateChangedEvent(scenarioPlaybackState);
             }
         }
 
@@ -148,6 +238,7 @@ namespace Unity.Multiplayer.Tools.NetworkSimulator.Runtime
 
             if (Scenario != null)
             {
+                Scenario.PauseStateChangedEvent += OnPauseStateChangedEvent;
                 Scenario.IsPaused = m_CachedScenarioIsPaused;
             }
 
@@ -156,6 +247,7 @@ namespace Unity.Multiplayer.Tools.NetworkSimulator.Runtime
 
         void Start()
         {
+            scenarioPlaybackState = ScenarioPlaybackState.Initial;
             Scenario?.InitializeScenario(NetworkEventsApi, AutoRunScenario);
         }
 
@@ -164,6 +256,11 @@ namespace Unity.Multiplayer.Tools.NetworkSimulator.Runtime
             m_CachedPreset = ConnectionPreset;
             ConnectionPreset = NetworkSimulatorPresets.None;
             UpdateLiveParameters(true);
+            
+            if (Scenario != null)
+            {
+                Scenario.PauseStateChangedEvent -= OnPauseStateChangedEvent;
+            }
         }
 
         void OnDestroy()
@@ -177,30 +274,6 @@ namespace Unity.Multiplayer.Tools.NetworkSimulator.Runtime
             {
                 scenarioBehaviour.UpdateScenario(Time.deltaTime);
             }
-        }
-
-        void OnConnectionPresetChanged()
-        {
-            UpdateLiveParameters();
-            OnPropertyChanged(nameof(ConnectionPreset));
-        }
-
-        void OnScenarioChanged([CanBeNull] NetworkScenario previousValue, [CanBeNull] NetworkScenario newValue)
-        {
-            if (Application.isPlaying && Equals(previousValue, newValue) == false)
-            {
-                previousValue?.Dispose();
-
-                if (newValue == null)
-                {
-                    return;
-                }
-
-                var shouldAutoRun = AutoRunScenario && previousValue != null && !previousValue.IsPaused;
-                newValue.InitializeScenario(NetworkEventsApi, shouldAutoRun);
-            }
-
-            OnPropertyChanged(nameof(Scenario));
         }
 
         void OnPropertyChanged([CallerMemberName] string propertyName = null)

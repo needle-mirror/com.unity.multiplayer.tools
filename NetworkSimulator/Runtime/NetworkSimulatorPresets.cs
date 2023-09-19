@@ -6,6 +6,11 @@
     public static class NetworkSimulatorPresets
     {
         const string k_BroadbandDescription = "Typical of desktop and console platforms (and generally speaking most mobile players too).";
+        const string k_OpticalDescription = "Best case scenario for desktop and console platforms. Excellent ping, excellent jitter and no packet loss.";
+        const string k_CableDescription = "Optimal scenario for desktop and console platforms. Very good ping, very good jitter and no packet loss.";
+        const string k_DslDescription = "Average scenario for desktop and console platforms. Good ping, good jitter and no packet loss.";
+        const string k_SatelliteDescription = "Low Earth orbit satellite network scenario for desktop and console platforms. Bad ping, good jitter and no packet loss.";
+        const string k_CongestedNetworkDescription = "Desktop and console platforms trough congested networks (multiple downloads or streaming already using the network's maximum capacity). Medium ping, bad jitter and little packet loss.";
         const string k_PoorMobileDescription = "Extremely poor connection, completely unsuitable for synchronous multiplayer gaming due to exceptionally high ping. Turn based games may work.";
         const string k_MediumMobileDescription = "This is the minimum supported mobile connection for synchronous gameplay. Expect high pings, jitter, stuttering and packet loss.";
         const string k_DecentMobileDescription =
@@ -21,6 +26,31 @@
         /// Preset that simulates a typical home broadband connection.
         /// </summary>
         public static readonly NetworkSimulatorPreset HomeBroadband;
+        
+        /// <summary>
+        /// Preset that simulates an optical home broadband connection.
+        /// </summary>
+        public static readonly NetworkSimulatorPreset HomeOptical;
+
+        /// <summary>
+        /// Preset that simulates a cable home broadband connection.
+        /// </summary>
+        public static readonly NetworkSimulatorPreset HomeCable;
+        
+        /// <summary> 
+        /// Preset that simulates a DSL home connection.
+        /// </summary>
+        public static readonly NetworkSimulatorPreset HomeDSL;
+        
+        /// <summary> 
+        /// Preset that simulates a satellite home connection.
+        /// </summary>
+        public static readonly NetworkSimulatorPreset HomeSatellite;
+        
+        /// <summary>
+        /// Preset that simulates a congested home broadband connection which is being used around its maximum capacity by multiple devices.
+        /// </summary>
+        public static readonly NetworkSimulatorPreset HomeCongestedNetwork;
 
         /// <summary>
         /// Preset that simulates a typical 2G mobile connection.
@@ -81,6 +111,32 @@
                 packetDelayMs: 32,
                 packetJitterMs: 12,
                 packetLossPercent: 2);
+            HomeOptical = NetworkSimulatorPreset.Create(
+                name: "Home Fiber [Best real-world scenario]",
+                description: k_OpticalDescription,
+                packetDelayMs: 10,
+                packetJitterMs: 1);
+            HomeCable = NetworkSimulatorPreset.Create(
+                name: "Home Cable [Optimal real-world scenario]",
+                description: k_CableDescription,
+                packetDelayMs: 25,
+                packetJitterMs: 5);
+            HomeDSL = NetworkSimulatorPreset.Create(
+                name: "Home DSL [ADSL or VDSL]",
+                description: k_DslDescription,
+                packetDelayMs: 30,
+                packetJitterMs: 10);
+            HomeSatellite = NetworkSimulatorPreset.Create(
+                name: "Home Satellite [low Earth orbit]",
+                description: k_SatelliteDescription,
+                packetDelayMs: 100,
+                packetJitterMs: 10);
+            HomeCongestedNetwork = NetworkSimulatorPreset.Create(
+                name: "Home Broadband with Congested Network",
+                description: k_CongestedNetworkDescription,
+                packetDelayMs: 50,
+                packetJitterMs: 50,
+                packetLossPercent: 1);
             Mobile2G = NetworkSimulatorPreset.Create(
                 name: "Mobile 2G [CDMA & GSM, '00]",
                 description: k_PoorMobileDescription,
@@ -147,6 +203,11 @@
             Values = new []{
                 None,
                 HomeBroadband,
+                HomeOptical,
+                HomeCable,
+                HomeDSL,
+                HomeSatellite,
+                HomeCongestedNetwork,
                 Mobile2G,
                 Mobile2_5G,
                 Mobile2_75G,

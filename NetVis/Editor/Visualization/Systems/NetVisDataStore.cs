@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using Unity.Multiplayer.Tools.Adapters;
@@ -40,6 +40,9 @@ namespace Unity.Multiplayer.Tools.NetVis.Editor.Visualization
 
         float m_MaxBandwidth = k_InvalidBandwidth;
 
+        public bool IsBandwidthCacheEmpty => m_GetBandwidth is null || m_GetBandwidth.IsCacheEmpty ||
+                            m_BandwidthSmoothingCache is null || m_BandwidthSmoothingCache.NeedsResetToImmediateValue;
+        
         public NetVisDataStore(
             NetVisConfiguration configuration,
             BandwidthStats bandwidthStats)
@@ -61,7 +64,7 @@ namespace Unity.Multiplayer.Tools.NetVis.Editor.Visualization
             m_Configuration = configuration;
             UpdateBandwidthBackend();
             m_BandwidthSmoothingCache?.OnConfigurationChanged(configuration.Settings.Bandwidth);
-            m_MaxBandwidth = k_InvalidBandwidth;
+            OnBandwidthUpdated();
         }
 
         public void OnPauseStateChanged(PauseState pauseState)
@@ -176,9 +179,9 @@ namespace Unity.Multiplayer.Tools.NetVis.Editor.Visualization
 
         void OnBandwidthUpdated()
         {
-            m_BandwidthSmoothingCache?.Update(m_GetObjectIds, m_GetBandwidth, Time.timeAsDouble);
             if (m_BandwidthSmoothingCache is not null)
             {
+                m_BandwidthSmoothingCache.Update(m_GetObjectIds, m_GetBandwidth, Time.timeAsDouble);
                 m_BandwidthStats.MaxBandwidth = m_BandwidthSmoothingCache.MaxBandwidth;
             }
 

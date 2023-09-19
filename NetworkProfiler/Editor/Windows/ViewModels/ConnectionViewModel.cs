@@ -15,10 +15,10 @@ namespace Unity.Multiplayer.Tools.NetworkProfiler.Editor
                 typeDisplayName: string.Empty,
                 typeName: "connection",
                 onSelectedCallback,
+                id: connectionInfo.Id,
                 connectionInfo,
-                localConnection)
-        {
-        }
+                localConnection
+            ) { }
 
         static string GetName(ConnectionInfo connectionInfo)
         {

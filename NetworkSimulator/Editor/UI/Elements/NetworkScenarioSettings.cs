@@ -57,7 +57,6 @@ namespace Unity.Multiplayer.Tools.NetworkSimulator.Editor.UI
         internal void DeselectScenario()
         {
             m_ScenarioSettings.RemoveFromHierarchy();
-            m_NetworkSimulator.Scenario = null;
             Hide();
         }
 

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Diagnostics.CodeAnalysis;
 using Unity.Multiplayer.Tools.Common;
 using Unity.Multiplayer.Tools.NetVis.Configuration;
@@ -14,7 +14,6 @@ namespace Unity.Multiplayer.Tools.NetVis.Editor.Visualization
         readonly NetVisConfigurationWithEvents m_ConfigurationWithEvents;
         NetVisConfiguration Configuration => m_ConfigurationWithEvents.Configuration;
         readonly NetVisDataStore m_DataStore;
-        readonly IRuntimeUpdater m_RuntimeUpdater;
 
         // Members
         //---------------------------------------------------------------------
@@ -33,22 +32,21 @@ namespace Unity.Multiplayer.Tools.NetVis.Editor.Visualization
 
             m_ConfigurationWithEvents = configurationWithEvents;
             m_DataStore = netVisDataStore;
-            m_RuntimeUpdater = runtimeUpdater;
 
             m_ConfigurationWithEvents.ConfigurationChanged += OnConfigurationChanged;
-            m_RuntimeUpdater.OnLateUpdate += OnLateUpdate;
+
             EditorApplication.pauseStateChanged += OnPauseStateChanged;
 
+            SceneView.duringSceneGui += DuringSceneGui;
             OnConfigurationChanged(configurationWithEvents.Configuration);
         }
 
         public void Dispose()
         {
             DebugUtil.TraceMethodName();
-
+            SceneView.duringSceneGui -= DuringSceneGui;
             m_ConfigurationWithEvents.ConfigurationChanged -= OnConfigurationChanged;
-
-            m_RuntimeUpdater.OnLateUpdate -= OnLateUpdate;
+            
             EditorApplication.pauseStateChanged -= OnPauseStateChanged;
 
             m_MeshShading?.Dispose();
@@ -74,9 +72,10 @@ namespace Unity.Multiplayer.Tools.NetVis.Editor.Visualization
             }
         }
 
-        void OnLateUpdate()
+        public void DuringSceneGui(SceneView sceneView)
         {
             m_MeshShading?.UpdateObjectColors();
+            m_TextOverlay?.DuringSceneGui(sceneView);
         }
 
         void OnConfigurationChanged(NetVisConfiguration configuration)

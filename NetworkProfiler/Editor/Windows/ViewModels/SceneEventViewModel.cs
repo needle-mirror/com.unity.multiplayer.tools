@@ -5,14 +5,13 @@ namespace Unity.Multiplayer.Tools.NetworkProfiler.Editor
 {
     internal class SceneEventViewModel : ViewModelBase
     {
-        public SceneEventViewModel(string sceneName, string eventType, IRowData parent, Action onSelectedCallback = null)
+        public SceneEventViewModel(ulong treeViewid, string sceneName, string eventType, IRowData parent, Action onSelectedCallback = null)
             : base(
                 parent,
                 GenerateName(sceneName, eventType),
                 MetricType.SceneEvent,
-                onSelectedCallback)
-        {
-        }
+                onSelectedCallback,
+                treeViewid) { }
 
         static string GenerateName(string sceneName, string eventType)
         {

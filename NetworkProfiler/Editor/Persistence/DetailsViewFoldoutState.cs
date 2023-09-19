@@ -12,6 +12,10 @@ namespace Unity.Multiplayer.Tools.NetworkProfiler.Editor
 
         [SerializeField]
         List<string> m_FoldoutExceptionsSerialized = new List<string>();
+
+        /// <summary>
+        /// Holds the uniquepath(path+id) of the items that are expanded
+        /// </summary>
         HashSet<string> m_FoldoutExceptions = new HashSet<string>();
 
         public bool IsFoldedOut(string locator)
@@ -25,9 +29,9 @@ namespace Unity.Multiplayer.Tools.NetworkProfiler.Editor
             return m_FoldoutExceptions.Contains(locator);
         }
 
-        public void SetFoldout(string locator, bool isFoldedOut)
+        public void SetFoldout(string locator, bool isExpanded)
         {
-            if (isFoldedOut)
+            if (isExpanded)
             {
                 Expand(locator);
             }

@@ -20,7 +20,7 @@ namespace Unity.Multiplayer.Tools.NetVis.Editor.Visualization
         double m_LastUpdateTime = double.MinValue;
         readonly Dictionary<ObjectId, float> m_SmoothedBandwidth = new();
 
-        bool m_NeedsResetToImmediateValue = false;
+        public bool NeedsResetToImmediateValue { get; private set; }
 
         public float MaxBandwidth { get; private set; } = 0f;
 
@@ -36,7 +36,7 @@ namespace Unity.Multiplayer.Tools.NetVis.Editor.Visualization
                 m_BandwidthType = settings.BandwidthType;
                 m_Direction = settings.NetworkDirection;
 
-                m_NeedsResetToImmediateValue = true;
+                NeedsResetToImmediateValue = true;
             }
 
             m_DecayConstant =
@@ -47,14 +47,21 @@ namespace Unity.Multiplayer.Tools.NetVis.Editor.Visualization
 
         public void Update(IGetObjectIds getObjectIds, IGetBandwidth getBandwidth, double time)
         {
+            if (getBandwidth.IsCacheEmpty)
+            {
+                // Skip first frame where the cache is empty, but still get time to compute delta time
+                m_LastUpdateTime = time;
+                return;
+            }
+            
             var deltaTime = time - m_LastUpdateTime;
             m_LastUpdateTime = time;
 
             var oldValueWeight = (float)Math.Exp(-deltaTime * m_DecayConstant);
-            if (m_NeedsResetToImmediateValue)
+            if (NeedsResetToImmediateValue)
             {
                 oldValueWeight = 0;
-                m_NeedsResetToImmediateValue = false;
+                NeedsResetToImmediateValue = false;
             }
 
             var newValueWeight = 1 - oldValueWeight;

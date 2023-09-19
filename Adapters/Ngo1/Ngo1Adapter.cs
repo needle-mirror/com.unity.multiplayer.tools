@@ -197,6 +197,8 @@ namespace Unity.Multiplayer.Tools.Adapters.Ngo1
         // --------------------------------------------------------------------
         event Action m_OnBandwidthUpdated;
 
+        public bool IsCacheEmpty => m_BandwidthCache == null || m_BandwidthCache.IsCold;
+        
         public BandwidthTypes SupportedBandwidthTypes =>
             BandwidthTypes.Other | BandwidthTypes.Rpc | BandwidthTypes.NetVar;
 

@@ -5,13 +5,12 @@ namespace Unity.Multiplayer.Tools.NetworkProfiler.Editor
 {
     internal class NamedMessageEventViewModel : ViewModelBase
     {
-        public NamedMessageEventViewModel(string messageName, IRowData parent, Action onSelectedCallback = null)
+        public NamedMessageEventViewModel(ulong TreeViewId, string messageName, IRowData parent, Action onSelectedCallback = null)
             : base(
                 parent,
                 messageName,
                 MetricType.NamedMessage,
-                onSelectedCallback)
-        {
-        }
+                onSelectedCallback,
+                TreeViewId) { }
     }
 }

@@ -50,23 +50,23 @@ namespace Unity.Multiplayer.Tools.NetworkProfiler.Editor
                 .AddUnderConnection(
                     MetricType.NamedMessage,
                     (NamedMessageEvent metric, TreeModelNode node)
-                        => new NamedMessageEventViewModel(metric.Name.ToString(), node.RowData))
+                        => new NamedMessageEventViewModel(metric.TreeViewId, metric.Name.ToString(), node.RowData))
                 .AddUnderConnection(
                     MetricType.UnnamedMessage,
                     (UnnamedMessageEvent metric, TreeModelNode node)
-                        => new UnnamedMessageEventViewModel(node.RowData))
+                        => new UnnamedMessageEventViewModel(metric.TreeViewId, node.RowData))
                 .AddUnderConnection(
                     MetricType.SceneEvent,
                     (SceneEventMetric metric, TreeModelNode node)
-                        => new SceneEventViewModel(metric.SceneName.ToString(), metric.SceneEventType.ToString(), node.RowData))
+                        => new SceneEventViewModel(metric.TreeViewId, metric.SceneName.ToString(), metric.SceneEventType.ToString(), node.RowData))
                 .AddUnderConnection(
                     MetricType.ServerLog,
                     (ServerLogEvent metric, TreeModelNode node)
-                        => new ServerLogEventViewModel(metric.LogLevel, node.RowData))
+                        => new ServerLogEventViewModel(metric.TreeViewId, metric.LogLevel, node.RowData))
                 .AddUnderConnection(
                     MetricType.NetworkMessage,
                     (NetworkMessageEvent metric, TreeModelNode node)
-                        => new NetworkMessageEventViewModel(metric.Name.ToString(), node.RowData),
+                        => new NetworkMessageEventViewModel(metric.TreeViewId,metric.Name.ToString(), node.RowData),
                     metric => !k_ExcludedNetworkMessageTypeNames.Contains(metric.Name.ToString()))
                 .Build();
         }
@@ -79,31 +79,31 @@ namespace Unity.Multiplayer.Tools.NetworkProfiler.Editor
             }
 
             return new TreeModelBuilder(metrics)
-
+                
                 .AddUnderNetworkObject(
                     MetricType.ObjectSpawned,
                     (ObjectSpawnedEvent metric, TreeModelNode node)
-                        => new SpawnEventViewModel(metric.NetworkId, node.RowData))
+                        => new SpawnEventViewModel(metric.TreeViewId, metric.NetworkId, node.RowData))
 
                 .AddUnderNetworkObject(
                     MetricType.ObjectDestroyed,
                     (ObjectDestroyedEvent metric, TreeModelNode node)
-                        => new DestroyEventViewModel(node.RowData))
+                        => new DestroyEventViewModel(metric.TreeViewId, node.RowData))
 
                 .AddUnderNetworkObject(
                     MetricType.OwnershipChange,
                     (OwnershipChangeEvent metric, TreeModelNode node)
-                        => new OwnershipChangeEventViewModel(node.RowData))
+                        => new OwnershipChangeEventViewModel(metric.TreeViewId, node.RowData))
 
                 .AddUnderNetworkObject(
                     MetricType.Rpc,
                     (RpcEvent metric, TreeModelNode node)
-                        => new RpcEventViewModel(metric.NetworkBehaviourName.ToString(), metric.Name.ToString(), node.RowData))
+                        => new RpcEventViewModel(metric.TreeViewId, metric.NetworkBehaviourName.ToString(), metric.Name.ToString(), node.RowData))
 
                 .AddUnderNetworkObject(
                     MetricType.NetworkVariableDelta,
                     (NetworkVariableEvent metric, TreeModelNode node)
-                        => new NetworkVariableEventViewModel(metric.NetworkBehaviourName.ToString(), metric.Name.ToString(), node.RowData))
+                        => new NetworkVariableEventViewModel(metric.TreeViewId, metric.NetworkBehaviourName.ToString(), metric.Name.ToString(), node.RowData))
 
                 .Build();
         }

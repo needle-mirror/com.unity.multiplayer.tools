@@ -8,15 +8,17 @@ namespace Unity.Multiplayer.Tools.NetworkProfiler.Editor
     class TreeViewTabElement : VisualElement
     {
         readonly TreeViewNetwork.DisplayType m_DisplayType;
-
+        TreeViewNetwork m_TreeView;
+#if !UNITY_2022_1_OR_NEWER
         readonly ColumnBarNetwork m_ColumnBarNetwork;
-        readonly SearchBar m_SearchBar;
-
-        TreeModel m_TreeModel;
-        ListViewContainer m_FilteredResultsArea;
         bool m_ShowFiltered;
         bool m_ShowStandard;
-        TreeViewNetwork m_TreeView;
+#endif
+
+        readonly SearchBar m_SearchBar;
+        TreeModel m_TreeModel;
+        ListViewContainer m_FilteredResultsArea;
+
         VisualElement m_TreeViewArea;
 
         public TreeViewTabElement(TreeViewNetwork.DisplayType displayType)
@@ -25,20 +27,16 @@ namespace Unity.Multiplayer.Tools.NetworkProfiler.Editor
 
             style.flexGrow = 1;
 
+            m_SearchBar = new SearchBar(
+                HandleOnSearchResultsChanged,
+                HandleOnSearchStringCleared);
+#if !UNITY_2022_1_OR_NEWER
             m_ColumnBarNetwork = new ColumnBarNetwork(
                 HandleOnNameClickedEvent,
                 HandleOnTypeClickedEvent,
                 HandleOnBytesSentClickEvent,
                 HandleOnBytesReceivedClickEvent);
-
-            m_SearchBar = new SearchBar(
-                HandleOnSearchResultsChanged,
-                HandleOnSearchStringCleared);
-        }
-
-        public void UpdateMetrics(MetricCollection metricCollection)
-        {
-            m_TreeModel = ConstructTreeModel(metricCollection, m_DisplayType);
+#endif
         }
 
         static TreeModel ConstructTreeModel(MetricCollection metricCollection, TreeViewNetwork.DisplayType displayType)
@@ -49,6 +47,11 @@ namespace Unity.Multiplayer.Tools.NetworkProfiler.Editor
                 TreeViewNetwork.DisplayType.Activity => TreeModelUtility.CreateActivityTreeStructure(metricCollection),
                 _ => throw new ArgumentOutOfRangeException(nameof(displayType), displayType, null)
             };
+        }
+
+        public void UpdateMetrics(MetricCollection metricCollection)
+        {
+            m_TreeModel = ConstructTreeModel(metricCollection, m_DisplayType);
         }
 
         public void Show()
@@ -85,7 +88,7 @@ namespace Unity.Multiplayer.Tools.NetworkProfiler.Editor
 
             m_FilteredResultsArea = new ListViewContainer();
         }
-
+#if !UNITY_2022_1_OR_NEWER
         void HandleOnNameClickedEvent(bool isAscending)
         {
             if (m_ShowFiltered)
@@ -141,6 +144,7 @@ namespace Unity.Multiplayer.Tools.NetworkProfiler.Editor
                 m_TreeView.BytesSentSort(isAscending);
             }
         }
+#endif
 
         void HandleOnSearchStringCleared()
         {
@@ -156,9 +160,11 @@ namespace Unity.Multiplayer.Tools.NetworkProfiler.Editor
         {
             Clear();
 
+#if !UNITY_2022_1_OR_NEWER
             m_ShowStandard = true;
             m_ShowFiltered = false;
             Add(m_ColumnBarNetwork);
+#endif
             Add(m_TreeViewArea);
 
             m_TreeView.RefreshSelected();
@@ -168,9 +174,11 @@ namespace Unity.Multiplayer.Tools.NetworkProfiler.Editor
         {
             Clear();
 
+#if !UNITY_2022_1_OR_NEWER
             m_ShowFiltered = true;
             m_ShowStandard = false;
             Add(m_ColumnBarNetwork);
+#endif
             m_FilteredResultsArea.CacheResults(results);
             m_FilteredResultsArea.ShowResults();
             Add(m_FilteredResultsArea);

@@ -3,6 +3,9 @@ using UnityEngine.UIElements;
 
 namespace Unity.Multiplayer.Tools.NetworkProfiler.Editor
 {
+    /// <summary>
+    /// This ListViewContainer is used for showing searchbar results.
+    /// </summary>
     class ListViewContainer : VisualElement
     {
         List<IRowData> m_CachedEntries;

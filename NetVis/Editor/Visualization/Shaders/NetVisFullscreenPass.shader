@@ -6,7 +6,7 @@
         Pass
         {
             CGPROGRAM
-#if UNITY_VERSION >= 202300
+
             #pragma shader_feature NET_SCENE_VIS_OUTLINE
 
             #pragma vertex vert
@@ -81,6 +81,7 @@
                 return shouldDrawOutline ? 0 : 1;
             }
 #endif
+
             fixed4 ColorToGrayscale(fixed4 color)
             {
                 // Rec. 601: https://en.wikipedia.org/wiki/Rec._601
@@ -108,9 +109,7 @@
 #endif
                 return resultColor;
             }
-#endif // UNITY_VERSION >= 202300
             ENDCG
         }
     }
-    Fallback "Diffuse"
 }

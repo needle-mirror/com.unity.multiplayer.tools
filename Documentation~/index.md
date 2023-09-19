@@ -6,10 +6,9 @@ The Multiplayer Tools package provides a suite of tools used in multiplayer game
 
 See guides below to install the Multiplayer Tools package and get started with using them in your project:
 
-* [Documentation](https://docs-multiplayer.unity3d.com/docs/getting-started/about)
-* [Installation](https://docs-multiplayer.unity3d.com/docs/migration/install)
-* [First Steps](https://docs-multiplayer.unity3d.com/docs/tutorials/helloworld/helloworldintro)
-* [API Reference](https://docs-multiplayer.unity3d.com/docs/api/introduction)
+* [Documentation](https://docs-multiplayer.unity3d.com/tools/current/about/)
+* [Installation](https://docs-multiplayer.unity3d.com/tools/current/install-tools/)
+* [API Reference](https://docs.unity3d.com/Packages/com.unity.multiplayer.tools@2.0/api/index.html)
 
 # Technical details
 

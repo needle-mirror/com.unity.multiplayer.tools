@@ -21,6 +21,7 @@ namespace Unity.Multiplayer.Tools.NetworkProfiler.Editor
             string name,
             MetricType metricType,
             Action onSelectedCallback,
+            ulong id = 0,
             ConnectionInfo? connection = null,
             ConnectionInfo? localConnection = null,
             string treeViewPathComponent = null)
@@ -30,12 +31,14 @@ namespace Unity.Multiplayer.Tools.NetworkProfiler.Editor
                 metricType.GetDisplayNameString(),
                 metricType.GetTypeNameString(),
                 onSelectedCallback,
+                id,
                 connection,
                 localConnection,
                 treeViewPathComponent)
         {
         }
 
+        /// <param name="id"/>
         /// <param name="parent"/>
         /// <param name="name"/>
         /// <param name="typeDisplayName"/>
@@ -52,10 +55,12 @@ namespace Unity.Multiplayer.Tools.NetworkProfiler.Editor
             string typeDisplayName,
             string typeName,
             Action onSelectedCallback,
+            ulong id = 0,
             ConnectionInfo? connection = null,
             ConnectionInfo? localConnection = null,
             string treeViewPathComponent = null)
         {
+            Id = id;
             Parent = parent;
             Connection = connection ?? (parent as ViewModelBase)?.Connection ?? new ConnectionInfo();
             LocalConnection = localConnection ?? (parent as ViewModelBase)?.LocalConnection ?? new ConnectionInfo();
@@ -66,6 +71,7 @@ namespace Unity.Multiplayer.Tools.NetworkProfiler.Editor
             OnSelectedCallback = onSelectedCallback;
         }
 
+        public ulong Id { get; }
         public string Name { get; }
 
         public string TypeDisplayName { get; }

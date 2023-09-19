@@ -7,6 +7,7 @@ namespace Unity.Multiplayer.Tools.Adapters.Ngo1
 {
     class ObjectBandwidthCache
     {
+        public bool IsCold { get; private set; } = true;
         readonly Dictionary<ObjectId, BytesSentAndReceived> m_OtherBandwidth = new();
         readonly Dictionary<ObjectId, BytesSentAndReceived> m_NetVarBandwidth = new();
         readonly Dictionary<ObjectId, BytesSentAndReceived> m_RpcBandwidth = new();
@@ -39,6 +40,7 @@ namespace Unity.Multiplayer.Tools.Adapters.Ngo1
 
         public void Update(MetricCollection collection)
         {
+            IsCold = false;
             m_OtherBandwidth.Clear();
             m_NetVarBandwidth.Clear();
             m_RpcBandwidth.Clear();

@@ -17,7 +17,7 @@ Bytes:
   b<=5 (Filter by bytes less than or equal to 5)
   b>5 (Filter by bytes greater than 5)
   b>=5 (Filter by bytes greater than or equal to 5)
-  b==5 (Filter by bytes exacly 5)
+  b==5 (Filter by bytes exactly 5)
   b!=5 (Filter by bytes not 5)";
 
         public const string DetailsViewBytes_DarkTheme =

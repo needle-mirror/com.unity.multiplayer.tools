@@ -43,15 +43,18 @@ namespace Unity.Multiplayer.Tools.NetworkProfiler.Editor
                 20,
                 () => new DetailsViewRow(),
                 (element, item) => (element as DetailsViewRow)?.BindItem(item));
-
-            var mostRecentlySelectedPath = DetailsViewPersistentState.MostRecentlySelected;
+#if !UNITY_2022_1_OR_NEWER
+            var mostRecentlySelectedItem = DetailsViewPersistentState.s_mostRecentlySelectedItem;
+#endif
             foreach (var item in rootItems.OfType<TreeViewItem<IRowData>>())
             {
                 SetSelectedState(inlineTreeView, item);
-                if (item.data.TreeViewPath == mostRecentlySelectedPath)
+#if !UNITY_2022_1_OR_NEWER
+                if (item.data.TreeViewPath == mostRecentlySelectedItem.path && item.data.Id == mostRecentlySelectedItem.id)
                 {
                     UpdateSelectionPath(item);
                 }
+#endif
             }
 
             inlineTreeView.onSelectionChange += OnSelectionChange;
@@ -68,6 +71,7 @@ namespace Unity.Multiplayer.Tools.NetworkProfiler.Editor
             {
                 ancestors.Add(current);
             }
+
             ancestors.Reverse();
             return ancestors;
         }
@@ -85,17 +89,22 @@ namespace Unity.Multiplayer.Tools.NetworkProfiler.Editor
         void OnSelectionChange(IReadOnlyList<ITreeViewItem> items)
         {
             var treeViewItems = items.OfType<TreeViewItem<IRowData>>().ToList();
+            var treeViewIDs = treeViewItems.Select(t => t.data.Id).ToList();
             var locators = treeViewItems.Select(t => t.data.TreeViewPath).ToList();
-            DetailsViewPersistentState.SetSelected(locators);
+
+            // Here we need both the path and ID because Server and Client might share the same ID for the same shared items 
+            DetailsViewPersistentState.SetSelected(locators, treeViewIDs);
+
             if (treeViewItems.Count > 0)
             {
-                UpdateSelectionPath(treeViewItems[treeViewItems.Count - 1]);
+                UpdateSelectionPath(treeViewItems[^1]);
             }
         }
 
         static void SetSelectedState(TreeView treeView, TreeViewItem<IRowData> item)
         {
-            if (DetailsViewPersistentState.IsSelected(item.data.TreeViewPath))
+            var uniquePath = item.data.TreeViewPath + item.id;
+            if (DetailsViewPersistentState.IsSelected(uniquePath))
             {
                 treeView.AddToSelection(item.id);
             }

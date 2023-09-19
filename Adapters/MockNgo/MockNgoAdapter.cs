@@ -211,6 +211,8 @@ namespace Unity.Multiplayer.Tools.Adapters.MockNgo
             OnRpcCountUpdated?.Invoke();
         }
 
+        public bool IsCacheEmpty => false;
+        
         public BandwidthTypes SupportedBandwidthTypes =>
             BandwidthTypes.Other | BandwidthTypes.NetVar | BandwidthTypes.Rpc;
 

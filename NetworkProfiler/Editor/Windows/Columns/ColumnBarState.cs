@@ -1,3 +1,4 @@
+#if !UNITY_2022_1_OR_NEWER
 namespace Unity.Multiplayer.Tools.NetworkProfiler.Editor
 {
     class ColumnBarState
@@ -51,3 +52,4 @@ namespace Unity.Multiplayer.Tools.NetworkProfiler.Editor
         }
     }
 }
+#endif

@@ -24,13 +24,11 @@ namespace Unity.Multiplayer.Tools.NetVis.Editor.Visualization
             DebugUtil.TraceMethodName();
             m_Configuration = configuration;
             m_NetVisDataStore = netVisDataStore;
-            SceneView.duringSceneGui += DuringSceneGui;
         }
 
         public void Dispose()
         {
             DebugUtil.TraceMethodName();
-            SceneView.duringSceneGui -= DuringSceneGui;
         }
 
         public void OnConfigurationChanged(NetVisConfiguration configuration)
@@ -38,7 +36,7 @@ namespace Unity.Multiplayer.Tools.NetVis.Editor.Visualization
             m_Configuration = configuration;
         }
 
-        void DuringSceneGui(SceneView sceneView)
+        public void DuringSceneGui(SceneView sceneView)
         {
             InitializeTextLabelStyle();
 
@@ -46,46 +44,57 @@ namespace Unity.Multiplayer.Tools.NetVis.Editor.Visualization
             var sceneViewCameraPosition = sceneViewCamera.transform.position;
             var screenRect = new Rect(0, 0, Screen.width, Screen.height);
 
+            var bandwithAvailable = !m_NetVisDataStore.IsBandwidthCacheEmpty;
+            
             foreach (var id in m_NetVisDataStore.GetObjectIds())
             {
                 var gameObject = m_NetVisDataStore.GetGameObject(id);
                 if (gameObject == null)
-                {
                     continue;
-                }
 
-                var objectPosition = GetObjectPosition(gameObject);
-                if (!ObjectIsVisibleToCamera(sceneViewCamera, sceneViewCameraPosition, screenRect, gameObject, objectPosition))
-                {
+                // Skip if object has no Colliders as we cannot raycast.
+                if (!ObjectHasCollider(gameObject, out var collider, out var collider2D, out var colliderPosition))
                     continue;
+                
+                // Skip if object is not visible in scene view.
+                if (!screenRect.Contains(sceneViewCamera.WorldToScreenPoint(colliderPosition)))
+                    continue;
+                
+                // Raycast colliders to check if object is visible or obstructed.
+                if (collider)
+                {
+                    if (!ObjectIsVisibleToCamera(sceneViewCameraPosition, gameObject, colliderPosition))
+                        continue;
                 }
-
+                else if (collider2D)
+                {
+                    if (!ObjectIsVisibleToCamera(collider2D, colliderPosition))
+                        continue;
+                }
+                
                 var content = m_Configuration.Metric switch
                 {
-                    NetVisMetric.Bandwidth => m_NetVisDataStore.GetBandwidth(id).ToString("N0"),
+                    NetVisMetric.Bandwidth => bandwithAvailable? m_NetVisDataStore.GetBandwidth(id).ToString("N0"):"",
                     NetVisMetric.Ownership => m_NetVisDataStore.GetOwner(id).ToString(),
                     _ => string.Empty,
                 };
 
-                Handles.Label(objectPosition, content, s_TextLabelStyle);
+                Handles.Label(colliderPosition, content, s_TextLabelStyle);
             }
         }
 
         // We can't assign this in the constructor, or Unity will warn us that we can
         // only use GUI functions inside OnGui
-        void InitializeTextLabelStyle()
+        static void InitializeTextLabelStyle()
         {
-            if (s_TextLabelStyle == null)
+            s_TextLabelStyle ??= new GUIStyle
             {
-                s_TextLabelStyle = new()
+                padding = new RectOffset(2, 0, 0, 0),
+                normal =
                 {
-                    padding = new RectOffset(2, 0, 0, 0),
-                    normal =
-                    {
-                        textColor = Color.black,
-                    }
-                };
-            }
+                    textColor = Color.black,
+                }
+            };
 
             // For some reason the background texture is being reset to null in BossRoom when the scene view is
             // initially open. We're unsure as to why this happens, as it is not occurring in projects other than
@@ -100,33 +109,37 @@ namespace Unity.Multiplayer.Tools.NetVis.Editor.Visualization
             }
         }
 
-        bool ObjectIsVisibleToCamera(
-            Camera camera,
-            Vector3 cameraPosition,
-            Rect screenRect,
-            GameObject targetObject,
-            Vector3 targetPosition)
+        static bool ObjectIsVisibleToCamera(Vector3 cameraPosition, GameObject targetObject, Vector3 targetPosition)
         {
-            return screenRect.Contains(camera.WorldToScreenPoint(targetPosition)) &&
-                   Physics.Raycast(cameraPosition, targetPosition - cameraPosition, out var hit) &&
-                   hit.transform == targetObject.transform;
+            var raycastHit = Physics.Raycast(cameraPosition, targetPosition - cameraPosition, out var hit);
+            return raycastHit && hit.transform == targetObject.transform;
         }
 
-        Vector3 GetObjectPosition(GameObject gameObject)
+        static bool ObjectIsVisibleToCamera(Collider2D targetCollider2D, Vector3 targetPosition)
         {
-            var renderer = gameObject.GetComponent<Renderer>();
-            if (renderer != null)
+            var collider2D = Physics2D.OverlapPoint(targetPosition);
+            return collider2D == targetCollider2D;
+        }
+        
+        static bool ObjectHasCollider(GameObject gameObject, out Collider collider, out Collider2D collider2D, out Vector3 colliderPosition)
+        {
+            collider = null;
+            collider2D = null;
+            colliderPosition = new Vector3();
+            
+            if (gameObject.TryGetComponent(out collider))
             {
-                return renderer.bounds.center;
+                colliderPosition = collider.bounds.center;
+                return true;
             }
 
-            var collider = gameObject.GetComponent<Collider>();
-            if (collider!= null)
+            if (gameObject.TryGetComponent(out collider2D))
             {
-                return collider.bounds.center;
+                colliderPosition = collider2D.bounds.center;
+                return true;
             }
 
-            return gameObject.transform.position;
+            return false;
         }
     }
 }

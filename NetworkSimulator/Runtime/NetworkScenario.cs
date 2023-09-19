@@ -29,8 +29,12 @@ namespace Unity.Multiplayer.Tools.NetworkSimulator.Runtime
         INetworkEventsApi m_NetworkEventsApi;
 
         bool m_Initialized;
+        internal bool IsInitialized => m_Initialized;
+        
         bool m_HasStarted;
-        bool m_IsPaused;
+        internal bool HasStarted => m_HasStarted;
+
+        bool m_IsPaused = true;
 
         /// <summary>
         /// Pause state of the scenario.
@@ -84,8 +88,20 @@ namespace Unity.Multiplayer.Tools.NetworkSimulator.Runtime
                         OnResume();
                     }
                 }
+                
+                PauseStateChangedEvent(m_IsPaused);
             }
         }
+        
+        /// <summary>
+        /// Delegate for the <see cref="NetworkScenario.PauseStateChangedEvent"/> event.
+        /// </summary>
+        internal delegate void PauseStateChangedHandler(bool isPaused);
+        
+        /// <summary>
+        /// Event triggered when the scenario is paused or resumed.
+        /// </summary>
+        internal event PauseStateChangedHandler PauseStateChangedEvent = delegate { };
 
         internal void InitializeScenario(INetworkEventsApi networkEventsApi, bool autoRun)
         {
@@ -104,6 +120,7 @@ namespace Unity.Multiplayer.Tools.NetworkSimulator.Runtime
             {
                 m_HasStarted = true;
                 Start(networkEventsApi);
+                IsPaused = false;
             }
         }
 

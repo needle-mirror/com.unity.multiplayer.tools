@@ -82,6 +82,12 @@ namespace Unity.Multiplayer.Tools.NetVis.Editor.Visualization
         {
             m_InstanceIdToColor.Clear();
             m_ObjectColoring.UpdateForNewFrame(m_Configuration);
+
+            if (m_Configuration.Metric == NetVisMetric.Bandwidth && NetVisDataStore.IsBandwidthCacheEmpty)
+            {
+                return;
+            }
+
             foreach (var objectId in objectIds)
             {
                 var gameObject = NetVisDataStore.GetGameObject(objectId);

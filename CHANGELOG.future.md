@@ -24,5 +24,4 @@ Then, when we have a new release branch and version number, we can move these ch
 
 ## Next Release
 
-### *Runtime Net Stats Monitor*
-- Fix an index out of range exception that could occur when adding a new RNSM graph at runtime
+### *AREA*

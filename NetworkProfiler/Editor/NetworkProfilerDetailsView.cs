@@ -23,11 +23,11 @@ namespace Unity.Multiplayer.Tools.NetworkProfiler.Editor
         public NetworkProfilerDetailsView()
         {
             m_Tabs = new[]
-            {
-                TreeViewNetwork.DisplayType.Activity,
-                TreeViewNetwork.DisplayType.Messages,
-            }
-            .ToDictionary(displayType => displayType.ToString(), displayType =>  new TreeViewTabElement(displayType));
+                {
+                    TreeViewNetwork.DisplayType.Activity,
+                    TreeViewNetwork.DisplayType.Messages,
+                }
+                .ToDictionary(displayType => displayType.ToString(), displayType => new TreeViewTabElement(displayType));
 
             var toolbar = new Toolbar();
             Add(toolbar);

@@ -6,14 +6,13 @@ namespace Unity.Multiplayer.Tools.NetworkProfiler.Editor
 {
     internal class UnnamedMessageEventViewModel : ViewModelBase
     {
-        public UnnamedMessageEventViewModel(IRowData parent, Action onSelectedCallback = null)
+        public UnnamedMessageEventViewModel(ulong TreeViewId, IRowData parent, Action onSelectedCallback = null)
             : base(
                 parent,
                 MetricType.UnnamedMessage.GetDisplayNameString(),
                 MetricType.UnnamedMessage,
                 onSelectedCallback,
-                treeViewPathComponent: $"{MetricType.UnnamedMessage.GetDisplayNameString()}: {Guid.NewGuid().ToString()}")
-        {
-        }
+                TreeViewId,
+                treeViewPathComponent: $"{MetricType.UnnamedMessage.GetDisplayNameString()}: {Guid.NewGuid().ToString()}") { }
     }
 }
