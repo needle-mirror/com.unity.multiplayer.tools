@@ -31,7 +31,8 @@ namespace Unity.Multiplayer.Tools.Editor.MultiplayerToolsWindow
             sectionRoot.Add(InstantiateSection(sectionTree, new Rnsm()));
             sectionRoot.Add(InstantiateSection(sectionTree, new NetworkSimulatorFeature()));
             sectionRoot.Add(InstantiateSection(sectionTree, new NetworkProfiler()));
-            sectionRoot.Add(InstantiateSection(sectionTree, new Decorator()));
+            if(EditorPrefs.GetBool("DeveloperMode"))
+                sectionRoot.Add(InstantiateSection(sectionTree, new Decorator()));
             AddPackageVersions(root.Q("PackageRoot"));
             root.Q<Button>("OpenPackageManagerButton").clickable.clicked += OpenPackageManager;
             rootVisualElement.Add(root);

@@ -61,7 +61,7 @@ namespace Unity.Multiplayer.Tools.NetVis.Editor.Visualization
             Camera = camera;
             m_Material = new(k_Shader);
 
-#if UNITY_SRP_CORE_15_OR_HIGHER
+#if UNITY_SRP_CORE_14_OR_HIGHER
             RenderPipelineManager.endCameraRendering += RenderNetSceneVis;
 #else
             Camera.onPostRender += RenderNetSceneVis;
@@ -76,7 +76,7 @@ namespace Unity.Multiplayer.Tools.NetVis.Editor.Visualization
             DisposeCommandBuffer();
             DisposeComputeBuffers();
 
-#if UNITY_SRP_CORE_15_OR_HIGHER
+#if UNITY_SRP_CORE_14_OR_HIGHER
             RenderPipelineManager.endCameraRendering -= RenderNetSceneVis;
 #else
             Camera.onPostRender -= RenderNetSceneVis;
@@ -92,7 +92,7 @@ namespace Unity.Multiplayer.Tools.NetVis.Editor.Visualization
             }
         }
 
-#if UNITY_SRP_CORE_15_OR_HIGHER
+#if UNITY_SRP_CORE_14_OR_HIGHER
         void RenderNetSceneVis(ScriptableRenderContext context, Camera camera)
         {
             if (camera != Camera)
@@ -123,13 +123,13 @@ namespace Unity.Multiplayer.Tools.NetVis.Editor.Visualization
             InitializeCommandBuffer();
             InitializeNewTexturesIfNeeded();
             InitializeRenderRequest();
-
+            
             camera.SubmitRenderRequest(m_RenderRequest);
             UpdateBuffers(m_RenderRequest.result!.idToObjectMapping);
-
+            
             m_CommandBuffer.Clear();
             m_CommandBuffer.Blit(BuiltinRenderTextureType.CameraTarget, m_SceneRenderTexture);
-
+            
             m_Material.SetTexture(k_ObjectIdTextureIdentifier, m_ObjectIdTexture);
             m_Material.SetTexture(k_SceneRenderTextureIdentifier, m_SceneRenderTexture);
             m_CommandBuffer.Blit(m_SceneRenderTexture, BuiltinRenderTextureType.CameraTarget, m_Material);
@@ -137,14 +137,14 @@ namespace Unity.Multiplayer.Tools.NetVis.Editor.Visualization
 
         void InitializeCommandBuffer()
         {
-#if UNITY_SRP_CORE_15_OR_HIGHER
+#if UNITY_SRP_CORE_14_OR_HIGHER
             m_CommandBuffer = CommandBufferPool.Get(nameof(NetVisRenderer));
 #else
             m_CommandBuffer ??= new CommandBuffer();
 #endif
         }
 
-#if UNITY_SRP_CORE_15_OR_HIGHER
+#if UNITY_SRP_CORE_14_OR_HIGHER
         void ReleaseCommandBuffer()
         {
             CommandBufferPool.Release(m_CommandBuffer);
@@ -153,7 +153,7 @@ namespace Unity.Multiplayer.Tools.NetVis.Editor.Visualization
 
         void DisposeCommandBuffer()
         {
-#if !UNITY_SRP_CORE_15_OR_HIGHER
+#if !UNITY_SRP_CORE_14_OR_HIGHER
             m_CommandBuffer?.Dispose();
 #endif
             m_CommandBuffer = null;
@@ -212,7 +212,7 @@ namespace Unity.Multiplayer.Tools.NetVis.Editor.Visualization
         void InitializeRenderRequest()
         {
             m_RenderRequest ??= new ObjectIdRequest(m_ObjectIdTexture);
-
+            
             // Even if a render request already exists, it's possible that the destination texture (m_ObjectIdTexture)
             // has since changed due to resizing of the scene view window (in InitializeNewTextureIfNeeded)
             m_RenderRequest.destination = m_ObjectIdTexture;

@@ -60,16 +60,6 @@ namespace Unity.Multiplayer.Tools.NetVis.Editor.Visualization
         {
             DebugUtil.TraceMethodName();
             m_DataStore.OnPauseStateChanged(pauseState);
-            switch (pauseState)
-            {
-                case PauseState.Paused:
-                    // Must update the colors in response to the datastore update
-                    m_MeshShading?.UpdateObjectColors();
-                    break;
-                case PauseState.Unpaused:
-                    // No further action required, the colors will be updated in the next OnLateUpdate
-                    break;
-            }
         }
 
         public void DuringSceneGui(SceneView sceneView)

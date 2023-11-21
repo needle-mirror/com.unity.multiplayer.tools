@@ -62,6 +62,11 @@ namespace Unity.Multiplayer.Tools.NetVis.Editor.Visualization
         public void OnConfigurationChanged(NetVisConfiguration configuration)
         {
             m_Configuration = configuration;
+            UpdateNoDataState();
+            
+            // We do not want to lose the data if we switch back and forth between the modes when paused.
+            if (EditorApplication.isPaused && m_BandwidthSmoothingCache != null) return;
+            
             UpdateBandwidthBackend();
             m_BandwidthSmoothingCache?.OnConfigurationChanged(configuration.Settings.Bandwidth);
             OnBandwidthUpdated();
@@ -69,6 +74,7 @@ namespace Unity.Multiplayer.Tools.NetVis.Editor.Visualization
 
         public void OnPauseStateChanged(PauseState pauseState)
         {
+            UpdateNoDataState();
             UpdateBandwidthBackend();
         }
 
@@ -165,13 +171,16 @@ namespace Unity.Multiplayer.Tools.NetVis.Editor.Visualization
                 m_SubscribedToBandwidth = false;
             }
 
-            var needsSmoothing = !EditorApplication.isPaused && BandwidthSettings.SmoothingHalfLife > 0;
-            var needsSmoothedBandwidth = needsBandwidth && needsSmoothing;
-            if (needsSmoothedBandwidth && !hasBandwidthSmoothingCache)
+            if (EditorApplication.isPaused)
+            {
+                return; // Do not clear/delete the cache when paused
+            }
+
+            if (needsBandwidth && !hasBandwidthSmoothingCache)
             {
                 m_BandwidthSmoothingCache = new(BandwidthSettings);
             }
-            else if (hasBandwidthSmoothingCache && !needsSmoothedBandwidth)
+            else if (!needsBandwidth && hasBandwidthSmoothingCache)
             {
                 m_BandwidthSmoothingCache = null;
             }
@@ -269,6 +278,15 @@ namespace Unity.Multiplayer.Tools.NetVis.Editor.Visualization
                 m_MaxBandwidth = MathF.Max(m_MaxBandwidth, bandwidth);
             }
             m_BandwidthStats.MaxBandwidth = m_MaxBandwidth;
+        }
+
+        /// <summary>
+        /// When the player is paused and the cache is empty, there is no data to display.
+        /// This will be reflected in the UI by showing a warning.
+        /// </summary>
+        void UpdateNoDataState()
+        {
+            m_Configuration.Settings.Bandwidth.HasNoData = EditorApplication.isPaused && m_BandwidthSmoothingCache == null;
         }
 
         public event Action<ClientId> ClientConnectionEvent;

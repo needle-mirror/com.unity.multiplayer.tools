@@ -4,6 +4,7 @@ using Unity.Multiplayer.Tools.Common;
 using Unity.Multiplayer.Tools.DependencyInjection;
 using Unity.Multiplayer.Tools.DependencyInjection.UIElements;
 using Unity.Multiplayer.Tools.NetVis.Configuration;
+using UnityEditor;
 using UnityEngine.UIElements;
 
 namespace Unity.Multiplayer.Tools.NetVis.Editor.UI
@@ -44,8 +45,13 @@ namespace Unity.Multiplayer.Tools.NetVis.Editor.UI
 
         [Inject] IReadonlyBandwidthStats BandwidthStats;
 
+        [UxmlQuery] HelpBox BandwidthWarning;
+
         public BandwidthConfigurationView()
         {
+            ShowNoDataWarning(false);
+            Settings.OnNoDataWarningChanged += ShowNoDataWarning; 
+            
             // Filtering
             // ---------------------------------------------------------------------------------------------------------
             BandwidthType.choices = k_BandwidthTypeChoices
@@ -95,7 +101,28 @@ namespace Unity.Multiplayer.Tools.NetVis.Editor.UI
                     Settings.TextOverlayEnabled = value;
                     Configuration.NotifySettingsChanged();
                 });
+
+            EditorApplication.pauseStateChanged += OnPauseStateChanged;
         }
+
+        void OnPauseStateChanged(PauseState state)
+        {
+            SetDataConfigurationFieldsEnabled(state == PauseState.Unpaused);
+        }
+
+        /// <summary>
+        /// Those are the fields that would require to recompute the cached bandwidth values.
+        /// When paused, changing those would result in no data being displayed.
+        /// </summary>
+        /// <param name="enabled">If true, will enable the fields, if False, will disable them</param>
+        void SetDataConfigurationFieldsEnabled(bool enabled)
+        {
+            BandwidthType.SetEnabled(enabled);
+            NetworkDirectionField.SetEnabled(enabled);
+            Smoothing.SetEnabled(enabled);
+        }
+        
+        void ShowNoDataWarning(bool show) => BandwidthWarning.IncludeInLayout(show); 
 
         public new class UxmlFactory : UxmlFactory<BandwidthConfigurationView, UxmlTraits> { }
     }

@@ -74,7 +74,7 @@ namespace Unity.Multiplayer.Tools.NetVis.Editor.Visualization
                 
                 var content = m_Configuration.Metric switch
                 {
-                    NetVisMetric.Bandwidth => bandwithAvailable? m_NetVisDataStore.GetBandwidth(id).ToString("N0"):"",
+                    NetVisMetric.Bandwidth => bandwithAvailable? m_NetVisDataStore.GetBandwidth(id).ToString("N0"):"No data",
                     NetVisMetric.Ownership => m_NetVisDataStore.GetOwner(id).ToString(),
                     _ => string.Empty,
                 };

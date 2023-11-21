@@ -1,15 +1,6 @@
-﻿// NetSim Implementation compilation boilerplate
-// All references to UNITY_MP_TOOLS_NETSIM_IMPLEMENTATION_ENABLED should be defined in the same way,
-// as any discrepancies are likely to result in build failures
-// ---------------------------------------------------------------------------------------------------------------------
-
-#if !UNITY_MP_TOOLS_NETSIM_DISABLED && (UNITY_EDITOR || (DEVELOPMENT_BUILD && !UNITY_MP_TOOLS_NETSIM_DISABLED_IN_DEVELOP) || (!DEVELOPMENT_BUILD && UNITY_MP_TOOLS_NETSIM_ENABLED_IN_RELEASE))
-#define UNITY_MP_TOOLS_NETSIM_IMPLEMENTATION_ENABLED
-#endif
-// ---------------------------------------------------------------------------------------------------------------------
-
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using Unity.Multiplayer.Tools.Adapters;
 using UnityEngine;
 
 namespace Unity.Multiplayer.Tools.NetworkSimulator.Runtime
@@ -53,11 +44,7 @@ namespace Unity.Multiplayer.Tools.NetworkSimulator.Runtime
         [SerializeField]
         public bool AutoRunScenario;
 
-#if UNITY_MP_TOOLS_NETSIM_IMPLEMENTATION_ENABLED
         readonly INetworkTransportApi m_NetworkTransportApi = new NetworkTransportApi();
-#else
-        readonly INetworkTransportApi m_NetworkTransportApi = new NoOpNetworkTransportApi();
-#endif
         INetworkEventsApi m_NetworkEventsApi;
         INetworkSimulatorPreset m_CachedPreset;
         bool m_CachedScenarioIsPaused;
@@ -79,11 +66,7 @@ namespace Unity.Multiplayer.Tools.NetworkSimulator.Runtime
                 {
                     return m_NetworkEventsApi;
                 }
-#if UNITY_MP_TOOLS_NETSIM_IMPLEMENTATION_ENABLED
                 m_NetworkEventsApi = new NetworkEventsApi(this, m_NetworkTransportApi);
-#else
-                m_NetworkEventsApi = new NoOpNetworkEventsApi();
-#endif
                 return m_NetworkEventsApi;
             }
         }
@@ -243,6 +226,12 @@ namespace Unity.Multiplayer.Tools.NetworkSimulator.Runtime
             }
 
             UpdateLiveParameters();
+            NetworkAdapters.OnAdapterAdded += NetworkAdapterAdded;
+        }
+
+        void NetworkAdapterAdded(INetworkAdapter obj)
+        {
+            UpdateLiveParameters();
         }
 
         void Start()
@@ -261,6 +250,8 @@ namespace Unity.Multiplayer.Tools.NetworkSimulator.Runtime
             {
                 Scenario.PauseStateChangedEvent -= OnPauseStateChangedEvent;
             }
+            
+            NetworkAdapters.OnAdapterAdded -= NetworkAdapterAdded;
         }
 
         void OnDestroy()

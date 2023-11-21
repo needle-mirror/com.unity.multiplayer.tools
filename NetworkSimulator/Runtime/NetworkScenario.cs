@@ -1,13 +1,3 @@
-// NetSim Implementation compilation boilerplate
-// All references to UNITY_MP_TOOLS_NETSIM_IMPLEMENTATION_ENABLED should be defined in the same way,
-// as any discrepancies are likely to result in build failures
-// ---------------------------------------------------------------------------------------------------------------------
-
-#if !UNITY_MP_TOOLS_NETSIM_DISABLED && (UNITY_EDITOR || (DEVELOPMENT_BUILD && !UNITY_MP_TOOLS_NETSIM_DISABLED_IN_DEVELOP) || (!DEVELOPMENT_BUILD && UNITY_MP_TOOLS_NETSIM_ENABLED_IN_RELEASE))
-#define UNITY_MP_TOOLS_NETSIM_IMPLEMENTATION_ENABLED
-#endif
-// ---------------------------------------------------------------------------------------------------------------------
-
 using System;
 using System.Threading;
 using System.Threading.Tasks;
@@ -105,9 +95,6 @@ namespace Unity.Multiplayer.Tools.NetworkSimulator.Runtime
 
         internal void InitializeScenario(INetworkEventsApi networkEventsApi, bool autoRun)
         {
-#if !UNITY_MP_TOOLS_NETSIM_IMPLEMENTATION_ENABLED
-            return;
-#endif
             if (m_HasStarted)
             {
                 return;
@@ -155,9 +142,6 @@ namespace Unity.Multiplayer.Tools.NetworkSimulator.Runtime
     {
         internal void UpdateScenario(float deltaTime)
         {
-#if !UNITY_MP_TOOLS_NETSIM_IMPLEMENTATION_ENABLED
-            return;
-#endif
             if (IsPaused)
             {
                 return;
@@ -185,9 +169,6 @@ namespace Unity.Multiplayer.Tools.NetworkSimulator.Runtime
         /// <inheritdoc />
         public override void Start(INetworkEventsApi networkEventsApi)
         {
-#if !UNITY_MP_TOOLS_NETSIM_IMPLEMENTATION_ENABLED
-            return;
-#endif
             Run(networkEventsApi, m_Cancellation.Token).Forget();
         }
 

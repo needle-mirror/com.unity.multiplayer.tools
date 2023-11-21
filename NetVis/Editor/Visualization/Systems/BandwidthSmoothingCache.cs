@@ -58,7 +58,7 @@ namespace Unity.Multiplayer.Tools.NetVis.Editor.Visualization
             m_LastUpdateTime = time;
 
             var oldValueWeight = (float)Math.Exp(-deltaTime * m_DecayConstant);
-            if (NeedsResetToImmediateValue)
+            if (NeedsResetToImmediateValue || m_DecayConstant <= 0)
             {
                 oldValueWeight = 0;
                 NeedsResetToImmediateValue = false;

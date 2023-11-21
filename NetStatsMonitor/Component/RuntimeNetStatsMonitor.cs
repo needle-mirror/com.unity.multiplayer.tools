@@ -1,21 +1,9 @@
-// RNSM Implementation compilation boilerplate
-// All references to UNITY_MP_TOOLS_NET_STATS_MONITOR_IMPLEMENTATION_ENABLED should be defined in the same way,
-// as any discrepancies are likely to result in build failures
-// ---------------------------------------------------------------------------------------------------------------------
-#if UNITY_EDITOR || ((DEVELOPMENT_BUILD && !UNITY_MP_TOOLS_NET_STATS_MONITOR_DISABLED_IN_DEVELOP) || (!DEVELOPMENT_BUILD && UNITY_MP_TOOLS_NET_STATS_MONITOR_ENABLED_IN_RELEASE))
-    #define UNITY_MP_TOOLS_NET_STATS_MONITOR_IMPLEMENTATION_ENABLED
-#endif
-// ---------------------------------------------------------------------------------------------------------------------
-
-
 using System;
 using JetBrains.Annotations;
 using Unity.Multiplayer.Tools.NetStats;
 using UnityEngine;
 using UnityEngine.UIElements;
-#if UNITY_MP_TOOLS_NET_STATS_MONITOR_IMPLEMENTATION_ENABLED
 using Unity.Multiplayer.Tools.NetStatsMonitor.Implementation;
-#endif
 
 namespace Unity.Multiplayer.Tools.NetStatsMonitor
 {
@@ -40,9 +28,7 @@ namespace Unity.Multiplayer.Tools.NetStatsMonitor
             set
             {
                 m_Visible = value;
-#if UNITY_MP_TOOLS_NET_STATS_MONITOR_IMPLEMENTATION_ENABLED
                 UpdateUiVisibility();
-#endif
             }
         }
 
@@ -106,10 +92,8 @@ namespace Unity.Multiplayer.Tools.NetStatsMonitor
         )]
         public NetStatsMonitorConfiguration Configuration { get; set; }
 
-#if UNITY_MP_TOOLS_NET_STATS_MONITOR_IMPLEMENTATION_ENABLED
         [CanBeNull]
         internal RnsmComponentImplementation Implementation { get; private set; }
-#endif
 
         void Start()
         {
@@ -147,19 +131,15 @@ namespace Unity.Multiplayer.Tools.NetStatsMonitor
         /// but do not overwrite fields or components that are already set up
         internal void Setup()
         {
-#if UNITY_MP_TOOLS_NET_STATS_MONITOR_IMPLEMENTATION_ENABLED
             SetupImplementation();
             UpdateUiVisibility();
-#endif
         }
 
         /// Teardown any fields/components that are not needed while this component is disabled
         /// to reduce resource usage
         internal void Teardown()
         {
-#if UNITY_MP_TOOLS_NET_STATS_MONITOR_IMPLEMENTATION_ENABLED
             PerformRemainingImplementationTeardownSteps();
-#endif
         }
 
         /// <summary>
@@ -175,10 +155,8 @@ namespace Unity.Multiplayer.Tools.NetStatsMonitor
             {
                 Configuration.RecomputeConfigurationHash();
             }
-#if UNITY_MP_TOOLS_NET_STATS_MONITOR_IMPLEMENTATION_ENABLED
             ConfigureImplementation();
             UpdateUiVisibility();
-#endif
         }
 
         /// <summary>
@@ -190,12 +168,9 @@ namespace Unity.Multiplayer.Tools.NetStatsMonitor
         /// <param name="value">The value of the metric.</param>
         public void AddCustomValue(MetricId metricId, float value)
         {
-#if UNITY_MP_TOOLS_NET_STATS_MONITOR_IMPLEMENTATION_ENABLED
             Implementation?.AddCustomValue(metricId, value);
-#endif
         }
 
-#if UNITY_MP_TOOLS_NET_STATS_MONITOR_IMPLEMENTATION_ENABLED
         void UpdateUiVisibility()
         {
             Implementation?.UpdateUiVisibility(enabled, m_Visible);
@@ -226,6 +201,5 @@ namespace Unity.Multiplayer.Tools.NetStatsMonitor
             }
             Implementation?.Update(Configuration, MaxRefreshRate);
         }
-#endif // UNITY_MP_TOOLS_NET_STATS_MONITOR_IMPLEMENTATION_ENABLED
     }
 }

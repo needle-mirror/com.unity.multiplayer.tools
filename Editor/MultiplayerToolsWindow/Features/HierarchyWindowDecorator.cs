@@ -27,7 +27,7 @@ namespace Unity.Multiplayer.Tools.Editor.MultiplayerToolsWindow
 
         static HierarchyWindowDecorator()
         {
-            s_Enabled = EditorPrefs.GetBool(k_EditorPrefsKey, false);
+            s_Enabled = EditorPrefs.GetBool(k_EditorPrefsKey, false) && EditorPrefs.GetBool("DeveloperMode");
             EditorApplication.hierarchyWindowItemOnGUI -= DecoratorHandler;
             EditorApplication.hierarchyWindowItemOnGUI += DecoratorHandler;
         }

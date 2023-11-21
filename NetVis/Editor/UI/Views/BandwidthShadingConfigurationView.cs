@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Unity.Multiplayer.Tools.Common;
 using Unity.Multiplayer.Tools.DependencyInjection;
 using Unity.Multiplayer.Tools.DependencyInjection.UIElements;

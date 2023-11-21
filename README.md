@@ -4,7 +4,7 @@ The Multiplayer Tools package provides a suite of tools used in multiplayer game
 
 ## Prerequisites
 
-This package requires a Unity version of 2021.3 or above.
+This package requires a Unity version of 2023.3 or above.
 
 ## Required Packages
 

@@ -11,6 +11,28 @@ namespace Unity.Multiplayer.Tools.NetVis.Configuration
         public bool MeshShadingEnabled { get; set; } = true;
         public bool TextOverlayEnabled { get; set; } = true;
 
+        /// <summary>
+        /// When activating the bandwidth visualization when the game is paused, there is no data.
+        /// In such case, we want to display a warning to the user.
+        /// Argument: true if no data warning should be displayed, false otherwise.
+        /// </summary>
+        public event System.Action<bool> OnNoDataWarningChanged;
+
+        bool m_HasNoData;
+
+        public bool HasNoData
+        {
+            get => m_HasNoData;
+            set
+            {
+                if (m_HasNoData != value)
+                {
+                    m_HasNoData = value;
+                    OnNoDataWarningChanged?.Invoke(m_HasNoData);
+                }
+            }
+        }
+
         // Smoothing
         // --------------------------------------------------------------------
         public float SmoothingHalfLife = 1;

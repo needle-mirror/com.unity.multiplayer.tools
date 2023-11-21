@@ -20,7 +20,7 @@ namespace Unity.Multiplayer.Tools.Context
 
         static void InitializeNetVisContexts(IRuntimeUpdater runtimeUpdater, List<IContext> contexts)
         {
-#if UNITY_2023_2_OR_NEWER && UNITY_EDITOR
+#if NETVIS_AVAILABLE && UNITY_EDITOR
             var netVisRuntimeContext = NetVis.Editor.Visualization.NetVisContext.InitializeInstance(runtimeUpdater);
             contexts.Add(netVisRuntimeContext);
             var netVisPresentationContext = NetVis.Editor.UI.PresentationContext.InitializeInstance(
@@ -28,7 +28,7 @@ namespace Unity.Multiplayer.Tools.Context
                 netVisRuntimeContext.BandwidthStats,
                 netVisRuntimeContext.ConnectedClients);
             contexts.Add(netVisPresentationContext);
-#endif // UNITY_2023_2_OR_NEWER && UNITY_EDITOR
+#endif 
         }
     }
 }

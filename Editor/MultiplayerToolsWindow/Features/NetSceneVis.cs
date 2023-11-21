@@ -1,7 +1,7 @@
 using System;
 using UnityEditor;
 using UnityEngine;
-#if UNITY_2023_2_OR_NEWER
+#if NETVIS_AVAILABLE
 using UnityEditor.Overlays;
 #endif
 
@@ -14,7 +14,7 @@ namespace Unity.Multiplayer.Tools.Editor.MultiplayerToolsWindow
         public string ButtonText => "Open";
         public string DocumentationUrl => "https://docs-multiplayer.unity3d.com/tools/current/netscenevis/";
         
-#if UNITY_2023_2_OR_NEWER && UNITY_NETCODE_GAMEOBJECTS_1_1_ABOVE
+#if NETVIS_AVAILABLE && UNITY_NETCODE_GAMEOBJECTS_1_1_ABOVE
         public bool IsAvailable => true;
         public string AvailabilityMessage => "Available";
 
@@ -34,7 +34,14 @@ namespace Unity.Multiplayer.Tools.Editor.MultiplayerToolsWindow
         }
 #else
         public bool IsAvailable => false;
-        public string AvailabilityMessage => "Network Scene Visualization is only available in Unity 2023.2+, with Netcode for GameObjects 1.1+";
+        
+#if UNITY_2023_1_OR_NEWER
+        public string AvailabilityMessage => "Network Scene Visualization is only available from version 2023.1.14f1, with Netcode for GameObjects 1.1+";
+#elif UNITY_2022_1_OR_NEWER
+        public string AvailabilityMessage => "Network Scene Visualization is only available from version 2022.3.11f1, with Netcode for GameObjects 1.1+";
+#else
+        public string AvailabilityMessage => "Network Scene Visualization is only available from version 2022.3.11f1+ for Unity 2022 or 2023.1.14f1+ for Unity 2023, with Netcode for GameObjects 1.1+";
+#endif
         public void Open() => throw new NotImplementedException();
 #endif
     }

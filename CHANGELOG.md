@@ -4,6 +4,17 @@ All notable changes to this package will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
+## [2.1.0] - 2023-11-21
+
+### *General*
+- Increased minimum version to 2023.3+
+
+### *Network Simulator*
+- Fixed an issue with execution order dependend initialization of NetworkAdapters.
+
+### *Network Scene Visualization*
+- Improved usability when pausing the editor.
+
 ## [2.0.0-pre.5] - 2023-09-19
 
 ### *General*

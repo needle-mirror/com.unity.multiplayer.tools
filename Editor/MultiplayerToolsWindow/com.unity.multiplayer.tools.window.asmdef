@@ -26,6 +26,16 @@
             "name": "com.unity.netcode.gameobjects",
             "expression": "1.1.0",
             "define": "UNITY_NETCODE_GAMEOBJECTS_1_1_ABOVE"
+        },
+        {
+            "name": "Unity",
+            "expression": "[2022.3.11f1,2023)",
+            "define": "NETVIS_AVAILABLE"
+        },
+        {
+            "name": "Unity",
+            "expression": "2023.1.14f1",
+            "define": "NETVIS_AVAILABLE"
         }
     ],
     "noEngineReferences": false
