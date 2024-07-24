@@ -17,6 +17,7 @@ namespace Unity.Multiplayer.Tools.Adapters.Ngo1
         // --------------------------------------------------------------------
         , IGetConnectedClients
         , IMetricCollectionEvent
+        , IGetConnectionStatus
 
         // Queries
         // --------------------------------------------------------------------
@@ -41,11 +42,21 @@ namespace Unity.Multiplayer.Tools.Adapters.Ngo1
             DebugUtil.TraceMethodName();
 
             Debug.Assert(networkManager != null, $"The parameter {nameof(networkManager)} can't be null.");
-
+            
             m_NetworkManager = networkManager;
             m_NetworkManager.OnClientConnectedCallback += OnClientConnected;
             m_NetworkManager.OnClientDisconnectCallback += OnClientDisconnected;
             m_NetworkManager.NetworkTickSystem.Tick += OnTick;
+
+            m_NetworkManager.OnServerStarted += OnServerOrClientStarted;
+            m_NetworkManager.OnClientStarted += OnServerOrClientStarted;
+            m_NetworkManager.OnServerStopped += OnServerOrClientStopped;
+            m_NetworkManager.OnClientStopped += OnServerOrClientStopped;
+            
+            if (m_NetworkManager.IsConnectedClient || m_NetworkManager.IsServer)
+            {
+                OnServerOrClientStarted();
+            }
 
             MetricEventPublisher.OnMetricsReceived += OnMetricsReceived;
         }
@@ -132,11 +143,25 @@ namespace Unity.Multiplayer.Tools.Adapters.Ngo1
         }
 
         public event Action<ClientId> ClientDisconnectionEvent;
+
         void OnClientDisconnected(ulong clientId)
         {
             var typedClientId = (ClientId)clientId;
             m_ClientIds.RemoveAll(id => id == typedClientId);
             ClientDisconnectionEvent?.Invoke(typedClientId);
+        }
+        
+        public event Action ServerOrClientStarted;
+        public event Action ServerOrClientStopped;
+        
+        void OnServerOrClientStarted()
+        {
+            ServerOrClientStarted?.Invoke();
+        }
+        
+        void OnServerOrClientStopped(bool isHost)
+        {
+            ServerOrClientStopped?.Invoke();
         }
 
         public event Action<MetricCollection> MetricCollectionEvent;
@@ -156,11 +181,7 @@ namespace Unity.Multiplayer.Tools.Adapters.Ngo1
         public GameObject GetGameObject(ObjectId objectId)
         {
             var spawnedObjects = SpawnedObjects;
-            if (spawnedObjects.TryGetValue((ulong)objectId, out var networkObject))
-            {
-                return networkObject.gameObject;
-            }
-            return null;
+            return spawnedObjects.TryGetValue((ulong)objectId, out var networkObject) ? networkObject.gameObject : null;
         }
 
         public ClientId GetOwner(ObjectId objectId)

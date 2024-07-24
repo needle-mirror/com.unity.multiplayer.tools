@@ -157,3 +157,4 @@ This release adds the Netcode Profiler to the Multiplayer Tools Package. This to
 - Filter results by name, type, number of bytes, and network direction
 - Correlate network objects in the profiler with objects in the scene hierarchy
 - View key metrics in graph form in the profiler charts
+
