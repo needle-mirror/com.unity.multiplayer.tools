@@ -32,7 +32,7 @@
             fixed4            _SceneRenderTex_ST;
 
             // The texture of the ObjectID buffer
-            uniform sampler2D _ObjectIdTex;
+            uniform sampler2D_float _ObjectIdTex;
             fixed4            _ObjectIdTex_ST;
             fixed4            _ObjectIdTex_TexelSize;
 

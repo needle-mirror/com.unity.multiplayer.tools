@@ -1,17 +1,17 @@
 {
   "name": "com.unity.multiplayer.tools",
   "displayName": "Multiplayer Tools",
-  "version": "2.2.1",
+  "version": "2.2.2",
   "unity": "6000.0",
   "description": "Adds a suite of tools that improve workflows for multiplayer development",
   "dependencies": {
     "com.unity.profiling.core": "1.0.2",
     "com.unity.nuget.newtonsoft-json": "3.2.1",
     "com.unity.nuget.mono-cecil": "1.11.4",
-    "com.unity.collections": "2.4.0",
+    "com.unity.collections": "2.5.1",
     "com.unity.modules.uielements": "1.0.0",
-    "com.unity.burst": "1.8.17",
-    "com.unity.mathematics": "1.3.1"
+    "com.unity.burst": "1.8.18",
+    "com.unity.mathematics": "1.3.2"
   },
   "keywords": [
     "Multiplayer",
@@ -27,18 +27,18 @@
     }
   ],
   "relatedPackages": {
-    "com.unity.multiplayer.tools.tests": "2.2.1"
+    "com.unity.multiplayer.tools.tests": "2.2.2"
   },
   "_upm": {
-    "changelog": "### *Network Scene Visualization*\n- Fixed a bug which showed the wrong number of clients in the SceneView overlay\n- Fixed a bug which caused null reference exception when entering Play Mode without Domain Reload\n- Fixed a bug which showed wrong ownership visuals with Distributed Authority when reconnecting\n\n### *Runtime Network Stats Monitor*\n- Fixed a bug where RNSM showed no metrics in builds with code stripping enabled\n- Fixed a bug where RNSM stopped working with NGO 2.0.0 or above"
+    "changelog": "### *Network Scene Visualization*\n- Fixed a bug where NetVis stopped working after the NetworkManager was destroyed and recreated.\n- Fixed an issue where NetVis only assigned colors to a limited subset of Network IDs.\n- Added custom color setting for host and client ownerships. The custom color settings are synchronized between Multiplayer Play Mode instances.\n\n### *Runtime Network Stats Monitor*\n- Added support for entering Play Mode without Domain reload"
   },
   "upmCi": {
-    "footprint": "fd028d23bcee4990c43f09e565ce0afbf6d45717"
+    "footprint": "91d8d6223f21c1b1cfd05d2004bb3a042ed91814"
   },
   "documentationUrl": "https://docs.unity3d.com/Packages/com.unity.multiplayer.tools@2.2/manual/index.html",
   "repository": {
     "url": "https://github.com/Unity-Technologies/com.unity.multiplayer.tools.git",
     "type": "git",
-    "revision": "a769d0b44c5f5e6308dc848d2a4b49d3e30b7a9e"
+    "revision": "4bc21ec1238af2cae63a886e2609fd89ab05d94c"
   }
 }

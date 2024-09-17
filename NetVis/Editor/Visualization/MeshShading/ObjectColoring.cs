@@ -81,19 +81,9 @@ namespace Unity.Multiplayer.Tools.NetVis.Editor.Visualization
         bool GetColorForOwnership(ObjectId objectId, out Color color)
         {
             var owner = NetVisDataStore.GetOwner(objectId);
-            if (owner == 0)
-            {
-                color = OwnershipSettings.ServerHostColor;
-                return true;
-            }
+            color = owner == 0 ? OwnershipSettings.ServerHostColor : OwnershipSettings.GetClientColor(owner);
 
-            if (OwnershipSettings.ClientColors.TryGetValue(owner, out color))
-            {
-                return true;
-            }
-
-            color = k_NoColor;
-            return false;
+            return true;
         }
     }
 }

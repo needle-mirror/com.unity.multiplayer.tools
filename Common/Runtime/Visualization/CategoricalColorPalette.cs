@@ -9,32 +9,17 @@ namespace Unity.Multiplayer.Tools.Common.Visualization
     static class CategoricalColorPalette
     {
         /// <summary>
-        /// The number of available colors in the palette
+        /// The number of available distinct colors in the palette.
+        /// Neighboring integer Color IDs up to ColorCount are guaranteed to be distinct from each other.
         /// </summary>
         public static int ColorCount => k_ColorPalette.Length;
 
         /// <summary>
-        /// The color output by TryGetColor when the index exceeds ColorCount
+        /// Retrieves a color from the categorical color palette associated with the given ID.
         /// </summary>
-        public static Color k_AbsentColor = Color.clear;
-
-        public static Color GetColor(int index) => k_ColorPalette[index];
-
-        /// <summary>
-        /// If index is in range [0, ColorCount) returns true and outputs a color in the palette.
-        /// <br/>
-        /// If index is out of range returns false and outputs k_AbsentColor
-        /// </summary>
-        public static bool TryGetColor(int index, out Color color)
-        {
-            if (0 < index && index < ColorCount)
-            {
-                color = k_ColorPalette[index];
-                return true;
-            }
-            color = k_AbsentColor;
-            return false;
-        }
+        /// <param name="id">The ID used to select a color from the palette.</param>
+        /// <returns>A color from the palette corresponding to the given ID.</returns>
+        public static Color GetColor(int id) => k_ColorPalette[(id % ColorCount + ColorCount) % ColorCount];    // Euclidean modulo operation
 
         /// <remarks>
         /// List generated using <see cref="CategoricalColorPaletteVisualizer"/>

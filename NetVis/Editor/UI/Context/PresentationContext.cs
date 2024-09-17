@@ -66,9 +66,10 @@ namespace Unity.Multiplayer.Tools.NetVis.Editor.UI
         }
 
 #if UNITY_MP_TOOLS_DEV
-        [MenuItem("Multiplayer Tools Dev / Reset NetVis Configuration")]
+        [MenuItem("Window/Multiplayer/Multiplayer Tools Dev/Reset NetVis Configuration")]
         public static void ResetNetVisConfiguration()
         {
+            Instance.ConfigurationWithEvents.Configuration.Settings.Ownership.ResetCustomColors();
             Instance.ConfigurationWithEvents.Configuration = new NetVisConfiguration();
         }
 #endif

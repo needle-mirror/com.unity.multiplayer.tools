@@ -4,6 +4,16 @@ All notable changes to this package will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
+## [2.2.2] - 2024-09-17
+
+### *Network Scene Visualization*
+- Fixed a bug where NetVis stopped working after the NetworkManager was destroyed and recreated.
+- Fixed an issue where NetVis only assigned colors to a limited subset of Network IDs.
+- Added custom color setting for host and client ownerships. The custom color settings are synchronized between Multiplayer Play Mode instances.
+
+### *Runtime Network Stats Monitor*
+- Added support for entering Play Mode without Domain reload
+
 ## [2.2.1] - 2024-09-27
 
 ### *Network Scene Visualization*

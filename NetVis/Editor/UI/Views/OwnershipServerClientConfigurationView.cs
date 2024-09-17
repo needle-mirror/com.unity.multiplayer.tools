@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using Unity.Multiplayer.Tools.Adapters;
 using Unity.Multiplayer.Tools.Common;
-using Unity.Multiplayer.Tools.Common.Visualization;
 using Unity.Multiplayer.Tools.DependencyInjection;
 using Unity.Multiplayer.Tools.DependencyInjection.UIElements;
 using Unity.Multiplayer.Tools.NetVis.Configuration;
@@ -20,8 +19,8 @@ namespace Unity.Multiplayer.Tools.NetVis.Editor.UI
     partial class OwnershipServerClientConfigurationView : InjectedVisualElement<OwnershipServerClientConfigurationView>
     {
         const bool k_ClientColorShowAlpha = false;
-        const bool k_ClientColorShowEyeDropper = false;
-
+        const bool k_ClientColorShowEyeDropper = true;
+        
         [UxmlQuery]
         Label ServerHost;
         [UxmlQuery]
@@ -37,7 +36,7 @@ namespace Unity.Multiplayer.Tools.NetVis.Editor.UI
         IGetConnectedClients ConnectedClientsRepository;
         OwnershipSettings OwnershipSettings => Configuration.Configuration.Settings.Ownership;
 
-        readonly List<(ClientId ClientId, ColorField Color)> m_ConnectedClients = new();
+        readonly List<(ClientId ClientId, ColorField Color, Action<NetVisSettings> SettingsChangedCallback, Action ColorsChangedCallback)> m_ConnectedClients = new();
 
         public OwnershipServerClientConfigurationView()
         {
@@ -45,10 +44,18 @@ namespace Unity.Multiplayer.Tools.NetVis.Editor.UI
 
             ServerHostColor.showAlpha = k_ClientColorShowAlpha;
             ServerHostColor.showEyeDropper = k_ClientColorShowEyeDropper;
-            ServerHostColor.Bind(
-                OwnershipSettings.ServerHostColor,
-                ResetColorToDefault(ServerHostColor, OwnershipSettings.ServerHostColor));
-            DisableWithoutChangingColor(ServerHostColor);
+            
+            ServerHostColor.Bind(OwnershipSettings.ServerHostColor,
+                newColor => OwnershipSettings.SetCustomColor(0, newColor));
+
+            this.AddManipulator(new ContextualMenuManipulator(evt =>
+                evt.menu.AppendAction("Reset Colors", _ =>
+                {
+                    OwnershipSettings.ResetCustomColors();
+                })));
+
+            Configuration.SettingsChanged += _ => RefreshColorField(ServerHostColor, OwnershipSettings.ServerHostColor);
+            OwnershipSettings.ColorsChanged += () => RefreshColorField(ServerHostColor, OwnershipSettings.ServerHostColor);
 
             UpdateClientList();
         }
@@ -95,15 +102,28 @@ namespace Unity.Multiplayer.Tools.NetVis.Editor.UI
                 showAlpha = k_ClientColorShowAlpha,
                 showEyeDropper = k_ClientColorShowEyeDropper
             };
+            
+            var clientColor = OwnershipSettings.GetClientColor(clientId);
+            colorField.Bind(clientColor, newColor => OwnershipSettings.SetCustomColor(clientId, newColor));
 
-            var clientColor = CategoricalColorPalette.GetColor((int) clientId);
-            colorField.Bind(clientColor, ResetColorToDefault(colorField, clientColor));
+            Action<NetVisSettings> settingsChanged = _ => RefreshColorField(colorField, OwnershipSettings.GetClientColor(clientId));
+            Configuration.SettingsChanged += settingsChanged;
 
-            m_ConnectedClients.Add((clientId, colorField));
+            Action colorsChanged = () => RefreshColorField(colorField, OwnershipSettings.GetClientColor(clientId));
+            OwnershipSettings.ColorsChanged += colorsChanged;
+
+            m_ConnectedClients.Add((clientId, colorField, settingsChanged, colorsChanged));
             ClientsContainer.Add(colorField);
-            DisableWithoutChangingColor(colorField);
 
             NoClientsConnectedText.IncludeInLayout(false);
+        }
+
+        static void RefreshColorField(ColorField colorField, Color color)
+        {
+            colorField.SetValueWithoutNotify(color);
+            colorField.showAlpha = k_ClientColorShowAlpha;
+            colorField.showEyeDropper = k_ClientColorShowEyeDropper;
+            colorField.SetEnabled(true);
         }
 
         void RemoveClient(ClientId clientId)
@@ -111,6 +131,9 @@ namespace Unity.Multiplayer.Tools.NetVis.Editor.UI
             var client = m_ConnectedClients.FirstOrDefault(x => x.ClientId == clientId);
             if (client != default)
             {
+                Configuration.SettingsChanged -= client.SettingsChangedCallback;
+                OwnershipSettings.ColorsChanged -= client.ColorsChangedCallback;
+
                 ClientsContainer.Remove(client.Color);
                 m_ConnectedClients.Remove(client);
             }
@@ -119,16 +142,6 @@ namespace Unity.Multiplayer.Tools.NetVis.Editor.UI
             {
                 NoClientsConnectedText.IncludeInLayout(true);
             }
-        }
-
-        static Action<Color> ResetColorToDefault(ColorField field, Color defaultColor)
-        {
-            void OnValueChanged(Color newColor)
-            {
-                field.SetValueWithoutNotify(defaultColor);
-            }
-
-            return OnValueChanged;
         }
 
         static void DisableWithoutChangingColor(ColorField colorField)

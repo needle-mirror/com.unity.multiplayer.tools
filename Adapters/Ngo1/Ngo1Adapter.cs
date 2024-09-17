@@ -29,20 +29,30 @@ namespace Unity.Multiplayer.Tools.Adapters.Ngo1
         , IGetRpcCount
     {
         [NotNull]
-        readonly NetworkManager m_NetworkManager;
+        NetworkManager m_NetworkManager;
 
         [MaybeNull]
-        NetworkSpawnManager SpawnManager => m_NetworkManager.SpawnManager;
+        NetworkSpawnManager SpawnManager => m_NetworkManager?.SpawnManager;
 
         [MaybeNull]
         Dictionary<ulong, NetworkObject> SpawnedObjects => SpawnManager?.SpawnedObjects;
 
         public Ngo1Adapter([NotNull] NetworkManager networkManager)
         {
-            DebugUtil.TraceMethodName();
-
             Debug.Assert(networkManager != null, $"The parameter {nameof(networkManager)} can't be null.");
-            
+            Init(networkManager);
+        }
+
+        internal void ReplaceNetworkManager(NetworkManager networkManager)
+        {
+            Debug.Assert(networkManager != null, $"The parameter {nameof(networkManager)} can't be null.");
+
+            Deinitialize();
+            Init(networkManager);
+        }
+
+        void Init(NetworkManager networkManager)
+        {
             m_NetworkManager = networkManager;
             m_NetworkManager.OnConnectionEvent += OnConnectionEvent;
             m_NetworkManager.NetworkTickSystem.Tick += OnTick;
@@ -51,13 +61,35 @@ namespace Unity.Multiplayer.Tools.Adapters.Ngo1
             m_NetworkManager.OnClientStarted += OnServerOrClientStarted;
             m_NetworkManager.OnServerStopped += OnServerOrClientStopped;
             m_NetworkManager.OnClientStopped += OnServerOrClientStopped;
-            
+
             if (m_NetworkManager.IsConnectedClient || m_NetworkManager.IsServer)
             {
                 OnServerOrClientStarted();
             }
 
             MetricEventPublisher.OnMetricsReceived += OnMetricsReceived;
+        }
+
+        internal void Deinitialize()
+        {
+            if (m_NetworkManager != null)
+            {
+                m_NetworkManager.OnConnectionEvent -= OnConnectionEvent;
+
+                if (m_NetworkManager.NetworkTickSystem != null)
+                {
+                    m_NetworkManager.NetworkTickSystem.Tick -= OnTick;
+                }
+
+                m_NetworkManager.OnServerStarted -= OnServerOrClientStarted;
+                m_NetworkManager.OnClientStarted -= OnServerOrClientStarted;
+                m_NetworkManager.OnServerStopped -= OnServerOrClientStopped;
+                m_NetworkManager.OnClientStopped -= OnServerOrClientStopped;
+                
+                m_NetworkManager = null;
+            }
+
+            MetricEventPublisher.OnMetricsReceived -= OnMetricsReceived;
         }
 
         readonly List<ClientId> m_ClientIds = new();
@@ -151,7 +183,7 @@ namespace Unity.Multiplayer.Tools.Adapters.Ngo1
             m_ClientIds.RemoveAll(id => id == typedClientId);
             ClientDisconnectionEvent?.Invoke(typedClientId);
         }
-        
+
         void OnConnectionEvent(NetworkManager networkManager, ConnectionEventData clientConnectionData)
         {
             switch (clientConnectionData.EventType)
@@ -159,7 +191,7 @@ namespace Unity.Multiplayer.Tools.Adapters.Ngo1
                 case ConnectionEvent.ClientConnected:
                 case ConnectionEvent.PeerConnected:
                     OnClientConnected(clientConnectionData.ClientId);
-                    
+
                     // Adding clients already existing before we joined
                     foreach (var peerClientId in clientConnectionData.PeerClientIds)
                     {
@@ -175,10 +207,10 @@ namespace Unity.Multiplayer.Tools.Adapters.Ngo1
                     break;
             }
         }
-        
+
         public event Action ServerOrClientStarted;
         public event Action ServerOrClientStopped;
-        
+
         void OnServerOrClientStarted()
         {
             // NetworkTickSystem is recreated every time the server or client is (re)started
@@ -186,7 +218,7 @@ namespace Unity.Multiplayer.Tools.Adapters.Ngo1
             m_NetworkManager.NetworkTickSystem.Tick += OnTick;
             ServerOrClientStarted?.Invoke();
         }
-        
+
         void OnServerOrClientStopped(bool isHost)
         {
             m_NetworkManager.NetworkTickSystem.Tick -= OnTick;
@@ -214,7 +246,7 @@ namespace Unity.Multiplayer.Tools.Adapters.Ngo1
             {
                 return null;
             }
-            
+
             return spawnedObjects.TryGetValue((ulong)objectId, out var networkObject) ? networkObject.gameObject : null;
         }
 
@@ -253,7 +285,7 @@ namespace Unity.Multiplayer.Tools.Adapters.Ngo1
         event Action m_OnBandwidthUpdated;
 
         public bool IsCacheEmpty => m_BandwidthCache == null || m_BandwidthCache.IsCold;
-        
+
         public BandwidthTypes SupportedBandwidthTypes =>
             BandwidthTypes.Other | BandwidthTypes.Rpc | BandwidthTypes.NetVar;
 

@@ -26,7 +26,7 @@ namespace Unity.Multiplayer.Tools.Common.Visualization
     /// </remarks>
     class CategoricalColorPaletteVisualizer : EditorWindow
     {
-        [MenuItem("Window/Mp Tools/Color Palette")]
+        [MenuItem("Window/Multiplayer/Multiplayer Tools Dev/Color Palette")]
         static void ShowColorPaletteGenerator()
         {
             var window = EditorWindow.GetWindow<CategoricalColorPaletteVisualizer>();
