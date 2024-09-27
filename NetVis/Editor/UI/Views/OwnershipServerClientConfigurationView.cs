@@ -50,6 +50,11 @@ namespace Unity.Multiplayer.Tools.NetVis.Editor.UI
                 ResetColorToDefault(ServerHostColor, OwnershipSettings.ServerHostColor));
             DisableWithoutChangingColor(ServerHostColor);
 
+            UpdateClientList();
+        }
+
+        void UpdateClientList()
+        {
             foreach (var client in ConnectedClientsRepository.ConnectedClients)
             {
                 AddClient(client);
@@ -58,6 +63,9 @@ namespace Unity.Multiplayer.Tools.NetVis.Editor.UI
 
         void OnAttach(AttachToPanelEvent _)
         {
+            // There could have been client changes while we were detached
+            UpdateClientList();
+            
             ConnectedClientsRepository.ClientConnectionEvent += AddClient;
             ConnectedClientsRepository.ClientDisconnectionEvent += RemoveClient;
         }
