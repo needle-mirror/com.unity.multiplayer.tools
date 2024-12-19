@@ -1,7 +1,7 @@
 {
   "name": "com.unity.multiplayer.tools",
   "displayName": "Multiplayer Tools",
-  "version": "2.2.2",
+  "version": "2.2.3",
   "unity": "6000.0",
   "description": "Adds a suite of tools that improve workflows for multiplayer development",
   "dependencies": {
@@ -27,18 +27,18 @@
     }
   ],
   "relatedPackages": {
-    "com.unity.multiplayer.tools.tests": "2.2.2"
+    "com.unity.multiplayer.tools.tests": "2.2.3"
   },
   "_upm": {
-    "changelog": "### *Network Scene Visualization*\n- Fixed a bug where NetVis stopped working after the NetworkManager was destroyed and recreated.\n- Fixed an issue where NetVis only assigned colors to a limited subset of Network IDs.\n- Added custom color setting for host and client ownerships. The custom color settings are synchronized between Multiplayer Play Mode instances.\n\n### *Runtime Network Stats Monitor*\n- Added support for entering Play Mode without Domain reload"
+    "changelog": "### *Network Scene Visualization*\n- Fixed a compatibility issue with the Dedicated Server package."
   },
   "upmCi": {
-    "footprint": "91d8d6223f21c1b1cfd05d2004bb3a042ed91814"
+    "footprint": "9d1d76b31f466c79684a7da086d26cffaf0a7847"
   },
   "documentationUrl": "https://docs.unity3d.com/Packages/com.unity.multiplayer.tools@2.2/manual/index.html",
   "repository": {
     "url": "https://github.com/Unity-Technologies/com.unity.multiplayer.tools.git",
     "type": "git",
-    "revision": "4bc21ec1238af2cae63a886e2609fd89ab05d94c"
+    "revision": "7dde0a73d4acf174eb6478cf14c899dfac6bd760"
   }
 }
