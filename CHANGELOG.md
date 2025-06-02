@@ -4,6 +4,18 @@ All notable changes to this package will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
+## [2.2.4] - 2025-06-02
+
+#### *General*
+- Fixed NGO adapter, Network profiler, and Network Simulator related memory leaks when domain reload is disabled
+- Added analytics to better understand the usage of our tools.
+
+#### *Network Scene Visualization*
+- Improved performance when NetVis is not actively used
+- Added some additional tooltips to the NetVis UI
+- Fixed a NetVis popup bug where it showed no content on Linux
+- Fixed client list not updating when exiting Play Mode
+
 ## [2.2.3] - 2024-12-19
 
 ### *Network Scene Visualization*

@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using Unity.Multiplayer.Tools.Common;
-using Unity.Multiplayer.Tools.NetworkSimulator.Runtime;
 using UnityEditor;
 using UnityEngine.UIElements;
 
@@ -17,11 +16,11 @@ namespace Unity.Multiplayer.Tools.NetworkSimulator.Editor.UI
         ToggleButtonStrip ConnectionToggle => this.Q<ToggleButtonStrip>(nameof(ConnectionToggle));
         VisualElement ConnectionIndicator => this.Q<VisualElement>(nameof(ConnectionIndicator));
 
-        readonly INetworkEventsApi m_NetworkEventsApi;
+        readonly Runtime.NetworkSimulator m_NetworkSimulator;
 
-        internal NetworkEventsView(INetworkEventsApi networkEventsApi)
+        internal NetworkEventsView(Runtime.NetworkSimulator networkSimulator)
         {
-            m_NetworkEventsApi = networkEventsApi;
+            m_NetworkSimulator = networkSimulator;
 
             AssetDatabase.LoadAssetAtPath<VisualTreeAsset>(k_Uxml).CloneTree(this);
             ConnectionToggle.onButtonClick += delegate
@@ -48,23 +47,24 @@ namespace Unity.Multiplayer.Tools.NetworkSimulator.Editor.UI
 
         void OnConnectionStateTogglePressed(MouseUpEvent _)
         {
+            m_NetworkSimulator.UsedEditorGUI = true;
             if (ConnectionToggle.value == k_ToggleConnectedString)
             {
-                m_NetworkEventsApi.Reconnect();
+                m_NetworkSimulator.Reconnect();
             }
             else
             {
-                m_NetworkEventsApi.Disconnect();
+                m_NetworkSimulator.Disconnect();
             }
         }
 
         void OnEditorUpdate()
         {
-            ConnectionToggle.SetValueWithoutNotify(m_NetworkEventsApi.IsConnected
+            ConnectionToggle.SetValueWithoutNotify(m_NetworkSimulator.IsConnected
                 ? k_ToggleConnectedString
                 : k_ToggleDisconnectedString);
 
-            ConnectionIndicator.EnableInClassList(k_DisconnectedClassName, !m_NetworkEventsApi.IsConnected);
+            ConnectionIndicator.EnableInClassList(k_DisconnectedClassName, !m_NetworkSimulator.IsConnected);
         }
     }
 }

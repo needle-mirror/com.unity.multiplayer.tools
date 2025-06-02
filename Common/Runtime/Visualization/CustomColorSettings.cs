@@ -1,5 +1,6 @@
 #if UNITY_EDITOR
 using System;
+using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 
@@ -37,6 +38,20 @@ namespace Unity.Multiplayer.Tools.Common.Visualization
             EditorUtility.SetDirty(instance);
             instance.SaveIfDirty();
         }
+        
+        /// <summary>
+        /// Sets multiple custom colors at once.
+        /// </summary>
+        /// <param name="colorDictionary">Dictionary containing color IDs mapped to their custom colors</param>
+        public static void SetColors(Dictionary<int, Color> colorDictionary)
+        {
+            foreach (var kvp in colorDictionary)
+            {
+                instance.colors[kvp.Key] = kvp.Value;
+            }
+            EditorUtility.SetDirty(instance);
+            instance.SaveIfDirty();
+        }
 
         /// <summary>
         /// Checks if the Color is already set to custom for the given Color ID.
@@ -56,6 +71,15 @@ namespace Unity.Multiplayer.Tools.Common.Visualization
         public static Color GetColor(int colorID)
         {
             return instance.colors[colorID];
+        }
+        
+        /// <summary>
+        /// Retrieves all currently defined custom colors.
+        /// </summary>
+        /// <returns>Dictionary containing all color IDs mapped to their custom colors</returns>
+        public static Dictionary<int, Color> GetColors()
+        {
+            return new Dictionary<int, Color>(instance.colors);
         }
         
         /// <summary>

@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Unity.Multiplayer.Tools.Adapters.Utp2;
 using Unity.Netcode.Transports.UTP;
@@ -10,13 +11,18 @@ namespace Unity.Multiplayer.Tools.Adapters.Ngo1WithUtp2
 {
     static class Ngo1WithUtp2AdapterInitializer
     {
+        static bool s_Initialized;
         internal static readonly IDictionary<int, Utp2Adapter> s_Adapters = new Dictionary<int, Utp2Adapter>();
 
         [RuntimeInitializeOnLoadMethod]
         internal static void InitializeAdapter()
         {
-            UnityTransport.TransportInitialized += AddAdapter;
-            UnityTransport.TransportDisposed += RemoveAdapter;
+            if (!s_Initialized)
+            {
+                s_Initialized = true;
+                UnityTransport.TransportInitialized += AddAdapter;
+                UnityTransport.TransportDisposed += RemoveAdapter;
+            }
         }
 
         static void AddAdapter(int instanceId, NetworkDriver networkDriver)

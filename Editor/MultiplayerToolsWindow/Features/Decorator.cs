@@ -1,4 +1,5 @@
 using System;
+using Unity.Multiplayer.Tools.Editor.MultiplayerToolsWindow.Analytics;
 using UnityEditor;
 
 namespace Unity.Multiplayer.Tools.Editor.MultiplayerToolsWindow
@@ -21,6 +22,7 @@ namespace Unity.Multiplayer.Tools.Editor.MultiplayerToolsWindow
         public void Open()
         {
             HierarchyWindowDecorator.Enabled = !HierarchyWindowDecorator.Enabled;
+            InteractedAnalyticHelper.Send(Name, HierarchyWindowDecorator.Enabled);
             EditorApplication.RepaintHierarchyWindow();
         }
 #else

@@ -2,6 +2,10 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 using Unity.Multiplayer.Tools.Common;
+#if UNITY_EDITOR && UNITY_2023_2_OR_NEWER
+using Unity.Multiplayer.Tools.NetworkSimulator.Runtime.Analytics;
+using UnityEditor;
+#endif
 
 namespace Unity.Multiplayer.Tools.NetworkSimulator.Runtime
 {
@@ -100,6 +104,8 @@ namespace Unity.Multiplayer.Tools.NetworkSimulator.Runtime
                 return;
             }
 
+            Analytic(autoRun);
+            
             m_NetworkEventsApi = networkEventsApi;
             m_Initialized = true;
 
@@ -109,6 +115,26 @@ namespace Unity.Multiplayer.Tools.NetworkSimulator.Runtime
                 Start(networkEventsApi);
                 IsPaused = false;
             }
+        }
+
+        void Analytic(bool autoRun)
+        {
+#if UNITY_EDITOR && UNITY_2023_2_OR_NEWER
+            ScenarioClassType scenarioClassType;
+            switch (this)
+            {
+                case NetworkScenarioBehaviour:
+                    scenarioClassType = ScenarioClassType.NetworkScenarioBehaviour;
+                    break;
+                case NetworkScenarioTask:
+                    scenarioClassType = ScenarioClassType.NetworkScenarioTask;
+                    break;
+                default:
+                    scenarioClassType = ScenarioClassType.NetworkScenario;
+                    break;
+            }
+            EditorAnalytics.SendAnalytic(new ScenarioInitializedAnalytic(autoRun, scenarioClassType));
+#endif
         }
 
         /// <summary>

@@ -22,5 +22,6 @@ using System.Runtime.CompilerServices;
 [assembly: InternalsVisibleTo("Unity.Multiplayer.Tools.NetworkSimulator.Tests.Runtime")]
 [assembly: InternalsVisibleTo("DynamicProxyGenAssembly2")]
 [assembly: InternalsVisibleTo("Unity.Multiplayer.Tools.Adapters.Tests.Editor")]
+[assembly: InternalsVisibleTo("Unity.Multiplayer.Tools.NetVis.Tests.Editor")]
 
 #endif

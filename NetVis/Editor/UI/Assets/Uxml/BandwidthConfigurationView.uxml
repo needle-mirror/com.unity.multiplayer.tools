@@ -42,7 +42,9 @@
                 name="MeshShadingEnabled"
                 tooltip="Enable this option to visualize per-object bandwidth using a colored overlay."
             />
-            <ui:Foldout text="Shading">
+            <ui:Foldout 
+                    text="Shading"
+                    tooltip="Configure the scale and color of the bandwidth shading.">
                 <nv:BandwidthShadingConfigurationView name="BandwidthShadingConfigurationView" />
             </ui:Foldout>
         </ui:VisualElement>

@@ -1,7 +1,13 @@
-﻿using System.ComponentModel;
+﻿using System.Collections.Generic;
+using System.ComponentModel;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using Unity.Multiplayer.Tools.Adapters;
 using UnityEngine;
+#if UNITY_EDITOR && UNITY_2023_2_OR_NEWER
+using UnityEditor;
+using Unity.Multiplayer.Tools.NetworkSimulator.Runtime.Analytics;
+#endif
 
 namespace Unity.Multiplayer.Tools.NetworkSimulator.Runtime
 {
@@ -49,6 +55,10 @@ namespace Unity.Multiplayer.Tools.NetworkSimulator.Runtime
         INetworkSimulatorPreset m_CachedPreset;
         bool m_CachedScenarioIsPaused;
         ScenarioPlaybackState m_ScenarioPlaybackState = ScenarioPlaybackState.Initial;
+        
+        // Analytics
+        internal bool UsedEditorGUI;
+        private string m_LastPresetName;
 
         internal PropertyChangedEventHandler m_PropertyChanged;
 
@@ -202,6 +212,8 @@ namespace Unity.Multiplayer.Tools.NetworkSimulator.Runtime
                 return;
             }
 
+            Analytic(forceUpdate);
+            
             m_NetworkTransportApi.UpdateNetworkParameters(
                 new()
                 {
@@ -212,8 +224,47 @@ namespace Unity.Multiplayer.Tools.NetworkSimulator.Runtime
                 });
         }
 
+        private void Analytic(bool forceUpdate)
+        {
+#if UNITY_EDITOR && UNITY_2023_2_OR_NEWER
+            // Track when a connection preset is changed to a preset, only once per changed.
+            if (forceUpdate == false &&
+                m_LastPresetName != ConnectionPreset?.Name &&
+                ConnectionPreset?.Name != "None")
+            {
+                m_LastPresetName = ConnectionPreset?.Name;
+                var presetName = m_LastPresetName;
+                var isPartOfScenario = scenarioPlaybackState == ScenarioPlaybackState.Running;
+                // Obfuscate custom preset name to not gather sensitive data
+                if (!NetworkSimulatorPresets.Names.Contains(presetName))
+                {
+                    presetName = "Custom";
+                }
+
+                EditorAnalytics.SendAnalytic(new ConnectionPresetChangedAnalytic(UsedEditorGUI, presetName, isPartOfScenario));
+            }
+#endif
+        }
+
+        void SetUsedEditorReset()
+        {
+#if UNITY_EDITOR && UNITY_2023_2_OR_NEWER
+            // Track editor GUI usage per playmode session for analytics
+            EditorApplication.playModeStateChanged += stateChange =>
+            {
+                if (stateChange == PlayModeStateChange.EnteredPlayMode)
+                {
+                    UsedEditorGUI = false;
+                }
+            };
+#endif
+        }
+        
         void OnEnable()
         {
+
+            SetUsedEditorReset();
+            
             if (m_CachedPreset != null)
             {
                 ConnectionPreset = m_CachedPreset;

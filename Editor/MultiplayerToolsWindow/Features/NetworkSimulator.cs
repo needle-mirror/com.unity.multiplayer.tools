@@ -1,4 +1,5 @@
 using System;
+using Unity.Multiplayer.Tools.Editor.MultiplayerToolsWindow.Analytics;
 using UnityEditor;
 using UnityEngine;
 
@@ -17,6 +18,7 @@ namespace Unity.Multiplayer.Tools.Editor.MultiplayerToolsWindow
         
         public void Open()
         {
+            InteractedAnalyticHelper.Send(Name);
             var go = new GameObject("Network Simulator");
             go.AddComponent<NetworkSimulator.Runtime.NetworkSimulator>();
             Undo.RegisterCreatedObjectUndo(go, "Add Network Simulator to scene");

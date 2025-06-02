@@ -1,4 +1,5 @@
 using System;
+using Unity.Multiplayer.Tools.Editor.MultiplayerToolsWindow.Analytics;
 using UnityEditor;
 
 namespace Unity.Multiplayer.Tools.Editor.MultiplayerToolsWindow
@@ -19,6 +20,7 @@ namespace Unity.Multiplayer.Tools.Editor.MultiplayerToolsWindow
         
         public void Open()
         {
+            InteractedAnalyticHelper.Send(Name);
             EditorWindow.GetWindow<ProfilerWindow>();
             //TODO: did not find how to load the modules via code. Ask around?
         }

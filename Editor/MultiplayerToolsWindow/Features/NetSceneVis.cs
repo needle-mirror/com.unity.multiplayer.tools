@@ -1,4 +1,5 @@
 using System;
+using Unity.Multiplayer.Tools.Editor.MultiplayerToolsWindow.Analytics;
 using UnityEditor;
 using UnityEngine;
 #if NETVIS_AVAILABLE
@@ -20,6 +21,7 @@ namespace Unity.Multiplayer.Tools.Editor.MultiplayerToolsWindow
 
         public void Open()
         {
+            InteractedAnalyticHelper.Send(Name);
             var sceneView = EditorWindow.GetWindow<SceneView>();
             var overlayFound = sceneView.TryGetOverlay("Network Visualization", out Overlay match);
             if (overlayFound)

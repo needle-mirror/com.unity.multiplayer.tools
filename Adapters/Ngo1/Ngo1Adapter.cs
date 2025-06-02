@@ -28,7 +28,7 @@ namespace Unity.Multiplayer.Tools.Adapters.Ngo1
         , IGetOwnership
         , IGetRpcCount
     {
-        [NotNull]
+        [MaybeNull]
         NetworkManager m_NetworkManager;
 
         [MaybeNull]
@@ -55,8 +55,6 @@ namespace Unity.Multiplayer.Tools.Adapters.Ngo1
         {
             m_NetworkManager = networkManager;
             m_NetworkManager.OnConnectionEvent += OnConnectionEvent;
-            m_NetworkManager.NetworkTickSystem.Tick += OnTick;
-
             m_NetworkManager.OnServerStarted += OnServerOrClientStarted;
             m_NetworkManager.OnClientStarted += OnServerOrClientStarted;
             m_NetworkManager.OnServerStopped += OnServerOrClientStopped;
@@ -68,6 +66,8 @@ namespace Unity.Multiplayer.Tools.Adapters.Ngo1
             }
 
             MetricEventPublisher.OnMetricsReceived += OnMetricsReceived;
+
+            RefreshClientIds();
         }
 
         internal void Deinitialize()
@@ -75,12 +75,6 @@ namespace Unity.Multiplayer.Tools.Adapters.Ngo1
             if (m_NetworkManager != null)
             {
                 m_NetworkManager.OnConnectionEvent -= OnConnectionEvent;
-
-                if (m_NetworkManager.NetworkTickSystem != null)
-                {
-                    m_NetworkManager.NetworkTickSystem.Tick -= OnTick;
-                }
-
                 m_NetworkManager.OnServerStarted -= OnServerOrClientStarted;
                 m_NetworkManager.OnClientStarted -= OnServerOrClientStarted;
                 m_NetworkManager.OnServerStopped -= OnServerOrClientStopped;
@@ -90,16 +84,11 @@ namespace Unity.Multiplayer.Tools.Adapters.Ngo1
             }
 
             MetricEventPublisher.OnMetricsReceived -= OnMetricsReceived;
+            ClearConnectedClients();
         }
 
         readonly List<ClientId> m_ClientIds = new();
         readonly List<ObjectId> m_ObjectIds = new();
-
-        void OnTick()
-        {
-            RefreshObjectIds();
-            RefreshClientIds();
-        }
 
         void RefreshObjectIds()
         {
@@ -132,9 +121,8 @@ namespace Unity.Multiplayer.Tools.Adapters.Ngo1
                 {
                     // Avoid polluting the client list because of DA.
                     // Only auto add already existing clients through SpawnManager that have at least one object in the scene.
-                    if (!m_ClientIds.Contains((ClientId)clientId) && clientNetworkObjects.Count > 0)
+                    if (clientNetworkObjects.Count > 0)
                     {
-                        m_ClientIds.Add((ClientId)clientId);
                         OnClientConnected(clientId);
                     }
                 }
@@ -213,16 +201,14 @@ namespace Unity.Multiplayer.Tools.Adapters.Ngo1
 
         void OnServerOrClientStarted()
         {
-            // NetworkTickSystem is recreated every time the server or client is (re)started
-            m_NetworkManager.NetworkTickSystem.Tick -= OnTick;
-            m_NetworkManager.NetworkTickSystem.Tick += OnTick;
             ServerOrClientStarted?.Invoke();
+            RefreshClientIds();
         }
 
         void OnServerOrClientStopped(bool isHost)
         {
-            m_NetworkManager.NetworkTickSystem.Tick -= OnTick;
             ServerOrClientStopped?.Invoke();
+            ClearConnectedClients();
         }
 
         public event Action<MetricCollection> MetricCollectionEvent;
@@ -237,7 +223,14 @@ namespace Unity.Multiplayer.Tools.Adapters.Ngo1
         public ClientId LocalClientId => (ClientId)m_NetworkManager.LocalClientId;
         public ClientId ServerClientId => (ClientId)NetworkManager.ServerClientId;
 
-        public IReadOnlyList<ObjectId> ObjectIds => m_ObjectIds;
+        public IReadOnlyList<ObjectId> ObjectIds
+        {
+            get
+            {
+                RefreshObjectIds();
+                return m_ObjectIds;
+            }
+        }
 
         public GameObject GetGameObject(ObjectId objectId)
         {
@@ -336,5 +329,15 @@ namespace Unity.Multiplayer.Tools.Adapters.Ngo1
         public int GetRpcCount(ObjectId objectId)
             => m_RpcCountCache?.GetRpcCount(objectId)
                ?? throw new NoSubscribersException(nameof(IGetRpcCount), nameof(OnRpcCountUpdated));
+
+        void ClearConnectedClients()
+        {
+            var clientIdsCopy = new List<ClientId>(m_ClientIds);
+            foreach (var clientId in clientIdsCopy)
+            {
+                OnClientDisconnected((ulong)clientId);
+            }
+            m_ClientIds.Clear();
+        }
     }
 }

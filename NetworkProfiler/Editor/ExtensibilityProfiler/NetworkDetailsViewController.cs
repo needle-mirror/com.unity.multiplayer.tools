@@ -1,3 +1,6 @@
+#if UNITY_2023_2_OR_NEWER
+using Unity.Multiplayer.Tools.NetworkProfiler.Editor.Analytics;
+#endif
 using Unity.Profiling.Editor;
 using UnityEditor;
 using UnityEngine.UIElements;
@@ -14,6 +17,9 @@ namespace Unity.Multiplayer.Tools.NetworkProfiler.Editor
         public NetworkDetailsViewController(ProfilerWindow profilerWindow, string tabName)
             : base(profilerWindow)
         {
+#if UNITY_2023_2_OR_NEWER
+            EditorAnalytics.SendAnalytic(new ProfilerSelectedAnalytic(tabName));
+#endif
             m_TabName = tabName;
 
             m_NetworkProfilerDataProvider = new NetworkProfilerDataProvider();

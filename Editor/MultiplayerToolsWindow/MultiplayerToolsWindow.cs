@@ -1,5 +1,7 @@
 using System;
 using System.Linq;
+using System.Collections.Generic;
+using Unity.Multiplayer.Tools.Editor.MultiplayerToolsWindow.Analytics;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.UIElements;
@@ -14,6 +16,8 @@ namespace Unity.Multiplayer.Tools.Editor.MultiplayerToolsWindow
         const string k_PathInPackage = "Packages/com.unity.multiplayer.tools/Editor/MultiplayerToolsWindow";
         const string k_MainUxmlPath = k_PathInPackage + "/UI/MultiplayerToolsWindow.uxml";
         const string k_SectionUxmlPath = k_PathInPackage + "/UI/MultiplayerToolsWindowSection.uxml";
+        
+        private readonly List<string> m_InstalledDependencies = new List<string>();
 
         /// <summary>
         /// The menu item hook to show the Multiplayer Tools Editor Window
@@ -87,14 +91,16 @@ namespace Unity.Multiplayer.Tools.Editor.MultiplayerToolsWindow
             }
         }
 
-        static void AddPackageVersions(VisualElement parent)
+        void AddPackageVersions(VisualElement parent)
         {
             AddOnePackageVersion(parent, "com.unity.netcode.gameobjects", "Netcode for GameObjects", "https://docs-multiplayer.unity3d.com/netcode/current/installation/");
             AddOnePackageVersion(parent, "com.unity.transport", "Unity Transport", "https://docs-multiplayer.unity3d.com/transport/current/install/");
             AddOnePackageVersion(parent, "com.unity.multiplayer.tools", "Multiplayer Tools", "https://docs-multiplayer.unity3d.com/tools/current/install-tools/");
+            OpenedAnalyticHelper.Send(m_InstalledDependencies.ToArray());
+            m_InstalledDependencies.Clear();
         }
 
-        static void AddOnePackageVersion(VisualElement parent, string packageId, string packageName, string docUrl)
+        void AddOnePackageVersion(VisualElement parent, string packageId, string packageName, string docUrl)
         {
             var info = GetInfoString(packageId, packageName);
             var line = new VisualElement() {style = {flexDirection = FlexDirection.Row}};
@@ -108,7 +114,7 @@ namespace Unity.Multiplayer.Tools.Editor.MultiplayerToolsWindow
             parent.Add(line);
         }
 
-        static string GetInfoString(string packageId, string packageName)
+        string GetInfoString(string packageId, string packageName)
         {
 #if UNITY_2023_2_OR_NEWER
             var info = UnityEditor.PackageManager.PackageInfo.FindForPackageName(packageId);
@@ -116,7 +122,13 @@ namespace Unity.Multiplayer.Tools.Editor.MultiplayerToolsWindow
             var allPkgs = UnityEditor.PackageManager.PackageInfo.GetAllRegisteredPackages();
             var info = Array.Find(allPkgs, p => p.name == packageId);
 #endif
-            return info == null ? $"• {packageName}: package not found" : $"• {packageName} version: {info.version}";
+
+            if (info == null)
+            {
+                return $"• {packageName}: package not found";
+            }
+            m_InstalledDependencies.Add($"{packageId}@{info.version}");
+            return $"• {packageName} version: {info.version}";
         }
     }
 

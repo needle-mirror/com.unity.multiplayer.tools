@@ -6,6 +6,10 @@ using Unity.Multiplayer.Tools.NetStats;
 using UnityEngine;
 using UnityEngine.UIElements;
 using Object = UnityEngine.Object;
+#if UNITY_EDITOR && UNITY_2023_2_OR_NEWER
+using UnityEditor;
+using Unity.Multiplayer.Tools.NetStatsMonitor.Implementation.Analytics;
+#endif
 
 namespace Unity.Multiplayer.Tools.NetStatsMonitor.Implementation
 {
@@ -65,6 +69,11 @@ namespace Unity.Multiplayer.Tools.NetStatsMonitor.Implementation
 
         /// Previous hash of all configuration fields that could impact history requirements
         int? m_PreviousHistoryRequirementsHash;
+
+#if UNITY_EDITOR && UNITY_2023_2_OR_NEWER
+        /// Store previous config data to only send relevant analytics
+        private ConfigUpdatedAnalytic m_PreviousConfig;
+#endif
 
         internal UIDocument UiDoc { get; private set; }
 
@@ -196,6 +205,7 @@ namespace Unity.Multiplayer.Tools.NetStatsMonitor.Implementation
             StyleSheet customStyleSheet,
             PanelSettings panelSettingsOverride)
         {
+            Analytic(customStyleSheet, panelSettingsOverride, positionConfiguration);
             if (customStyleSheet != m_CustomStyleSheet)
             {
                 if (m_CustomStyleSheet != null)
@@ -216,6 +226,21 @@ namespace Unity.Multiplayer.Tools.NetStatsMonitor.Implementation
             RnsmVisualElement.ApplyPosition(positionConfiguration);
 
             ApplyConfigurationChangesIfHashHasChanged(configuration);
+        }
+
+        private void Analytic(StyleSheet customStyleSheet, PanelSettings panelSettingsOverride, PositionConfiguration positionConfiguration)
+        {
+#if UNITY_EDITOR && UNITY_2023_2_OR_NEWER
+            var isUsingCustomStyleSheet = customStyleSheet != null;
+            var isUsingPanelSettingsOverride = panelSettingsOverride != null;
+            var isUsingPositionOverride = positionConfiguration?.OverridePosition ?? false;
+            var configUpdated = new ConfigUpdatedAnalytic(isUsingCustomStyleSheet, isUsingPanelSettingsOverride, isUsingPositionOverride);
+            if (!configUpdated.Equals(m_PreviousConfig))
+            {
+                m_PreviousConfig = configUpdated;
+                EditorAnalytics.SendAnalytic(configUpdated);
+            }
+#endif
         }
 
         void ApplyConfigurationChangesIfHashHasChanged(NetStatsMonitorConfiguration configuration)

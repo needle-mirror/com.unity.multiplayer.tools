@@ -25,13 +25,9 @@ namespace Unity.Multiplayer.Tools.NetVis.Editor.UI
             m_WindowContentSize = new Vector2(width, height);
         }
 
-        public override Vector2 GetWindowSize()
-        {
-            return m_WindowContentSize;
-        }
-
         public override void OnGUI(Rect rect)
         {
+            editorWindow.minSize = new Vector2(m_WindowContentSize.x, m_View.resolvedStyle.height);
             editorWindow.maxSize = new Vector2(m_WindowContentSize.x, m_View.resolvedStyle.height);
         }
 

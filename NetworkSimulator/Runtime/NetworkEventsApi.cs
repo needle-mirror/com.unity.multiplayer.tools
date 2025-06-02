@@ -1,6 +1,11 @@
 ﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using Unity.Multiplayer.Tools.Common;
+#if UNITY_EDITOR && UNITY_2023_2_OR_NEWER
+using UnityEditor;
+using Unity.Multiplayer.Tools.NetworkSimulator.Runtime.Analytics;
+#endif
 
 namespace Unity.Multiplayer.Tools.NetworkSimulator.Runtime
 {
@@ -9,6 +14,7 @@ namespace Unity.Multiplayer.Tools.NetworkSimulator.Runtime
     /// </summary>
     class NetworkEventsApi : INetworkEventsApi
     {
+        private bool m_IsLageSpikeRunning;
         readonly NetworkSimulator m_NetworkSimulator;
         readonly INetworkTransportApi m_NetworkTransportApi;
 
@@ -28,7 +34,10 @@ namespace Unity.Multiplayer.Tools.NetworkSimulator.Runtime
             {
                 return;
             }
-
+            
+#if UNITY_EDITOR && UNITY_2023_2_OR_NEWER
+            EditorAnalytics.SendAnalytic(new ConnectionStateChangedAnalytic(m_NetworkSimulator.UsedEditorGUI, m_IsLageSpikeRunning));
+#endif
             m_NetworkTransportApi.SimulateDisconnect();
         }
 
@@ -38,7 +47,9 @@ namespace Unity.Multiplayer.Tools.NetworkSimulator.Runtime
             {
                 return;
             }
-
+#if UNITY_EDITOR && UNITY_2023_2_OR_NEWER
+            EditorAnalytics.SendAnalytic(new ConnectionStateChangedAnalytic(m_NetworkSimulator.UsedEditorGUI, m_IsLageSpikeRunning));
+#endif
             m_NetworkTransportApi.SimulateReconnect();
         }
 
@@ -68,7 +79,7 @@ namespace Unity.Multiplayer.Tools.NetworkSimulator.Runtime
             {
                 return;
             }
-
+            
             m_NetworkSimulator.ConnectionPreset = newNetworkSimulatorPreset;
         }
 
@@ -76,11 +87,13 @@ namespace Unity.Multiplayer.Tools.NetworkSimulator.Runtime
 
         async Task RunLagSpikeAsync(TimeSpan duration)
         {
+            m_IsLageSpikeRunning = true;
             Disconnect();
 
             await Task.Delay(duration);
 
             Reconnect();
+            m_IsLageSpikeRunning = false;
         }
     }
 }

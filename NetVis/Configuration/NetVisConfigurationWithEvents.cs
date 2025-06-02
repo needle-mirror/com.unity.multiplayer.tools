@@ -1,4 +1,8 @@
 using System;
+#if UNITY_EDITOR && UNITY_2023_2_OR_NEWER
+using Unity.Multiplayer.Tools.NetVis.Configuration.Analytics;
+using UnityEditor;
+#endif
 
 namespace Unity.Multiplayer.Tools.NetVis.Configuration
 {
@@ -51,6 +55,9 @@ namespace Unity.Multiplayer.Tools.NetVis.Configuration
                     return;
                 }
 
+                #if UNITY_EDITOR && UNITY_2023_2_OR_NEWER
+                EditorAnalytics.SendAnalytic(new MetricChangedAnalytic(value.ToString()));
+                #endif
                 Configuration.Metric = value;
                 MetricChanged?.Invoke(m_Configuration.Metric);
                 ConfigurationChanged?.Invoke(m_Configuration);

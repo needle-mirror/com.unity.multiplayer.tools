@@ -1,4 +1,5 @@
 using System;
+using Unity.Multiplayer.Tools.Editor.MultiplayerToolsWindow.Analytics;
 using Unity.Multiplayer.Tools.NetStatsMonitor;
 using UnityEditor;
 using UnityEngine;
@@ -18,6 +19,7 @@ namespace Unity.Multiplayer.Tools.Editor.MultiplayerToolsWindow
 
         public void Open()
         {
+            InteractedAnalyticHelper.Send(Name);
             var go = new GameObject("Runtime Network Stats Monitor");
             go.AddComponent<RuntimeNetStatsMonitor>();
             Undo.RegisterCreatedObjectUndo(go, "Add Runtime Network Stats Monitor to scene");

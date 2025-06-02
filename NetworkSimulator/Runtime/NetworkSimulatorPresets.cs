@@ -1,4 +1,6 @@
-﻿namespace Unity.Multiplayer.Tools.NetworkSimulator.Runtime
+﻿using System.Linq;
+
+namespace Unity.Multiplayer.Tools.NetworkSimulator.Runtime
 {
     /// <summary>
     /// Static class containing the built-in presets to configure and simulate network conditions.
@@ -101,6 +103,11 @@
         /// Contains all available network preset values.
         /// </summary>
         public static readonly NetworkSimulatorPreset[] Values;
+
+        /// <summary>
+        /// Internal list of names to speed up analytics processing.
+        /// </summary>
+        internal static readonly string[] Names;
 
         static NetworkSimulatorPresets()
         {
@@ -218,6 +225,7 @@
                 Mobile4_5G,
                 Mobile5G,
             };
+            Names = Values.Select(v => v.Name).ToArray();
         }
     }
 }

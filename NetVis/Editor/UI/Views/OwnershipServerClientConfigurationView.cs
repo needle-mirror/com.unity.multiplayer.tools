@@ -57,11 +57,17 @@ namespace Unity.Multiplayer.Tools.NetVis.Editor.UI
             Configuration.SettingsChanged += _ => RefreshColorField(ServerHostColor, OwnershipSettings.ServerHostColor);
             OwnershipSettings.ColorsChanged += () => RefreshColorField(ServerHostColor, OwnershipSettings.ServerHostColor);
 
-            UpdateClientList();
+            RefreshClientList();
         }
 
-        void UpdateClientList()
+        void RefreshClientList()
         {
+            var clientIdsToRemove = m_ConnectedClients.Select(c => c.ClientId).ToList();
+            foreach (var clientId in clientIdsToRemove)
+            {
+                RemoveClient(clientId);
+            }
+
             foreach (var client in ConnectedClientsRepository.ConnectedClients)
             {
                 AddClient(client);
@@ -71,7 +77,7 @@ namespace Unity.Multiplayer.Tools.NetVis.Editor.UI
         void OnAttach(AttachToPanelEvent _)
         {
             // There could have been client changes while we were detached
-            UpdateClientList();
+            RefreshClientList();
             
             ConnectedClientsRepository.ClientConnectionEvent += AddClient;
             ConnectedClientsRepository.ClientDisconnectionEvent += RemoveClient;

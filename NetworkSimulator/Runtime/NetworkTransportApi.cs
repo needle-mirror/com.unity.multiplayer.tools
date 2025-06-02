@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Unity.Multiplayer.Tools.Adapters;
+using UnityEditor;
 
 namespace Unity.Multiplayer.Tools.NetworkSimulator.Runtime
 {
@@ -14,7 +15,22 @@ namespace Unity.Multiplayer.Tools.NetworkSimulator.Runtime
         public NetworkTransportApi()
         {
             SubscribeToAllAdapters();
+            
+#if UNITY_EDITOR
+            EditorApplication.playModeStateChanged += ModeChanged;
+#endif
         }
+
+#if UNITY_EDITOR
+        void ModeChanged(PlayModeStateChange mode)
+        {
+            if (mode == PlayModeStateChange.ExitingPlayMode)
+            {
+                EditorApplication.playModeStateChanged -= ModeChanged;
+                Dispose();
+            }
+        }
+#endif
 
         public void Dispose()
         {

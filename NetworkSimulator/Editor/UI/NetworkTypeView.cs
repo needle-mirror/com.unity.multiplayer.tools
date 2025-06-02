@@ -193,6 +193,7 @@ namespace Unity.Multiplayer.Tools.NetworkSimulator.Editor.UI
 
         void OnPresetSelected(ChangeEvent<string> changeEvent)
         {
+            m_NetworkSimulator.UsedEditorGUI = true;
             if (string.IsNullOrWhiteSpace(changeEvent.newValue) || changeEvent.newValue == NetworkPresetDropdown.Custom)
             {
                 PresetDropdown.SetValueWithoutNotify(NetworkPresetDropdown.Custom);
@@ -205,7 +206,7 @@ namespace Unity.Multiplayer.Tools.NetworkSimulator.Editor.UI
 
                 CustomPresetValue.SetValueWithoutNotify(null);
             }
-
+            
             UpdateHelpText();
             UpdateEnabled();
             UpdateLiveIfPlaying();

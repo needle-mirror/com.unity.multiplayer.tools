@@ -112,6 +112,7 @@ namespace Unity.Multiplayer.Tools.NetworkSimulator.Editor.UI
 
             var selectedType = m_Types[selectedIndexWithoutNone];
             var networkScenario = NetworkScenarioTypesLibrary.GetInstanceForTypeName(selectedType.Name);
+            m_NetworkSimulator.UsedEditorGUI = true;
             m_NetworkSimulator.Scenario = networkScenario;
         }
 
@@ -148,6 +149,7 @@ namespace Unity.Multiplayer.Tools.NetworkSimulator.Editor.UI
                 return;
             }
 
+            m_NetworkSimulator.UsedEditorGUI = true;
             scenario.IsPaused = !scenario.IsPaused;
             SetPauseResumeButton(scenario.IsPaused);
         }

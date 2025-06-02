@@ -1,6 +1,5 @@
 ﻿using System;
 using Unity.Multiplayer.Tools.Common;
-using Unity.Multiplayer.Tools.NetworkSimulator.Runtime;
 using UnityEditor;
 using UnityEngine.UIElements;
 
@@ -28,11 +27,11 @@ namespace Unity.Multiplayer.Tools.NetworkSimulator.Editor.UI
         void Enter2000() => EnterLagSpikeDuration(2000);
         void Enter5000() => EnterLagSpikeDuration(5000);
 
-        readonly INetworkEventsApi m_NetworkEventsApi;
+        readonly Runtime.NetworkSimulator m_NetworkSimulator;
 
-        public LagSpikeView(INetworkEventsApi networkEventsApi)
+        public LagSpikeView(Runtime.NetworkSimulator networkSimulator)
         {
-            m_NetworkEventsApi = networkEventsApi;
+            m_NetworkSimulator = networkSimulator;
 
             AssetDatabase.LoadAssetAtPath<VisualTreeAsset>(UXML).CloneTree(this);
 
@@ -78,7 +77,8 @@ namespace Unity.Multiplayer.Tools.NetworkSimulator.Editor.UI
         {
             if (DurationField.value > 0)
             {
-                m_NetworkEventsApi.TriggerLagSpike(TimeSpan.FromMilliseconds(DurationField.value));
+                m_NetworkSimulator.UsedEditorGUI = true;
+                m_NetworkSimulator.TriggerLagSpike(TimeSpan.FromMilliseconds(DurationField.value));
             }
         }
 

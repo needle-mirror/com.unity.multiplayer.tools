@@ -1,3 +1,4 @@
+using System;
 using System.Threading.Tasks;
 using Unity.Multiplayer.Tools.Common;
 using Unity.Netcode;
@@ -9,10 +10,16 @@ namespace Unity.Multiplayer.Tools.Adapters.Ngo1
 {
     static class Ngo1AdapterInitializer
     {
+        static bool s_Initialized;
+
         [RuntimeInitializeOnLoadMethod]
         internal static void InitializeAdapter()
         {
-            InitializeAdapterAsync().Forget();
+            if (!s_Initialized)
+            {
+                s_Initialized = true;
+                InitializeAdapterAsync().Forget();
+            }
         }
 
         static async Task InitializeAdapterAsync()
@@ -35,20 +42,6 @@ namespace Unity.Multiplayer.Tools.Adapters.Ngo1
             {
                 ngo1Adapter.Deinitialize();
             };
-#endif
-
-#if UNITY_EDITOR
-            UnityEditor.EditorApplication.playModeStateChanged += OnPlayModeStateChanged;
-
-            void OnPlayModeStateChanged(UnityEditor.PlayModeStateChange playModeStateChange)
-            {
-                if (playModeStateChange == UnityEditor.PlayModeStateChange.ExitingPlayMode)
-                {
-                    UnityEditor.EditorApplication.playModeStateChanged -= OnPlayModeStateChanged;
-                    ngo1Adapter.Deinitialize();
-                    NetworkAdapters.RemoveAdapter(ngo1Adapter);
-                }
-            }
 #endif
         }
 
