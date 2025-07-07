@@ -1,7 +1,7 @@
 {
   "name": "com.unity.multiplayer.tools",
   "displayName": "Multiplayer Tools",
-  "version": "2.2.4",
+  "version": "2.2.5",
   "unity": "6000.0",
   "description": "Adds a suite of tools that improve workflows for multiplayer development",
   "dependencies": {
@@ -27,15 +27,15 @@
     }
   ],
   "_upm": {
-    "changelog": "#### *General*\n- Fixed NGO adapter, Network profiler, and Network Simulator related memory leaks when domain reload is disabled\n- Added analytics to better understand the usage of our tools.\n\n#### *Network Scene Visualization*\n- Improved performance when NetVis is not actively used\n- Added some additional tooltips to the NetVis UI\n- Fixed a NetVis popup bug where it showed no content on Linux\n- Fixed client list not updating when exiting Play Mode"
+    "changelog": "#### *General*\n- Added documentation to package repository."
   },
   "upmCi": {
-    "footprint": "4daf18c7fb2c56df9bd727883f2f696d6d2b4d0b"
+    "footprint": "9218c961da553d673a62ee6f10fc41a880f3204c"
   },
   "documentationUrl": "https://docs.unity3d.com/Packages/com.unity.multiplayer.tools@2.2/manual/index.html",
   "repository": {
     "url": "https://github.com/Unity-Technologies/com.unity.multiplayer.tools.git",
     "type": "git",
-    "revision": "1c1c9a947ab64895ce373b759a9e869f2bcd195d"
+    "revision": "62ae90b038556ebcbd9a93d5cd1d17e5fe71d508"
   }
 }
