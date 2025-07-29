@@ -33,7 +33,7 @@ namespace Unity.Multiplayer.Tools.NetVis.Editor.UI
 
         protected override void ShowOverlayPopUp()
         {
-            PopupWindow.Show(worldBound, new NetVisPopupWindowContent<OwnershipConfigurationView>(400, 300));
+            PopupWindow.Show(worldBound, new NetVisPopupWindowContent<OwnershipConfigurationView>(400));
         }
 #if !UNITY_2023_3_OR_NEWER
         public new class UxmlFactory : UxmlFactory<OwnershipToolbarDropdownToggle, UxmlTraits> { }

@@ -6,8 +6,11 @@ using UnityEngine.UIElements;
 
 namespace Unity.Multiplayer.Tools.NetVis.Editor.UI
 {
+#if UNITY_2023_3_OR_NEWER
+    [UxmlElement]
+#endif
     [LoadUxmlView(NetVisEditorPaths.k_UxmlRoot)]
-    class CommonSettingsView : InjectedVisualElement<CommonSettingsView>
+    partial class CommonSettingsView : InjectedVisualElement<CommonSettingsView>
     {
         [UxmlQuery] Toggle Outline;
         [UxmlQuery] SliderInt Saturation;

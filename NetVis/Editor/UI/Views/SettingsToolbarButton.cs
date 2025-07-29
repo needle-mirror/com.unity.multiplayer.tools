@@ -26,7 +26,7 @@ namespace Unity.Multiplayer.Tools.NetVis.Editor.UI
 
         static void ShowSettings()
         {
-            PopupWindow.Show(s_Instance.worldBound, new NetVisPopupWindowContent<CommonSettingsView>(320, 200));
+            PopupWindow.Show(s_Instance.worldBound, new NetVisPopupWindowContent<CommonSettingsView>(320));
         }
 #if !UNITY_2023_3_OR_NEWER
         public new class UxmlFactory : UxmlFactory<SettingsToolbarButton, UxmlTraits> { }

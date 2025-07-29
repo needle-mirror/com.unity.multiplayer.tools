@@ -15,11 +15,12 @@ namespace Unity.Multiplayer.Tools.NetVis.Editor.UI
     {
         [UxmlQuery] BandwidthConfigurationView BandwidthConfigurationView;
         [UxmlQuery] OwnershipConfigurationView OwnershipConfigurationView;
+        [UxmlQuery] CommonSettingsView CommonSettingsView;
         [UxmlQuery] ToolbarToggle BandwidthToggle;
         [UxmlQuery] VisualElement BandwidthIcon;
         [UxmlQuery] ToolbarToggle OwnershipToggle;
         [UxmlQuery] VisualElement OwnershipIcon;
-        [UxmlQuery] ToolbarButton SettingsButton;
+        [UxmlQuery] ToolbarToggle SettingsToggle;
         [UxmlQuery] VisualElement SettingsIcon;
 
         [Inject] NetVisConfigurationWithEvents Configuration;
@@ -66,19 +67,18 @@ namespace Unity.Multiplayer.Tools.NetVis.Editor.UI
         void OnAttach(AttachToPanelEvent _)
         {
             Configuration.MetricChanged += OnMetricChanged;
-            SettingsButton.RegisterCallback<ClickEvent>(OnSettingsClicked);
+            SettingsToggle.RegisterValueChangedCallback(OnSettingsToggled);
         }
 
         void OnDetach(DetachFromPanelEvent _)
         {
             Configuration.MetricChanged -= OnMetricChanged;
-
-            SettingsButton.UnregisterCallback<ClickEvent>(OnSettingsClicked);
+            SettingsToggle.UnregisterValueChangedCallback(OnSettingsToggled);
         }
 
-        void OnSettingsClicked(ClickEvent _)
+        void OnSettingsToggled(ChangeEvent<bool> evt)
         {
-            PopupWindow.Show(worldBound, new NetVisPopupWindowContent<CommonSettingsView>(320, 200));
+            CommonSettingsView.SetInclude(evt.newValue);
         }
 
         void OnMetricChanged(NetVisMetric metric)
@@ -87,6 +87,8 @@ namespace Unity.Multiplayer.Tools.NetVis.Editor.UI
             OwnershipToggle.SetValueWithoutNotify(metric == NetVisMetric.Ownership);
             BandwidthConfigurationView.SetInclude(metric == NetVisMetric.Bandwidth);
             OwnershipConfigurationView.SetInclude(metric == NetVisMetric.Ownership);
+            SettingsToggle.SetValueWithoutNotify(false); 
+            CommonSettingsView.SetInclude(false);
         }
 #if !UNITY_2023_3_OR_NEWER
         public new class UxmlFactory : UxmlFactory<PanelOverlayView, UxmlTraits> { }

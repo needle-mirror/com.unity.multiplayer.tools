@@ -14,10 +14,10 @@
             <ui:Label text="Ownership"/>
         </uie:ToolbarToggle>
         <nv:OwnershipConfigurationView name="OwnershipConfigurationView" />
-        <uie:ToolbarButton name="SettingsButton" class="NetVisPanelOverlayButton"  tooltip="Configure network visualization." >>
+        <uie:ToolbarToggle name="SettingsToggle" text="Settings" tooltip="Configure network visualization." class="NetVisPanelOverlayButton">
             <ui:VisualElement class="NetVisIcon" name="SettingsIcon"/>
             <ui:Label text="Settings" />
-            <ui:VisualElement class="unity-base-popup-field__arrow" />
-        </uie:ToolbarButton>
+        </uie:ToolbarToggle>
+        <nv:CommonSettingsView name="CommonSettingsView" />
     </ui:VisualElement>
 </ui:UXML>

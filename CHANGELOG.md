@@ -4,6 +4,12 @@ All notable changes to this package will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
+## [2.2.6] - 2025-07-29
+
+#### *Network Scene Visualization*
+- Fixed settings dropdown appearing at the wrong position in the scene view when close to an edge.
+- Unified the settings overlay to only use foldout.
+
 ## [2.2.5] - 2025-07-07
 
 #### *General*

@@ -8,9 +8,9 @@ namespace Unity.Multiplayer.Tools.NetVis.Editor.UI
         where TView : VisualElement, new()
     {
         readonly TView m_View;
-        readonly Vector2 m_WindowContentSize;
+        Vector2 m_WindowContentSize;
 
-        public NetVisPopupWindowContent(int width, int height)
+        public NetVisPopupWindowContent(int width)
         {
             m_View = new TView
             {
@@ -22,13 +22,21 @@ namespace Unity.Multiplayer.Tools.NetVis.Editor.UI
                     paddingTop = new StyleLength(new Length(4, LengthUnit.Pixel)),
                 },
             };
-            m_WindowContentSize = new Vector2(width, height);
+            
+            // Set initial content height large enough to fit all content, it will be updated dynamically in OnGUI.
+            m_WindowContentSize = new Vector2(width, 4096);
+        }
+        
+        public override Vector2 GetWindowSize()
+        {
+            return m_WindowContentSize;
         }
 
         public override void OnGUI(Rect rect)
         {
-            editorWindow.minSize = new Vector2(m_WindowContentSize.x, m_View.resolvedStyle.height);
-            editorWindow.maxSize = new Vector2(m_WindowContentSize.x, m_View.resolvedStyle.height);
+            m_WindowContentSize = new Vector2(m_View.resolvedStyle.width, m_View.resolvedStyle.height);
+            editorWindow.minSize = m_WindowContentSize;
+            editorWindow.maxSize = m_WindowContentSize;
         }
 
         public override void OnOpen()
