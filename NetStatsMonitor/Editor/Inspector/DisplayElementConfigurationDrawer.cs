@@ -78,10 +78,10 @@ namespace Unity.Multiplayer.Tools.NetStatsMonitor.Editor
             if (m_DisplayElementConfigurationCount == 0
                 || newCount < m_DisplayElementConfigurationCount)
             {
-                 // Due to how UI Toolkit updates, this event will be propagated after an element was added, removed
-                 // or moved in the list view. In the case of added or moved, things will be fine.
-                 // But in the case of removal, we need an early return because other wise the display element
-                 // will try to access data that is now gone, resulting in a backing field disappeared message.
+                // Due to how UI Toolkit updates, this event will be propagated after an element was added, removed
+                // or moved in the list view. In the case of added or moved, things will be fine.
+                // But in the case of removal, we need an early return because other wise the display element
+                // will try to access data that is now gone, resulting in a backing field disappeared message.
                 m_DisplayElementConfigurationCount = newCount;
                 return;
             }

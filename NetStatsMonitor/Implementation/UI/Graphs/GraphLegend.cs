@@ -23,7 +23,7 @@ namespace Unity.Multiplayer.Tools.NetStatsMonitor.Implementation
             {
                 //Delete the extra legends
                 var diff = m_LegendKeys.Count - stats.Count;
-                for (var i = m_LegendKeys.Count-1; m_LegendKeys.Count != stats.Count; --i)
+                for (var i = m_LegendKeys.Count - 1; m_LegendKeys.Count != stats.Count; --i)
                 {
                     RemoveAt(i);
                     m_LegendKeys.RemoveAt(i);

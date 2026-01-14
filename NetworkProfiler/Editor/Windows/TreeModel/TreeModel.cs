@@ -5,7 +5,7 @@ namespace Unity.Multiplayer.Tools.NetworkProfiler.Editor
     class TreeModel
     {
         readonly List<TreeModelNode> m_Children = new List<TreeModelNode>();
-        
+
         /// <summary>
         /// Checks if there is upcoming info to show on DetailsView
         /// </summary>
@@ -14,7 +14,7 @@ namespace Unity.Multiplayer.Tools.NetworkProfiler.Editor
 
         public void SortChildren(SortDirection direction)
         {
-            m_Children.Sort((a,b) => RowDataSorting.SortOperation(a.RowData, b.RowData, direction));
+            m_Children.Sort((a, b) => RowDataSorting.SortOperation(a.RowData, b.RowData, direction));
             foreach (var child in Children)
             {
                 child.SortChildren(direction);

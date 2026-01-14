@@ -273,7 +273,7 @@ namespace Unity.Multiplayer.Tools.NetStatsMonitor.Implementation
             var pointIndexToRead = pointsToAdvance;
             for (; pointIndexToWrite < pointsToCopy; ++pointIndexToWrite, ++pointIndexToRead)
             {
-                var vertexToReadBegin  = statVerticesBegin + pointIndexToRead  * GraphBuffers.k_VerticesPerPoint;
+                var vertexToReadBegin = statVerticesBegin + pointIndexToRead * GraphBuffers.k_VerticesPerPoint;
                 var vertexToWriteBegin = statVerticesBegin + pointIndexToWrite * GraphBuffers.k_VerticesPerPoint;
 
                 ref var p0 = ref vertices[vertexToReadBegin + 0].position;

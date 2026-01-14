@@ -28,6 +28,11 @@
             "name": "com.unity.netcode.gameobjects",
             "expression": "1.1.0",
             "define": "UNITY_NETCODE_GAMEOBJECTS_1_1_ABOVE"
+        },
+        {
+            "name": "com.unity.netcode.gameobjects",
+            "expression": "2.8.0",
+            "define": "UNITY_NETCODE_GAMEOBJECTS_2_8_ABOVE"
         }
     ],
     "noEngineReferences": false

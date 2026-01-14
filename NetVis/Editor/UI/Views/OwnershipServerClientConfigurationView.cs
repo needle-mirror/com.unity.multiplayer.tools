@@ -20,7 +20,7 @@ namespace Unity.Multiplayer.Tools.NetVis.Editor.UI
     {
         const bool k_ClientColorShowAlpha = false;
         const bool k_ClientColorShowEyeDropper = true;
-        
+
         [UxmlQuery]
         Label ServerHost;
         [UxmlQuery]
@@ -44,7 +44,7 @@ namespace Unity.Multiplayer.Tools.NetVis.Editor.UI
 
             ServerHostColor.showAlpha = k_ClientColorShowAlpha;
             ServerHostColor.showEyeDropper = k_ClientColorShowEyeDropper;
-            
+
             ServerHostColor.Bind(OwnershipSettings.ServerHostColor,
                 newColor => OwnershipSettings.SetCustomColor(0, newColor));
 
@@ -78,7 +78,7 @@ namespace Unity.Multiplayer.Tools.NetVis.Editor.UI
         {
             // There could have been client changes while we were detached
             RefreshClientList();
-            
+
             ConnectedClientsRepository.ClientConnectionEvent += AddClient;
             ConnectedClientsRepository.ClientDisconnectionEvent += RemoveClient;
         }
@@ -108,7 +108,7 @@ namespace Unity.Multiplayer.Tools.NetVis.Editor.UI
                 showAlpha = k_ClientColorShowAlpha,
                 showEyeDropper = k_ClientColorShowEyeDropper
             };
-            
+
             var clientColor = OwnershipSettings.GetClientColor(clientId);
             colorField.Bind(clientColor, newColor => OwnershipSettings.SetCustomColor(clientId, newColor));
 

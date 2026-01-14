@@ -56,7 +56,7 @@ namespace Unity.Multiplayer.Tools.NetStatsMonitor
         /// <summary>
         /// Custom stylesheet to override the default style of the Runtime Net Stats Monitor.
         /// </summary>
-        [field:SerializeField]
+        [field: SerializeField]
         public StyleSheet CustomStyleSheet { get; set; }
 
         /// <summary>
@@ -64,11 +64,11 @@ namespace Unity.Multiplayer.Tools.NetStatsMonitor
         /// These panel settings can be used to control a number of things, including how the on-screen display
         /// of the Runtime Net Stats Monitor scales on different devices and displays.
         /// </summary>
-        [field:Tooltip(
+        [field: Tooltip(
             "Optional panel settings that can be used to override the default. " +
             "These panel settings can be used to control a number of things, including how the on-screen display " +
             "of the Runtime Net Stats Monitor scales on different devices and displays. ")]
-        [field:SerializeField]
+        [field: SerializeField]
         public PanelSettings PanelSettingsOverride { get; set; }
 
         /// <summary>

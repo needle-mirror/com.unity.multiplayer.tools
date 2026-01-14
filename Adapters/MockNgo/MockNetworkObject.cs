@@ -14,7 +14,7 @@ namespace Unity.Multiplayer.Tools.Adapters.MockNgo
         /// <summary>
         /// The Owner client id
         /// </summary>
-        [field:SerializeField]
+        [field: SerializeField]
         public int OwnerClientId { get; set; }
 
         ClientId Owner

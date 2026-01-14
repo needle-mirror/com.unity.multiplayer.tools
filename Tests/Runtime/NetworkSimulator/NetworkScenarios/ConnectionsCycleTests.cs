@@ -96,11 +96,11 @@ namespace Unity.Multiplayer.Tools.Tests.NetworkSimulator
             m_NetworkSimulator.m_PropertyChanged += AssertPresetChange;
             m_NetworkSimulator.Scenario = m_ConnectionsCycle;               // Initialization happens here, synchronously
             m_NetworkSimulator.Scenario.IsPaused = false;                   // The scenario will execute during the following frames
-            
+
             var halfInterval = changeIntervalMilliseconds / 2;
             await Task.Delay(Math.Max(halfInterval, iterationsCount * changeIntervalMilliseconds - halfInterval));
             m_NetworkSimulator.m_PropertyChanged -= AssertPresetChange;
-            
+
             void AssertPresetChange(object sender, PropertyChangedEventArgs args)
             {
                 if (args.PropertyName != nameof(m_NetworkSimulator.ConnectionPreset))
@@ -121,7 +121,7 @@ namespace Unity.Multiplayer.Tools.Tests.NetworkSimulator
                 Assert.AreEqual(preset, m_NetworkSimulator.ConnectionPreset);
                 propertyChangedCallbackIsCalled = true;
             }
-            
+
             if (presetCount > 0 && repetitions > 0)
                 Assert.True(propertyChangedCallbackIsCalled);
             else
@@ -168,7 +168,7 @@ namespace Unity.Multiplayer.Tools.Tests.NetworkSimulator
                 }
             });
             m_NetworkSimulator.m_PropertyChanged -= AssertPresetChange;
-            
+
             void AssertPresetChange(object sender, PropertyChangedEventArgs args)
             {
                 if (args.PropertyName != nameof(m_NetworkSimulator.ConnectionPreset))

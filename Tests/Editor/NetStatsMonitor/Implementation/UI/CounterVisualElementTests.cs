@@ -12,7 +12,7 @@ namespace Unity.Multiplayer.Tools.NetStatsMonitor.Tests.Implementation.UI
     {
         static readonly MetricId k_UnitlessGauge
             = MetricId.Create(TestMetric.UnitlessGauge);
-        
+
         CultureInfo m_OriginalCultureSetting;
 
         [OneTimeSetUp]
@@ -20,7 +20,7 @@ namespace Unity.Multiplayer.Tools.NetStatsMonitor.Tests.Implementation.UI
         {
             m_OriginalCultureSetting = CultureInfo.CurrentCulture;
         }
-        
+
         [OneTimeTearDown]
         public void RestoreOriginalCultureSetting()
         {
@@ -37,7 +37,7 @@ namespace Unity.Multiplayer.Tools.NetStatsMonitor.Tests.Implementation.UI
         [TestCase("\nars\tt0;834\n\t0193874")]
         public void CounterDisplaysCorrectLabel(string counterLabel)
         {
-            var configuration = MakeEmaCounterConfiguration(counterLabel, new List<MetricId>{k_UnitlessGauge});
+            var configuration = MakeEmaCounterConfiguration(counterLabel, new List<MetricId> { k_UnitlessGauge });
             var counter = new CounterVisualElement();
             counter.UpdateConfiguration(configuration);
 
@@ -78,7 +78,7 @@ namespace Unity.Multiplayer.Tools.NetStatsMonitor.Tests.Implementation.UI
         {
             var counter = MakeEmaCounter(
                 "Unit Test Counter",
-                new List<MetricId>{k_UnitlessGauge},
+                new List<MetricId> { k_UnitlessGauge },
                 highlightLowerBound: highlightLowerBound,
                 highlightUpperBound: highlightUpperBound);
 
@@ -108,47 +108,47 @@ namespace Unity.Multiplayer.Tools.NetStatsMonitor.Tests.Implementation.UI
         [TestCase(TestMetric.UnitlessGauge, 2, 0.0, "0.0")]
         [TestCase(TestMetric.UnitlessGauge, 4, 0.0, "0.000")]
 
-        [TestCase(TestMetric.SecondsGauge, 1, 0.1453, "100"   + " " + "ms")]
-        [TestCase(TestMetric.SecondsGauge, 2, 0.1453, "150"   + " " + "ms")]
-        [TestCase(TestMetric.SecondsGauge, 3, 0.1453, "145"   + " " + "ms")]
+        [TestCase(TestMetric.SecondsGauge, 1, 0.1453, "100" + " " + "ms")]
+        [TestCase(TestMetric.SecondsGauge, 2, 0.1453, "150" + " " + "ms")]
+        [TestCase(TestMetric.SecondsGauge, 3, 0.1453, "145" + " " + "ms")]
         [TestCase(TestMetric.SecondsGauge, 4, 0.1453, "145.3" + " " + "ms")]
 
-        [TestCase(TestMetric.SecondsGauge, 1, 145.3e-6, "100"   + " " + "μs")]
-        [TestCase(TestMetric.SecondsGauge, 2, 145.3e-6, "150"   + " " + "μs")]
-        [TestCase(TestMetric.SecondsGauge, 3, 145.3e-6, "145"   + " " + "μs")]
+        [TestCase(TestMetric.SecondsGauge, 1, 145.3e-6, "100" + " " + "μs")]
+        [TestCase(TestMetric.SecondsGauge, 2, 145.3e-6, "150" + " " + "μs")]
+        [TestCase(TestMetric.SecondsGauge, 3, 145.3e-6, "145" + " " + "μs")]
         [TestCase(TestMetric.SecondsGauge, 4, 145.3e-6, "145.3" + " " + "μs")]
 
-        [TestCase(TestMetric.BytesGauge, 1, 117.0, "100"     + " " + "B")]
-        [TestCase(TestMetric.BytesGauge, 2, 117.0, "120"     + " " + "B")]
-        [TestCase(TestMetric.BytesGauge, 3, 117.0, "117"     + " " + "B")]
-        [TestCase(TestMetric.BytesGauge, 4, 117.0, "117.0"   + " " + "B")]
-        [TestCase(TestMetric.BytesGauge, 5, 117.0, "117.00"  + " " + "B")]
+        [TestCase(TestMetric.BytesGauge, 1, 117.0, "100" + " " + "B")]
+        [TestCase(TestMetric.BytesGauge, 2, 117.0, "120" + " " + "B")]
+        [TestCase(TestMetric.BytesGauge, 3, 117.0, "117" + " " + "B")]
+        [TestCase(TestMetric.BytesGauge, 4, 117.0, "117.0" + " " + "B")]
+        [TestCase(TestMetric.BytesGauge, 5, 117.0, "117.00" + " " + "B")]
         [TestCase(TestMetric.BytesGauge, 6, 117.0, "117.000" + " " + "B")]
 
         // The values should be rounded to the correct number of significant digits
-        [TestCase(TestMetric.BytesCounter, 3, 117.386959, "117"        + " " + "B/s")]
-        [TestCase(TestMetric.BytesCounter, 4, 117.386959, "117.4"      + " " + "B/s")]
-        [TestCase(TestMetric.BytesCounter, 5, 117.386959, "117.39"     + " " + "B/s")]
-        [TestCase(TestMetric.BytesCounter, 6, 117.386959, "117.387"    + " " + "B/s")]
+        [TestCase(TestMetric.BytesCounter, 3, 117.386959, "117" + " " + "B/s")]
+        [TestCase(TestMetric.BytesCounter, 4, 117.386959, "117.4" + " " + "B/s")]
+        [TestCase(TestMetric.BytesCounter, 5, 117.386959, "117.39" + " " + "B/s")]
+        [TestCase(TestMetric.BytesCounter, 6, 117.386959, "117.387" + " " + "B/s")]
 
         // They should support large integral numbers
-        [TestCase(TestMetric.BytesCounter, 3,         321,          "321" + " " +  "B/s")]
-        [TestCase(TestMetric.BytesCounter, 4,        4321,        "4.321" + " " + "kB/s")]
-        [TestCase(TestMetric.BytesCounter, 5,       54321,       "54.321" + " " + "kB/s")]
-        [TestCase(TestMetric.BytesCounter, 6,      654321,      "654.321" + " " + "kB/s")]
-        [TestCase(TestMetric.BytesCounter, 6,     7654321,     "7.65432"  + " " + "MB/s")]
-        [TestCase(TestMetric.BytesCounter, 6,    87654321,    "87.6543"   + " " + "MB/s")]
-        [TestCase(TestMetric.BytesCounter, 6,   987654321,   "987.654"    + " " + "MB/s")]
-        [TestCase(TestMetric.BytesCounter, 6, 10987654321, "10.9877"      + " " + "GB/s")]
+        [TestCase(TestMetric.BytesCounter, 3, 321, "321" + " " + "B/s")]
+        [TestCase(TestMetric.BytesCounter, 4, 4321, "4.321" + " " + "kB/s")]
+        [TestCase(TestMetric.BytesCounter, 5, 54321, "54.321" + " " + "kB/s")]
+        [TestCase(TestMetric.BytesCounter, 6, 654321, "654.321" + " " + "kB/s")]
+        [TestCase(TestMetric.BytesCounter, 6, 7654321, "7.65432" + " " + "MB/s")]
+        [TestCase(TestMetric.BytesCounter, 6, 87654321, "87.6543" + " " + "MB/s")]
+        [TestCase(TestMetric.BytesCounter, 6, 987654321, "987.654" + " " + "MB/s")]
+        [TestCase(TestMetric.BytesCounter, 6, 10987654321, "10.9877" + " " + "GB/s")]
 
         // They should support large numbers with trailing decimals
-        [TestCase(TestMetric.BytesCounter, 4,       321.386959,         "321.4"    + " " +  "B/s")]
-        [TestCase(TestMetric.BytesCounter, 5,      4321.386959,       "4.3214"     + " " + "kB/s")]
-        [TestCase(TestMetric.BytesCounter, 6,     54321.386959,      "54.3214"     + " " + "kB/s")]
-        [TestCase(TestMetric.BytesCounter, 6,    654321.386959,     "654.321"      + " " + "kB/s")]
-        [TestCase(TestMetric.BytesCounter, 6,   7654321.386959,   "7.65432"        + " " + "MB/s")]
-        [TestCase(TestMetric.BytesCounter, 6,  87654321.386959,  "87.6543"         + " " + "MB/s")]
-        [TestCase(TestMetric.BytesCounter, 6, 987654321.386959, "987.654"          + " " + "MB/s")]
+        [TestCase(TestMetric.BytesCounter, 4, 321.386959, "321.4" + " " + "B/s")]
+        [TestCase(TestMetric.BytesCounter, 5, 4321.386959, "4.3214" + " " + "kB/s")]
+        [TestCase(TestMetric.BytesCounter, 6, 54321.386959, "54.3214" + " " + "kB/s")]
+        [TestCase(TestMetric.BytesCounter, 6, 654321.386959, "654.321" + " " + "kB/s")]
+        [TestCase(TestMetric.BytesCounter, 6, 7654321.386959, "7.65432" + " " + "MB/s")]
+        [TestCase(TestMetric.BytesCounter, 6, 87654321.386959, "87.6543" + " " + "MB/s")]
+        [TestCase(TestMetric.BytesCounter, 6, 987654321.386959, "987.654" + " " + "MB/s")]
         public static void TestCounterDisplayValue(
             TestMetric metric,
             int significantDigits,
@@ -231,7 +231,7 @@ namespace Unity.Multiplayer.Tools.NetStatsMonitor.Tests.Implementation.UI
             counter.UpdateConfiguration(configuration);
             return counter;
         }
-        
+
         static void AssertCounterDisplayValue(TestMetric metric, int significantDigits, double counterValue, string expectedDisplayValue)
         {
             var counter = MakeEmaCounter(

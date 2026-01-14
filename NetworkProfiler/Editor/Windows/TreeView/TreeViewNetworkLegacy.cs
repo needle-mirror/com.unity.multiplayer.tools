@@ -57,8 +57,8 @@ namespace Unity.Multiplayer.Tools.NetworkProfiler.Editor
 
             foreach (var item in rootItems)
             {
-                SetExpandedStateRecursive(m_InnerTreeView, (TreeViewItem<IRowData>) item);
-                SetSelectedStateRecursive(m_InnerTreeView, (TreeViewItem<IRowData>) item);
+                SetExpandedStateRecursive(m_InnerTreeView, (TreeViewItem<IRowData>)item);
+                SetSelectedStateRecursive(m_InnerTreeView, (TreeViewItem<IRowData>)item);
             }
 
             m_InnerTreeView.onExpandedStateChanged += UpdateFoldoutState;
@@ -111,7 +111,7 @@ namespace Unity.Multiplayer.Tools.NetworkProfiler.Editor
             {
                 foreach (var child in item.children)
                 {
-                    SetExpandedStateRecursive(treeView, (TreeViewItem<IRowData>) child);
+                    SetExpandedStateRecursive(treeView, (TreeViewItem<IRowData>)child);
                 }
             }
         }
@@ -134,7 +134,7 @@ namespace Unity.Multiplayer.Tools.NetworkProfiler.Editor
             {
                 foreach (var child in item.children)
                 {
-                    SetSelectedStateRecursive(treeView, (TreeViewItem<IRowData>) child);
+                    SetSelectedStateRecursive(treeView, (TreeViewItem<IRowData>)child);
                 }
             }
         }

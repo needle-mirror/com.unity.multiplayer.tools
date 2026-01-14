@@ -4,6 +4,17 @@ All notable changes to this package will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
+## [2.2.7] - 2026-01-14
+
+### Changed
+
+- Added define to address updated API calls on newer editors.
+- Added define to address breaking API changes related to EntityID introduction on newer editors which would affect NGO.
+
+### Fixed
+
+- Reduced GC allocations in Adapters.
+
 ## [2.2.6] - 2025-07-29
 
 #### *Network Scene Visualization*
@@ -12,16 +23,16 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [2.2.5] - 2025-07-07
 
-#### *General*
+### *General*
 - Added documentation to package repository.
 
 ## [2.2.4] - 2025-06-02
 
-#### *General*
+### *General*
 - Fixed NGO adapter, Network profiler, and Network Simulator related memory leaks when domain reload is disabled
 - Added analytics to better understand the usage of our tools.
 
-#### *Network Scene Visualization*
+### *Network Scene Visualization*
 - Improved performance when NetVis is not actively used
 - Added some additional tooltips to the NetVis UI
 - Fixed a NetVis popup bug where it showed no content on Linux
@@ -144,7 +155,7 @@ This release adds the Network Scene Visualization to the Multiplayer Tools Packa
 ## [1.0.0] - 2022-06-27
 
 ### *Runtime Net Stats Monitor*
-- Doc-comment fixes based on 1.0 release XML doc validation 
+- Doc-comment fixes based on 1.0 release XML doc validation
 
 ## [1.0.0-pre.8] - 2022-06-15
 

@@ -41,6 +41,9 @@ namespace Unity.Multiplayer.Tools.Adapters.Ngo1
             NetworkManager.OnDestroying += _ =>
             {
                 ngo1Adapter.Deinitialize();
+                // Assure we reset the initialized flag so the next time
+                // we want to initialize it will properly initialize the adapter.
+                s_Initialized = false;
             };
 #endif
         }

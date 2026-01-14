@@ -107,7 +107,7 @@ namespace Unity.Multiplayer.Tools.NetVis.Editor.UI
             {
                 MinAndMaxWarning.messageType = HelpBoxMessageType.Warning;
                 MinAndMaxWarning.text = min > max
-                    ?  "Max bandwidth must be larger than min bandwidth"
+                    ? "Max bandwidth must be larger than min bandwidth"
                     : $"Max bandwidth must be larger than min bandwidth. A value of {min + 1} will be used";
             }
         }

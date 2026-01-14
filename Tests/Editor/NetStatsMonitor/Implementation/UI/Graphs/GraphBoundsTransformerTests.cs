@@ -102,7 +102,7 @@ namespace Unity.Multiplayer.Tools.NetStatsMonitor.Tests.Implementation.Graphs
             0.5f, 1.0f,             // New Y-Axis values (min, max)
             0,                      // Points to advance
             1.0f, 0.0f,             // Expected X-Axis transform (multiply, add)
-            2.0f,-1.0f,             // Expected Y-Axis transform (multiply, add)
+            2.0f, -1.0f,             // Expected Y-Axis transform (multiply, add)
             TestName = "Increase the min y-axis value")]
 
         [TestCase(
@@ -112,7 +112,7 @@ namespace Unity.Multiplayer.Tools.NetStatsMonitor.Tests.Implementation.Graphs
             0.5f, 1.5f,             // New Y-Axis values (min, max)
             0,                      // Points to advance
             1.0f, 0.0f,             // Expected X-Axis transform (multiply, add)
-            1.0f,-0.5f,             // Expected Y-Axis transform (multiply, add)
+            1.0f, -0.5f,             // Expected Y-Axis transform (multiply, add)
             TestName = "Increase the min and max y-axis value")]
 
         [TestCase(
@@ -200,10 +200,10 @@ namespace Unity.Multiplayer.Tools.NetStatsMonitor.Tests.Implementation.Graphs
                     "An update with the new bounds and points to advance should produce the expected transforms.";
 
                 Assert.AreEqual(expectedXMultiply, xAxisTransform.A, message: k_Message);
-                Assert.AreEqual(expectedXAdd,      xAxisTransform.B, message: k_Message);
+                Assert.AreEqual(expectedXAdd, xAxisTransform.B, message: k_Message);
 
                 Assert.AreEqual(expectedYMultiply, yAxisTransform.A, message: k_Message);
-                Assert.AreEqual(expectedYAdd,      yAxisTransform.B, message: k_Message);
+                Assert.AreEqual(expectedYAdd, yAxisTransform.B, message: k_Message);
             }
 
             // Apply the new bounds a second time, expect no change

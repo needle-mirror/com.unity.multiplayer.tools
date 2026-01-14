@@ -2,6 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using Unity.Multiplayer.Tools.NetworkSimulator.Runtime;
+#if UNITY_6000_5_OR_NEWER
+using UnityEngine.Assemblies;
+#endif
 
 namespace Unity.Multiplayer.Tools.NetworkSimulator.Editor.UI
 {
@@ -27,7 +30,11 @@ namespace Unity.Multiplayer.Tools.NetworkSimulator.Editor.UI
                 return;
             }
 
+#if UNITY_6000_5_OR_NEWER
+            Types = CurrentAssemblies.GetLoadedAssemblies()
+#else
             Types = AppDomain.CurrentDomain.GetAssemblies()
+#endif
                 .SelectMany(x => x.GetTypes())
                 .Where(TypeIsValidNetworkScenario)
                 .ToList();

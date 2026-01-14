@@ -53,7 +53,7 @@ namespace Unity.Multiplayer.Tools.Editor.MultiplayerToolsWindow.Analytics
         private readonly bool? m_IsToolEnabled;
     }
 #endif
-    
+
     internal static class InteractedAnalyticHelper
     {
         internal static void Send(string name, bool? isToolEnabled = null)

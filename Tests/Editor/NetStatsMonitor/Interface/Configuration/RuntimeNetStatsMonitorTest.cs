@@ -44,7 +44,7 @@ namespace Unity.Multiplayer.Tools.NetStatsMonitor.Tests.Interface.Configuration
             Assert.That(m_NetStatsMonitor.Visible, Is.EqualTo(input));
         }
 
-        [TestCase(1,1)]
+        [TestCase(1, 1)]
         [TestCase(0, ConfigurationLimits.k_RefreshRateMin)]
         [TestCase(-1, ConfigurationLimits.k_RefreshRateMin)]
         [TestCase(double.MinValue, ConfigurationLimits.k_RefreshRateMin)]

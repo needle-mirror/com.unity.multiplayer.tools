@@ -19,7 +19,7 @@ namespace Unity.Multiplayer.Tools.MetricTypes
         public FixedString64Bytes Name { get; }
 
         public ulong NetworkId { get; }
-        
+
         /// <summary>
         /// Gets a unique identifier for the TreeView based on its properties.
         /// Note: This ID is not guaranteed to be unique as different objects might have the same hash code due to collisions.
@@ -28,8 +28,8 @@ namespace Unity.Multiplayer.Tools.MetricTypes
         {
             get
             {
-                var networkIDHash = (ulong) NetworkId.GetHashCode();
-                var nameHash = (ulong) Name.GetHashCode();
+                var networkIDHash = (ulong)NetworkId.GetHashCode();
+                var nameHash = (ulong)Name.GetHashCode();
                 return networkIDHash + nameHash;
             }
         }

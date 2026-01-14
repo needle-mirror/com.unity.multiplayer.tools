@@ -20,19 +20,19 @@ namespace Unity.Multiplayer.Tools.Tests.NetworkSimulator
                 .Select(i => new NetworkSimulatorPreset { Name = i.ToString() })
                 .ToArray();
         }
-        
+
         public static NetworkSimulatorPreset[] GetAllValidPresetsArray()
         {
             return NetworkSimulatorPresets.Values;
         }
-        
+
         public static void AssertScenarioInitialState(NetworkScenario scenario, bool initialized)
         {
             if (initialized)
                 Assert.True(scenario.IsInitialized);
             else
                 Assert.False(scenario.IsInitialized);
-            
+
             Assert.False(scenario.HasStarted);
             Assert.True(scenario.IsPaused);
         }

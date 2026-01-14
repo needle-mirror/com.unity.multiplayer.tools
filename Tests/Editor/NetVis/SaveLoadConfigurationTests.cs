@@ -29,7 +29,7 @@ namespace Unity.Multiplayer.Tools.NetVis.Tests.Editor
         public static void RoundTripConfigurationWithMetricAndVisualizations(
             NetVisMetric metric,
             bool meshShadingEnabled,
-            bool textOverlayEnabled) 
+            bool textOverlayEnabled)
         {
             var inputConfiguration = new NetVisConfiguration
             {

@@ -39,43 +39,43 @@ namespace Unity.Multiplayer.Tools.Adapters.MockNgo
         /// <summary>
         /// The number of bytes of network traffic incurred when an object is spawned.
         /// </summary>
-        [field:Min(0)]
-        [field:SerializeField]
+        [field: Min(0)]
+        [field: SerializeField]
         public int SpawnMessageByteCount { get; set; } = Constants.k_DefaultSpawnMessageByteCount;
 
         /// <summary>
         /// The number of bytes of network traffic incurred when an object is despawned.
         /// </summary>
-        [field:Min(0)]
-        [field:SerializeField]
+        [field: Min(0)]
+        [field: SerializeField]
         public int DespawnMessageByteCount { get; set; } = Constants.k_DefaultDespawnMessageByteCount;
 
         /// <summary>
         /// The number of bytes of network traffic incurred when an object's owner is changed
         /// </summary>
-        [field:Min(0)]
-        [field:SerializeField]
+        [field: Min(0)]
+        [field: SerializeField]
         public int OwnershipChangeByteCount { get; set; } = Constants.k_DefaultOwnershipChangeByteCount;
 
         /// <summary>
         /// The number of bytes of network traffic incurred when an object's position changes.
         /// </summary>
-        [field:Min(0)]
-        [field:SerializeField]
+        [field: Min(0)]
+        [field: SerializeField]
         public int PositionUpdateByteCount { get; set; } = Constants.k_DefaultPositionChangeByteCount;
 
         /// <summary>
         /// The number of bytes of network traffic incurred when an object's rotation changes.
         /// </summary>
-        [field:Min(0)]
-        [field:SerializeField]
+        [field: Min(0)]
+        [field: SerializeField]
         public int RotationUpdateByteCount { get; set; } = Constants.k_DefaultRotationChangeByteCount;
 
         /// <summary>
         /// The number of bytes of network traffic incurred when an object's scale changes.
         /// </summary>
-        [field:Min(0)]
-        [field:SerializeField]
+        [field: Min(0)]
+        [field: SerializeField]
         public int ScaleUpdateByteCount { get; set; } = Constants.k_DefaultScaleChangeByteCount;
     }
 }

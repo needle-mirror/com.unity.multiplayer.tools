@@ -51,33 +51,33 @@ namespace Unity.Multiplayer.Tools.NetStatsMonitor.Implementation
                 switch (type)
                 {
                     case DisplayElementType.Counter:
-                    {
-                        while (countersUsed >= m_Counters.Count)
                         {
-                            m_Counters.Add(new CounterVisualElement());
-                        }
-                        var counter = m_Counters[countersUsed];
-                        counter.UpdateConfiguration(displayElementConfig);
+                            while (countersUsed >= m_Counters.Count)
+                            {
+                                m_Counters.Add(new CounterVisualElement());
+                            }
+                            var counter = m_Counters[countersUsed];
+                            counter.UpdateConfiguration(displayElementConfig);
 
-                        m_DisplayElementsContainer.Add(counter);
-                        countersUsed++;
-                        break;
-                    }
+                            m_DisplayElementsContainer.Add(counter);
+                            countersUsed++;
+                            break;
+                        }
                     case DisplayElementType.LineGraph:
                     case DisplayElementType.StackedAreaGraph:
-                    {
-                        while (graphsUsed >= m_Graphs.Count)
                         {
-                            m_Graphs.Add(new GraphVisualElement());
+                            while (graphsUsed >= m_Graphs.Count)
+                            {
+                                m_Graphs.Add(new GraphVisualElement());
+                            }
+                            var graph = m_Graphs[graphsUsed];
+
+                            graph.UpdateConfiguration(displayElementConfig);
+
+                            m_DisplayElementsContainer.Add(graph);
+                            graphsUsed++;
+                            break;
                         }
-                        var graph = m_Graphs[graphsUsed];
-
-                        graph.UpdateConfiguration(displayElementConfig);
-
-                        m_DisplayElementsContainer.Add(graph);
-                        graphsUsed++;
-                        break;
-                    }
                     default:
                         throw new NotSupportedException(
                             $"Unhandled {nameof(DisplayElementType)} {type}");
@@ -134,7 +134,7 @@ namespace Unity.Multiplayer.Tools.NetStatsMonitor.Implementation
                 UnregisterCallback(m_OnGeoChange);
                 m_OnGeoChange = null;
             }
-            
+
             if (positionConfiguration.OverridePosition)
             {
                 // Using the forced flag to ensure user input is applied.

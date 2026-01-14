@@ -9,7 +9,7 @@ namespace Unity.Multiplayer.Tools.MetricTestData
         {
             ShouldResetOnDispatch = true,
         };
-        readonly Counter m_TransportBytesReceived = new Counter( DirectedMetricType.TotalBytesReceived.GetId())
+        readonly Counter m_TransportBytesReceived = new Counter(DirectedMetricType.TotalBytesReceived.GetId())
         {
             ShouldResetOnDispatch = true,
         };

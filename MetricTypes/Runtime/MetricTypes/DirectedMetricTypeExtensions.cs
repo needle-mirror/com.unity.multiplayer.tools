@@ -34,7 +34,7 @@ namespace Unity.Multiplayer.Tools.MetricTypes
         {
             return (DirectedMetricType)(
                 ((int)metricType << NetworkDirectionConstants.k_BitWidth) |
-                ((int)direction  &  NetworkDirectionConstants.k_Mask));
+                ((int)direction & NetworkDirectionConstants.k_Mask));
         }
 
         /// Get the MetricType from a DirectedMetricType

@@ -18,7 +18,7 @@ namespace Unity.Multiplayer.Tools.NetStats
         {
             Id = id;
 
-            if(EventMetricFactory.TryGetFactoryTypeName(typeof(TValue), out var genericTypeName))
+            if (EventMetricFactory.TryGetFactoryTypeName(typeof(TValue), out var genericTypeName))
             {
                 FactoryTypeName = genericTypeName;
             }

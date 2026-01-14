@@ -86,21 +86,21 @@ namespace Unity.Multiplayer.Tools.NetStatsMonitor.Implementation
                 switch (metric.MetricKind)
                 {
                     case MetricKind.Counter:
-                    {
-                        foreach (var cema in ContinuousExponentialMovingAverages)
                         {
-                            cema.AddSampleForCounter(value, time);
+                            foreach (var cema in ContinuousExponentialMovingAverages)
+                            {
+                                cema.AddSampleForCounter(value, time);
+                            }
+                            break;
                         }
-                        break;
-                    }
                     case MetricKind.Gauge:
-                    {
-                        foreach (var cema in ContinuousExponentialMovingAverages)
                         {
-                            cema.AddSampleForGauge(value, time);
+                            foreach (var cema in ContinuousExponentialMovingAverages)
+                            {
+                                cema.AddSampleForGauge(value, time);
+                            }
+                            break;
                         }
-                        break;
-                    }
                 }
             }
         }

@@ -53,8 +53,8 @@ namespace Unity.Multiplayer.Tools.NetVis.Editor.UI
         public BandwidthConfigurationView()
         {
             ShowNoDataWarning(false);
-            Settings.OnNoDataWarningChanged += ShowNoDataWarning; 
-            
+            Settings.OnNoDataWarningChanged += ShowNoDataWarning;
+
             // Filtering
             // ---------------------------------------------------------------------------------------------------------
             BandwidthType.choices = k_BandwidthTypeChoices
@@ -124,8 +124,8 @@ namespace Unity.Multiplayer.Tools.NetVis.Editor.UI
             NetworkDirectionField.SetEnabled(enabled);
             Smoothing.SetEnabled(enabled);
         }
-        
-        void ShowNoDataWarning(bool show) => BandwidthWarning.IncludeInLayout(show); 
+
+        void ShowNoDataWarning(bool show) => BandwidthWarning.IncludeInLayout(show);
 #if !UNITY_2023_2_OR_NEWER
         public new class UxmlFactory : UxmlFactory<BandwidthConfigurationView, UxmlTraits> { }
 #endif

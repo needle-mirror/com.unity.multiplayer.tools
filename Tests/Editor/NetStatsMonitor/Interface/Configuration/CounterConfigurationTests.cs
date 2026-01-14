@@ -94,7 +94,7 @@ namespace Unity.Multiplayer.Tools.NetStatsMonitor.Tests.Interface.Configuration
         public void SetCounterExponentialMovingAverageHalfLife_WithInBoundsOrOutOfBoundsValues_ReturnInBoundValueOrClampedValue(double input, double expectedOutput)
         {
             m_CounterConfiguration.ExponentialMovingAverageParams =
-                new ExponentialMovingAverageParams() {HalfLife = input};
+                new ExponentialMovingAverageParams() { HalfLife = input };
             Assert.IsNotNull(m_CounterConfiguration.ExponentialMovingAverageParams);
             Assert.AreEqual(expectedOutput, m_CounterConfiguration.ExponentialMovingAverageParams.HalfLife);
         }

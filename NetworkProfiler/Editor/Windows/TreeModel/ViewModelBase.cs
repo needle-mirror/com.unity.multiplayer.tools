@@ -25,7 +25,7 @@ namespace Unity.Multiplayer.Tools.NetworkProfiler.Editor
             ConnectionInfo? connection = null,
             ConnectionInfo? localConnection = null,
             string treeViewPathComponent = null)
-            : this (
+            : this(
                 parent,
                 name,
                 metricType.GetDisplayNameString(),

@@ -12,11 +12,11 @@ namespace Unity.Multiplayer.Tools.MetricTypes
 
         public ulong Id { get; }
 
-        public static bool operator==(ConnectionInfo a, ConnectionInfo b)
+        public static bool operator ==(ConnectionInfo a, ConnectionInfo b)
         {
             return a.Equals(b);
         }
-        public static bool operator!=(ConnectionInfo a, ConnectionInfo b)
+        public static bool operator !=(ConnectionInfo a, ConnectionInfo b)
         {
             return !(a == b);
         }

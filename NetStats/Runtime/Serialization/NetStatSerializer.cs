@@ -25,7 +25,7 @@ namespace Unity.Multiplayer.Tools.NetStats
             writer.WriteValueSafe(metricCollection.ConnectionId);
 
             writer.WriteValueSafe(metricCollection.Metrics.Count);
-            for(int i = 0; i < metricCollection.Metrics.Count; ++i)
+            for (int i = 0; i < metricCollection.Metrics.Count; ++i)
             {
                 var metric = metricCollection.Metrics[i];
 

@@ -113,7 +113,7 @@ namespace Unity.Multiplayer.Tools.NetStats.CodeGen
                 {
                     anyChanges |= processor.ProcessAssembly(compiledAssembly, assemblyDefinition, mainModule, logger);
                 }
-                catch(Exception e)
+                catch (Exception e)
                 {
                     logger.LogError("Exception during ProcessAssembly: " + e);
                     return ProcessAssemblyResult.HasChangeOrError;

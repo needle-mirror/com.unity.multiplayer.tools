@@ -48,7 +48,7 @@ namespace Unity.Multiplayer.Tools.NetStatsMonitor.Tests.Interface.Configuration
                 var count = m_GraphConfiguration.VariableColors.Count;
                 m_GraphConfiguration.VariableColors.Add(color);
                 Assert.Contains(color, m_GraphConfiguration.VariableColors);
-                Assert.AreEqual (count + 1, m_GraphConfiguration.VariableColors.Count);
+                Assert.AreEqual(count + 1, m_GraphConfiguration.VariableColors.Count);
             }
         }
     }

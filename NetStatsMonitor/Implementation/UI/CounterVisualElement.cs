@@ -136,55 +136,55 @@ namespace Unity.Multiplayer.Tools.NetStatsMonitor.Implementation
             switch (m_SmoothingMethod)
             {
                 case SmoothingMethod.ExponentialMovingAverage:
-                {
-                    if (!hasDecayConstant)
                     {
-                        break;
-                    }
-                    var decayConstant = m_DecayConstant.Value;
-                    foreach (var stat in m_Stats)
-                    {
-                        if (!history.Data.TryGetValue(stat, out StatHistory statHistory))
+                        if (!hasDecayConstant)
                         {
-                            continue;
+                            break;
                         }
-                        foreach (var cema in statHistory.ContinuousExponentialMovingAverages)
+                        var decayConstant = m_DecayConstant.Value;
+                        foreach (var stat in m_Stats)
                         {
-                            if (cema.DecayConstant == decayConstant)
+                            if (!history.Data.TryGetValue(stat, out StatHistory statHistory))
                             {
-                                var metricKind = stat.MetricKind;
-                                switch (metricKind)
+                                continue;
+                            }
+                            foreach (var cema in statHistory.ContinuousExponentialMovingAverages)
+                            {
+                                if (cema.DecayConstant == decayConstant)
                                 {
-                                    case MetricKind.Counter:
-                                        displayValue += cema.GetCounterValue(time);
-                                        break;
-                                    case MetricKind.Gauge:
-                                        displayValue += cema.GetGaugeValue();
-                                        break;
-                                    default:
-                                        throw new NotSupportedException($"Unhandled {nameof(MetricKind)} {metricKind}");
+                                    var metricKind = stat.MetricKind;
+                                    switch (metricKind)
+                                    {
+                                        case MetricKind.Counter:
+                                            displayValue += cema.GetCounterValue(time);
+                                            break;
+                                        case MetricKind.Gauge:
+                                            displayValue += cema.GetGaugeValue();
+                                            break;
+                                        default:
+                                            throw new NotSupportedException($"Unhandled {nameof(MetricKind)} {metricKind}");
+                                    }
+                                    statsFoundCount++;
+                                    break;
                                 }
-                                statsFoundCount++;
-                                break;
                             }
                         }
+                        break;
                     }
-                    break;
-                }
                 case SmoothingMethod.SimpleMovingAverage:
-                {
-                    foreach (var stat in m_Stats)
                     {
-                        var statValue = history.GetSimpleMovingAverage(stat, SampleRate, m_SampleCount, time);
-                        if (!statValue.HasValue)
+                        foreach (var stat in m_Stats)
                         {
-                            continue;
+                            var statValue = history.GetSimpleMovingAverage(stat, SampleRate, m_SampleCount, time);
+                            if (!statValue.HasValue)
+                            {
+                                continue;
+                            }
+                            displayValue += statValue.Value;
+                            statsFoundCount++;
                         }
-                        displayValue += statValue.Value;
-                        statsFoundCount++;
+                        break;
                     }
-                    break;
-                }
             }
             if (m_AggregationMethod == AggregationMethod.Average && statsFoundCount > 0)
             {

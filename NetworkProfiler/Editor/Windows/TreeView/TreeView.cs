@@ -24,10 +24,10 @@ namespace Unity.Multiplayer.Tools.NetworkProfiler.Editor
 
         public new class UxmlTraits : VisualElement.UxmlTraits
         {
-            readonly UxmlIntAttributeDescription m_ItemHeight = new UxmlIntAttributeDescription {name = "item-height", defaultValue = 30};
-            readonly UxmlBoolAttributeDescription m_ShowBorder = new UxmlBoolAttributeDescription {name = "show-border", defaultValue = false};
-            readonly UxmlEnumAttributeDescription<SelectionType> m_SelectionType = new UxmlEnumAttributeDescription<SelectionType> {name = "selection-type", defaultValue = SelectionType.Single};
-            readonly UxmlEnumAttributeDescription<AlternatingRowBackground> m_ShowAlternatingRowBackgrounds = new UxmlEnumAttributeDescription<AlternatingRowBackground> {name = "show-alternating-row-backgrounds", defaultValue = AlternatingRowBackground.None};
+            readonly UxmlIntAttributeDescription m_ItemHeight = new UxmlIntAttributeDescription { name = "item-height", defaultValue = 30 };
+            readonly UxmlBoolAttributeDescription m_ShowBorder = new UxmlBoolAttributeDescription { name = "show-border", defaultValue = false };
+            readonly UxmlEnumAttributeDescription<SelectionType> m_SelectionType = new UxmlEnumAttributeDescription<SelectionType> { name = "selection-type", defaultValue = SelectionType.Single };
+            readonly UxmlEnumAttributeDescription<AlternatingRowBackground> m_ShowAlternatingRowBackgrounds = new UxmlEnumAttributeDescription<AlternatingRowBackground> { name = "show-alternating-row-backgrounds", defaultValue = AlternatingRowBackground.None };
 
             public override IEnumerable<UxmlChildElementDescription> uxmlChildElementsDescription
             {
@@ -38,7 +38,7 @@ namespace Unity.Multiplayer.Tools.NetworkProfiler.Editor
             {
                 base.Init(visualElement, bag, creationContext);
 
-                var treeView = (TreeView) visualElement;
+                var treeView = (TreeView)visualElement;
 
                 var itemHeight = 0;
                 if (m_ItemHeight.TryGetValueFromBag(bag, creationContext, ref itemHeight))
@@ -322,7 +322,7 @@ namespace Unity.Multiplayer.Tools.NetworkProfiler.Editor
 
         void SetSelection(int id)
         {
-            SetSelection(new[] {id});
+            SetSelection(new[] { id });
         }
 
         void SetSelection(IEnumerable<int> ids)
@@ -480,7 +480,7 @@ namespace Unity.Multiplayer.Tools.NetworkProfiler.Editor
             var itemsList = new List<ITreeViewItem>();
             foreach (var item in chosenItems)
             {
-                var wrapper = (TreeViewItemWrapper) item;
+                var wrapper = (TreeViewItemWrapper)item;
                 itemsList.Add(wrapper.item);
             }
 
@@ -497,7 +497,7 @@ namespace Unity.Multiplayer.Tools.NetworkProfiler.Editor
             m_SelectedItems.Clear();
             foreach (var item in selectedListItems)
             {
-                m_SelectedItems.Add(((TreeViewItemWrapper) item).item);
+                m_SelectedItems.Add(((TreeViewItemWrapper)item).item);
             }
 
             onSelectionChange?.Invoke(m_SelectedItems);
@@ -512,7 +512,7 @@ namespace Unity.Multiplayer.Tools.NetworkProfiler.Editor
 
             var target = mouseUpEvent.currentTarget as VisualElement;
             var toggle = target.Q<Toggle>(k_ItemToggleName);
-            var index = (int) toggle.userData;
+            var index = (int)toggle.userData;
             var item = m_ItemWrappers[index].item;
             var wasExpanded = IsExpandedByIndex(index);
 
@@ -699,7 +699,7 @@ namespace Unity.Multiplayer.Tools.NetworkProfiler.Editor
         void ToggleExpandedState(ChangeEvent<bool> evt)
         {
             var toggle = evt.target as Toggle;
-            var index = (int) toggle.userData;
+            var index = (int)toggle.userData;
             var isExpanded = IsExpandedByIndex(index);
 
             Assert.AreNotEqual(isExpanded, evt.newValue);

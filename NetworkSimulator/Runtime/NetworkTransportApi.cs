@@ -15,7 +15,7 @@ namespace Unity.Multiplayer.Tools.NetworkSimulator.Runtime
         public NetworkTransportApi()
         {
             SubscribeToAllAdapters();
-            
+
 #if UNITY_EDITOR
             EditorApplication.playModeStateChanged += ModeChanged;
 #endif

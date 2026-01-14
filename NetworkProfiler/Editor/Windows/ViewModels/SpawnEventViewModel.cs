@@ -12,6 +12,7 @@ namespace Unity.Multiplayer.Tools.NetworkProfiler.Editor
                 $"{MetricType.ObjectSpawned.GetDisplayNameString()}",
                 MetricType.ObjectSpawned,
                 onSelectedCallback,
-                treeViewId) { }
+                treeViewId)
+        { }
     }
 }

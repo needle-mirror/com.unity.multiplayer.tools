@@ -206,7 +206,7 @@ namespace Unity.Multiplayer.Tools.NetworkSimulator.Editor.UI
 
                 CustomPresetValue.SetValueWithoutNotify(null);
             }
-            
+
             UpdateHelpText();
             UpdateEnabled();
             UpdateLiveIfPlaying();
@@ -248,7 +248,7 @@ namespace Unity.Multiplayer.Tools.NetworkSimulator.Editor.UI
         {
             UpdatePacketDelayRangeMinValue(Mathf.FloorToInt(range.x));
             UpdatePacketDelayRangeMaxValue(Mathf.FloorToInt(range.y));
-            UpdatePacketJitter(Mathf.FloorToInt((range.y - range.x)/2f));
+            UpdatePacketJitter(Mathf.FloorToInt((range.y - range.x) / 2f));
             UpdatePacketDelay(Mathf.FloorToInt(range.x + PacketJitterSlider.value));
         }
 

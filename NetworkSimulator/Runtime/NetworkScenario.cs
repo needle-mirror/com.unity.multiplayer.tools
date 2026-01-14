@@ -24,7 +24,7 @@ namespace Unity.Multiplayer.Tools.NetworkSimulator.Runtime
 
         bool m_Initialized;
         internal bool IsInitialized => m_Initialized;
-        
+
         bool m_HasStarted;
         internal bool HasStarted => m_HasStarted;
 
@@ -82,16 +82,16 @@ namespace Unity.Multiplayer.Tools.NetworkSimulator.Runtime
                         OnResume();
                     }
                 }
-                
+
                 PauseStateChangedEvent(m_IsPaused);
             }
         }
-        
+
         /// <summary>
         /// Delegate for the <see cref="NetworkScenario.PauseStateChangedEvent"/> event.
         /// </summary>
         internal delegate void PauseStateChangedHandler(bool isPaused);
-        
+
         /// <summary>
         /// Event triggered when the scenario is paused or resumed.
         /// </summary>
@@ -105,7 +105,7 @@ namespace Unity.Multiplayer.Tools.NetworkSimulator.Runtime
             }
 
             Analytic(autoRun);
-            
+
             m_NetworkEventsApi = networkEventsApi;
             m_Initialized = true;
 

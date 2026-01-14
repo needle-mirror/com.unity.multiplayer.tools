@@ -14,13 +14,13 @@ namespace Unity.Multiplayer.Tools.NetStatsMonitor.Tests.Implementation.Graphs
             TestName = "Stride: 1 sample")]
         [TestCase(
             0.5f,
-            new[] {    4,    5,    7,    9f },
+            new[] { 4, 5, 7, 9f },
             new[] { 4, 4, 5, 5, 7, 7, 9, 9f },
             TestName = "Stride: 0.5 samples")]
         [TestCase(
             2f,
             new[] { 4, 5, 7, 9f },
-            new[] { 4.5f, 8},
+            new[] { 4.5f, 8 },
             TestName = "Stride: 2 samples")]
         [TestCase(
             0.75f,
@@ -107,28 +107,28 @@ namespace Unity.Multiplayer.Tools.NetStatsMonitor.Tests.Implementation.Graphs
         [TestCase(
             1f,
             new[] { 0, 1, 2, 3, 4d },
-            new[] {    4, 5, 7, 9f },
-            new[] {    4, 5, 7, 9f },
+            new[] { 4, 5, 7, 9f },
+            new[] { 4, 5, 7, 9f },
             Category = "Regularly Spaced Timestamps",
             TestName = "Interval: 1s, Stride: 1 sample")]
         [TestCase(
             0.5f,
-            new[] { 0,    1,    2,    3,    4d },
-            new[] {       4,    5,    7,    9f },
-            new[] {    4, 4, 5, 5, 7, 7, 9, 9f },
+            new[] { 0, 1, 2, 3, 4d },
+            new[] { 4, 5, 7, 9f },
+            new[] { 4, 4, 5, 5, 7, 7, 9, 9f },
             Category = "Regularly Spaced Timestamps",
             TestName = "Interval: 1s, Stride: 0.5 samples")]
         [TestCase(
             2f,
             new[] { 0, 1, 2, 3, 4d },
-            new[] {    4, 5, 7, 9f },
-            new[] {    4.5f,    8f },
+            new[] { 4, 5, 7, 9f },
+            new[] { 4.5f, 8f },
             Category = "Regularly Spaced Timestamps",
             TestName = "Interval: 1s, Stride: 2 samples")]
         [TestCase(
             0.75f,
             new[] { 0, 1, 2, 3, 4d },
-            new[] {    4, 5, 7, 9f },
+            new[] { 4, 5, 7, 9f },
             new[] {
                 4,
                 (0.25f * 4 + .50f * 5) / 0.75f,
@@ -142,7 +142,7 @@ namespace Unity.Multiplayer.Tools.NetStatsMonitor.Tests.Implementation.Graphs
         [TestCase(
             1.5f,
             new[] { 0, 1, 2, 3, 4d },
-            new[] {    4, 5, 7, 9f },
+            new[] { 4, 5, 7, 9f },
             new[] {
                 (1.0f * 4 + 0.5f * 5) / 1.5f,
                 (0.5f * 5 + 1.0f * 7) / 1.5f,
@@ -153,29 +153,29 @@ namespace Unity.Multiplayer.Tools.NetStatsMonitor.Tests.Implementation.Graphs
 
         [TestCase(
             1f,
-            new[] { 0.00,  0.25,  0.50,  0.75,  1.00 },
-            new[] {        4.0f,  5.0f,  7.0f,  9.0f },
-            new[] {       16.0f, 20.0f, 28.0f, 36.0f },
+            new[] { 0.00, 0.25, 0.50, 0.75, 1.00 },
+            new[] { 4.0f, 5.0f, 7.0f, 9.0f },
+            new[] { 16.0f, 20.0f, 28.0f, 36.0f },
             Category = "Regularly Spaced Timestamps",
             TestName = "Interval: 0.25s, Stride: 1 samples")]
         [TestCase(
             0.5f,
-            new[] { 0.00,        0.50,         1.00,         1.50,         2.00 },
-            new[] {              4.0f,         5.0f,         7.0f,         9.0f },
-            new[] {        8.0f, 8.0f, 10.0f, 10.0f, 14.0f, 14.0f, 18.0f, 18.0f },
+            new[] { 0.00, 0.50, 1.00, 1.50, 2.00 },
+            new[] { 4.0f, 5.0f, 7.0f, 9.0f },
+            new[] { 8.0f, 8.0f, 10.0f, 10.0f, 14.0f, 14.0f, 18.0f, 18.0f },
             Category = "Regularly Spaced Timestamps",
             TestName = "Interval: 0.5s, Stride: 0.5 samples")]
         [TestCase(
             2f,
-            new[] { 0,  2,  4,  6, 8d },
-            new[]    {  4,  5,  7, 9f },
-            new[]    {  2.25f,  4f    },
+            new[] { 0, 2, 4, 6, 8d },
+            new[] { 4, 5, 7, 9f },
+            new[] { 2.25f, 4f },
             Category = "Regularly Spaced Timestamps",
             TestName = "Interval: 2s, Stride: 2 samples")]
         [TestCase(
             0.75f,
-            new[] { 0,  4,  8, 12, 16d },
-            new[] {     4,  5,  7,  9f },
+            new[] { 0, 4, 8, 12, 16d },
+            new[] { 4, 5, 7, 9f },
             new[] {
                 0.25f * 4,
                 0.25f * (0.25f * 4 + .50f * 5) / 0.75f,
@@ -188,8 +188,8 @@ namespace Unity.Multiplayer.Tools.NetStatsMonitor.Tests.Implementation.Graphs
             TestName = "Interval: 4s, Stride: 0.75 samples")]
         [TestCase(
             1.5f,
-            new[] { 0,  8, 16, 24, 32d },
-            new[] {     4,  5,  7,  9f },
+            new[] { 0, 8, 16, 24, 32d },
+            new[] { 4, 5, 7, 9f },
             new[] {
                 0.125f * (1.0f * 4 + 0.5f * 5) / 1.5f,
                 0.125f * (0.5f * 5 + 1.0f * 7) / 1.5f,
@@ -201,28 +201,28 @@ namespace Unity.Multiplayer.Tools.NetStatsMonitor.Tests.Implementation.Graphs
         [TestCase(
             1f,
             new[] { 0, 0.125, 0.375, 0.875, 1.875 },
-            new[] {        4,     5,     7,    9f },
-            new[] {       32,    20,    14,    9f },
+            new[] { 4, 5, 7, 9f },
+            new[] { 32, 20, 14, 9f },
             Category = "Irregularly Spaced Timestamps",
             TestName = "Stride: 1 sample")]
         [TestCase(
             0.5f,
-            new[] { 0, 0.125,  0.375,  0.875,  1.875 },
-            new[] {        4,      5,      7,     9f },
-            new[] {   32, 32, 20, 20, 14, 14, 9, 9f },
+            new[] { 0, 0.125, 0.375, 0.875, 1.875 },
+            new[] { 4, 5, 7, 9f },
+            new[] { 32, 32, 20, 20, 14, 14, 9, 9f },
             Category = "Irregularly Spaced Timestamps",
             TestName = "Stride: 0.5 samples")]
         [TestCase(
             2f,
-            new[] { 0,  0.125,  0.375,  0.875,  1.875 },
-            new[] {         4,      5,      7,    9f },
-            new[] {  (4 + 5) / 0.375f, (7 + 9) / 1.5f },
+            new[] { 0, 0.125, 0.375, 0.875, 1.875 },
+            new[] { 4, 5, 7, 9f },
+            new[] { (4 + 5) / 0.375f, (7 + 9) / 1.5f },
             Category = "Irregularly Spaced Timestamps",
             TestName = "Stride: 2 samples")]
         [TestCase(
             0.75f,
             new[] { 0, 0.125, 0.375, 0.875, 1.875 },
-            new[] {        4,     5,     7,    9f },
+            new[] { 4, 5, 7, 9f },
             new[] {
                  0.75f * 4              / (0.75f * 0.125f),
                 (0.25f * 4 + 0.50f * 5) / (0.25f * 0.125f + 0.50f * 0.25f),
@@ -236,7 +236,7 @@ namespace Unity.Multiplayer.Tools.NetStatsMonitor.Tests.Implementation.Graphs
         [TestCase(
             1.5f,
             new[] { 0, 0.125, 0.375, 0.875, 1.875 },
-            new[] {        4,     5,     7,    9f },
+            new[] { 4, 5, 7, 9f },
             new[] {
                 (1.0f * 4 + 0.5f * 5) / (1.0f * 0.125f + 0.5f * 0.25f),
                 (0.5f * 5 + 1.0f * 7) / (0.5f * 0.25f  + 1.0f * 0.50f),

@@ -32,7 +32,7 @@ namespace Unity.Multiplayer.Tools.NetworkSimulator.Editor.UI
         int m_PseudoStatesFocusValue = k_InvalidEnumValue;
         int m_VersionChangeTypeStylesValue = k_InvalidEnumValue;
 #if !UNITY_2023_3_OR_NEWER
-        new class UxmlFactory : UxmlFactory<ToggleButtonStrip, UxmlTraits> {}
+        new class UxmlFactory : UxmlFactory<ToggleButtonStrip, UxmlTraits> { }
 
         new class UxmlTraits : VisualElement.UxmlTraits
         {
@@ -65,7 +65,7 @@ namespace Unity.Multiplayer.Tools.NetworkSimulator.Editor.UI
 
         public Type enumType { get; set; }
 
-        public ToggleButtonStrip() : this(null, null) {}
+        public ToggleButtonStrip() : this(null, null) { }
 
         public ToggleButtonStrip(string label, IList<string> choices) : base(label, null)
         {

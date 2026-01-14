@@ -71,14 +71,14 @@ namespace Unity.Multiplayer.Tools.NetStatsMonitor
                 switch (Type)
                 {
                     case DisplayElementType.Counter:
-                    {
-                        return CounterConfiguration.SampleCount;
-                    }
+                        {
+                            return CounterConfiguration.SampleCount;
+                        }
                     case DisplayElementType.LineGraph:
                     case DisplayElementType.StackedAreaGraph:
-                    {
-                        return GraphConfiguration.SampleCount;
-                    }
+                        {
+                            return GraphConfiguration.SampleCount;
+                        }
                     default:
                         throw new NotSupportedException(
                             $"Unhandled {nameof(DisplayElementType)} {Type}");
@@ -94,14 +94,14 @@ namespace Unity.Multiplayer.Tools.NetStatsMonitor
                 switch (Type)
                 {
                     case DisplayElementType.Counter:
-                    {
-                        return CounterConfiguration.SampleRate;
-                    }
+                        {
+                            return CounterConfiguration.SampleRate;
+                        }
                     case DisplayElementType.LineGraph:
                     case DisplayElementType.StackedAreaGraph:
-                    {
-                        return GraphConfiguration.SampleRate;
-                    }
+                        {
+                            return GraphConfiguration.SampleRate;
+                        }
                     default:
                         throw new NotSupportedException(
                             $"Unhandled {nameof(DisplayElementType)} {Type}");
@@ -118,19 +118,19 @@ namespace Unity.Multiplayer.Tools.NetStatsMonitor
                 switch (Type)
                 {
                     case DisplayElementType.Counter:
-                    {
-                        var smoothingMethod = CounterConfiguration.SmoothingMethod;
-                        switch (smoothingMethod)
                         {
-                            case SmoothingMethod.ExponentialMovingAverage:
-                                return CounterConfiguration.ExponentialMovingAverageParams.HalfLife;
-                            case SmoothingMethod.SimpleMovingAverage:
-                                return null;
-                            default:
-                                throw new NotSupportedException(
-                                    $"Unhandled {nameof(SmoothingMethod)} {smoothingMethod}");
+                            var smoothingMethod = CounterConfiguration.SmoothingMethod;
+                            switch (smoothingMethod)
+                            {
+                                case SmoothingMethod.ExponentialMovingAverage:
+                                    return CounterConfiguration.ExponentialMovingAverageParams.HalfLife;
+                                case SmoothingMethod.SimpleMovingAverage:
+                                    return null;
+                                default:
+                                    throw new NotSupportedException(
+                                        $"Unhandled {nameof(SmoothingMethod)} {smoothingMethod}");
+                            }
                         }
-                    }
                     case DisplayElementType.LineGraph:
                     case DisplayElementType.StackedAreaGraph:
                         return null;

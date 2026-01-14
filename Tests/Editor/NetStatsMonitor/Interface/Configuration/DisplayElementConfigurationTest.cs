@@ -31,7 +31,7 @@ namespace Unity.Multiplayer.Tools.NetStatsMonitor.Tests.Interface.Configuration
         {
             DisplayElementConfiguration displayElementConfiguration = new();
             displayElementConfiguration.Label = input;
-            Assert.AreEqual(input,displayElementConfiguration.Label);
+            Assert.AreEqual(input, displayElementConfiguration.Label);
         }
 
         [TestCase(new[]
@@ -51,7 +51,7 @@ namespace Unity.Multiplayer.Tools.NetStatsMonitor.Tests.Interface.Configuration
                 var count = m_NetStatsMonitor.Configuration!.DisplayElements.Count;
                 m_NetStatsMonitor.Configuration!.DisplayElements.Add(displayElementConfiguration);
                 Assert.AreEqual(element, m_NetStatsMonitor.Configuration.DisplayElements[count].Type);
-                Assert.AreEqual(count+1, m_NetStatsMonitor.Configuration.DisplayElements.Count);
+                Assert.AreEqual(count + 1, m_NetStatsMonitor.Configuration.DisplayElements.Count);
 
                 m_NetStatsMonitor.Configuration!.DisplayElements.Remove(displayElementConfiguration);
                 Assert.AreEqual(count, m_NetStatsMonitor.Configuration!.DisplayElements.Count);

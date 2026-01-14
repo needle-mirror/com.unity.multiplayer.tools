@@ -2,6 +2,9 @@
 using System.Linq;
 using System.Reflection;
 using UnityEngine;
+#if UNITY_6000_5_OR_NEWER
+using UnityEngine.Assemblies;
+#endif
 
 namespace Unity.Multiplayer.Tools.NetStats
 {
@@ -24,7 +27,11 @@ namespace Unity.Multiplayer.Tools.NetStats
 
                 s_TypeRegistrationComplete = true;
 
+#if UNITY_6000_5_OR_NEWER
+                foreach (var assembly in CurrentAssemblies.GetLoadedAssemblies())
+#else
                 foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies())
+#endif
                 {
                     if (!assembly.GetCustomAttributes<AssemblyRequiresTypeRegistrationAttribute>().Any())
                     {

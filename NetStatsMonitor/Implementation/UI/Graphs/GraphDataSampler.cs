@@ -91,34 +91,34 @@ namespace Unity.Multiplayer.Tools.NetStatsMonitor.Implementation
                 switch (metricKind)
                 {
                     case MetricKind.Counter:
-                    {
-                        var timeStampOffset = timeStamps.Length - sampleCount;
-                        for (var pointIndex = initialPointIndex; pointIndex < graphWidthPoints; ++pointIndex)
                         {
-                            var pointValue = SampleCounter(
-                                timeStamps: timeStamps,
-                                timeStampOffset: timeStampOffset,
-                                statData: statData,
-                                sampleCount: sampleCount,
-                                graphSamplesPerPoint: graphSamplesPerPoint,
-                                sampleIndex: ref sampleIndex);
-                            pointValues.PushBack(pointValue);
+                            var timeStampOffset = timeStamps.Length - sampleCount;
+                            for (var pointIndex = initialPointIndex; pointIndex < graphWidthPoints; ++pointIndex)
+                            {
+                                var pointValue = SampleCounter(
+                                    timeStamps: timeStamps,
+                                    timeStampOffset: timeStampOffset,
+                                    statData: statData,
+                                    sampleCount: sampleCount,
+                                    graphSamplesPerPoint: graphSamplesPerPoint,
+                                    sampleIndex: ref sampleIndex);
+                                pointValues.PushBack(pointValue);
+                            }
+                            break;
                         }
-                        break;
-                    }
                     case MetricKind.Gauge:
-                    {
-                        for (var pointIndex = initialPointIndex; pointIndex < graphWidthPoints; ++pointIndex)
                         {
-                            var pointValue = SampleGauge(
-                                statData: statData,
-                                sampleCount: sampleCount,
-                                graphSamplesPerPoint: graphSamplesPerPoint,
-                                sampleIndex: ref sampleIndex);
-                            pointValues.PushBack(pointValue);
+                            for (var pointIndex = initialPointIndex; pointIndex < graphWidthPoints; ++pointIndex)
+                            {
+                                var pointValue = SampleGauge(
+                                    statData: statData,
+                                    sampleCount: sampleCount,
+                                    graphSamplesPerPoint: graphSamplesPerPoint,
+                                    sampleIndex: ref sampleIndex);
+                                pointValues.PushBack(pointValue);
+                            }
+                            break;
                         }
-                        break;
-                    }
                 }
             }
         }
@@ -149,11 +149,11 @@ namespace Unity.Multiplayer.Tools.NetStatsMonitor.Implementation
 
             var timeA =
                 (1 - remainderA) * timeStamps[timeStampOffset + indexA - 1] +
-                remainderA       * timeStamps[timeStampOffset + indexA];
+                remainderA * timeStamps[timeStampOffset + indexA];
 
             var timeB =
                 (1 - remainderB) * timeStamps[timeStampOffset + indexB - 1] +
-                remainderB       * timeStamps[timeStampOffset + indexB];
+                remainderB * timeStamps[timeStampOffset + indexB];
 
             var fractionOfSampleA = Math.Min(indexA + 1, b) - a;
 

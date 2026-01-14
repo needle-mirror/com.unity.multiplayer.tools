@@ -83,11 +83,11 @@ namespace Unity.Multiplayer.Tools.Common.Tests
             Assert.AreEqual(Double.NegativeInfinity, cema.LastTime);
         }
 
-        [TestCase(-89.30,    4.7)]
-        [TestCase(-12.80,   16.37)]
-        [TestCase(  0.00, -148.6)]
-        [TestCase(  0.47,    1.23)]
-        [TestCase(111.70,  785.0)]
+        [TestCase(-89.30, 4.7)]
+        [TestCase(-12.80, 16.37)]
+        [TestCase(0.00, -148.6)]
+        [TestCase(0.47, 1.23)]
+        [TestCase(111.70, 785.0)]
         public void ConstructedWithDefaultTimeAssumesNextInstantaneousSample(double time, double value)
         {
             var cema = ContinuousExponentialMovingAverage.CreateWithHalfLife(0.5);
@@ -108,9 +108,9 @@ namespace Unity.Multiplayer.Tools.Common.Tests
         [TestCase(0, 1, 1, 0)]
         [TestCase(0, 1, 1, 1)]
         [TestCase(0.003, -485, 0.005, 184.5)]
-        [TestCase(0.004,  485, 0.078, -184.5)]
-        [TestCase(0.003,  485, 10089, 184.5)]
-        [TestCase(0.004,  485, 1e9, -184.5)]
+        [TestCase(0.004, 485, 0.078, -184.5)]
+        [TestCase(0.003, 485, 10089, 184.5)]
+        [TestCase(0.004, 485, 1e9, -184.5)]
         public void ConstructedWithInitialTimeDoesNotAssumeNextInstantaneousSample(
             double t0, // Time 0
             double v0, // Value at time 0

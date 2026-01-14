@@ -40,7 +40,7 @@ namespace Unity.Multiplayer.Tools.NetVis.Editor.Visualization
         {
             if (!m_NetVisDataStore.IsConnectedServerOrClient)
                 return;
-            
+
             InitializeTextLabelStyle();
 
             var sceneViewCamera = sceneView.camera;
@@ -48,7 +48,7 @@ namespace Unity.Multiplayer.Tools.NetVis.Editor.Visualization
             var screenRect = new Rect(0, 0, Screen.width, Screen.height);
 
             var bandwidthAvailable = !m_NetVisDataStore.IsBandwidthCacheEmpty;
-            
+
             foreach (var id in m_NetVisDataStore.GetObjectIds())
             {
                 var gameObject = m_NetVisDataStore.GetGameObject(id);
@@ -58,11 +58,11 @@ namespace Unity.Multiplayer.Tools.NetVis.Editor.Visualization
                 // Skip if object has no Colliders as we cannot raycast.
                 if (!ObjectHasCollider(gameObject, out var collider, out var collider2D, out var colliderPosition))
                     continue;
-                
+
                 // Skip if object is not visible in scene view.
                 if (!screenRect.Contains(sceneViewCamera.WorldToScreenPoint(colliderPosition)))
                     continue;
-                
+
                 // Raycast colliders to check if object is visible or obstructed.
                 if (collider)
                 {
@@ -74,10 +74,10 @@ namespace Unity.Multiplayer.Tools.NetVis.Editor.Visualization
                     if (!ObjectIsVisibleToCamera(collider2D, colliderPosition))
                         continue;
                 }
-                
+
                 var content = m_Configuration.Metric switch
                 {
-                    NetVisMetric.Bandwidth => bandwidthAvailable? m_NetVisDataStore.GetBandwidth(id).ToString("N0"):"No data",
+                    NetVisMetric.Bandwidth => bandwidthAvailable ? m_NetVisDataStore.GetBandwidth(id).ToString("N0") : "No data",
                     NetVisMetric.Ownership => m_NetVisDataStore.GetOwner(id).ToString(),
                     _ => string.Empty,
                 };
@@ -123,13 +123,13 @@ namespace Unity.Multiplayer.Tools.NetVis.Editor.Visualization
             var collider2D = Physics2D.OverlapPoint(targetPosition);
             return collider2D == targetCollider2D;
         }
-        
+
         static bool ObjectHasCollider(GameObject gameObject, out Collider collider, out Collider2D collider2D, out Vector3 colliderPosition)
         {
             collider = null;
             collider2D = null;
             colliderPosition = new Vector3();
-            
+
             if (gameObject.TryGetComponent(out collider))
             {
                 colliderPosition = collider.bounds.center;

@@ -22,26 +22,26 @@ namespace Unity.Multiplayer.Tools.NetStatsMonitor.Implementation
                 switch (metricKind)
                 {
                     case MetricKind.Counter:
-                    {
-                        if (metrics.TryGetCounter(metricId, out var counter))
                         {
-                            statsAccumulator.Accumulate(metricId, counter.Value);
+                            if (metrics.TryGetCounter(metricId, out var counter))
+                            {
+                                statsAccumulator.Accumulate(metricId, counter.Value);
+                            }
+                            else
+                            {
+                                var eventCount = metrics.GetEventCount(metricId);
+                                statsAccumulator.Accumulate(metricId, eventCount);
+                            }
+                            break;
                         }
-                        else
-                        {
-                            var eventCount = metrics.GetEventCount(metricId);
-                            statsAccumulator.Accumulate(metricId, eventCount);
-                        }
-                        break;
-                    }
                     case MetricKind.Gauge:
-                    {
-                        if (metrics.TryGetGauge(metricId, out var gauge))
                         {
-                            statsAccumulator.Accumulate(metricId, (float)gauge.Value);
+                            if (metrics.TryGetGauge(metricId, out var gauge))
+                            {
+                                statsAccumulator.Accumulate(metricId, (float)gauge.Value);
+                            }
+                            break;
                         }
-                        break;
-                    }
                     default:
                         throw new NotSupportedException($"Unhandled {nameof(MetricKind)} {metricKind}");
                 }

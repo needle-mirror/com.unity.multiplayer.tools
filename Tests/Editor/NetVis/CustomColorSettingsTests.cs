@@ -12,7 +12,7 @@ namespace Unity.Multiplayer.Tools.NetVis.Tests.Editor
     {
         OwnershipSettings m_OwnershipSettings;
         bool m_ColorsChangedEventRaised;
-        
+
         // Dictionary to store original colors for restoration after tests
         Dictionary<int, Color> m_OriginalColors;
 
@@ -287,7 +287,7 @@ namespace Unity.Multiplayer.Tools.NetVis.Tests.Editor
             Assert.AreEqual(defaultColor2, m_OwnershipSettings.GetClientColor(id2), "GetClientColor should revert to default after ResetCustomColors.");
             Assert.IsTrue(m_ColorsChangedEventRaised, "ColorsChanged event should be raised after ResetCustomColors.");
         }
-          // --- Tests for GetColors and SetColors methods ---
+        // --- Tests for GetColors and SetColors methods ---
 
         [Test]
         public void GetColors_WhenEmpty_ReturnsEmptyDictionary()
@@ -386,11 +386,11 @@ namespace Unity.Multiplayer.Tools.NetVis.Tests.Editor
             // Arrange
             CustomColorSettings.SetColor(0, Color.red);
             CustomColorSettings.SetColor(1, Color.green);
-            
+
             // Act
             var colors = CustomColorSettings.GetColors();
             colors[0] = Color.blue; // Modify the retrieved dictionary
-            
+
             // Assert
             var newRetrieval = CustomColorSettings.GetColors();
             Assert.AreEqual(Color.red, newRetrieval[0], "Modifying the dictionary returned by GetColors should not affect the actual stored colors.");

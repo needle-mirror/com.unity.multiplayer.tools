@@ -69,7 +69,7 @@ namespace Unity.Multiplayer.Tools.NetworkSimulator.Editor.UI
             EditorApplication.playModeStateChanged += OnPlayStateChanged;
 
             Undo.undoRedoPerformed += UndoRedoPerformed;
-            
+
             m_NetworkSimulator.ScenarioPlaybackStateChangedEvent += OnScenarioPlaybackStateChanged;
             m_NetworkSimulator.ScenarioChangedEvent += OnScenarioChanged;
         }
@@ -82,7 +82,7 @@ namespace Unity.Multiplayer.Tools.NetworkSimulator.Editor.UI
             EditorApplication.playModeStateChanged -= OnPlayStateChanged;
 
             Undo.undoRedoPerformed -= UndoRedoPerformed;
-            
+
             m_NetworkSimulator.ScenarioPlaybackStateChangedEvent -= OnScenarioPlaybackStateChanged;
             m_NetworkSimulator.ScenarioChangedEvent -= OnScenarioChanged;
         }
@@ -141,7 +141,7 @@ namespace Unity.Multiplayer.Tools.NetworkSimulator.Editor.UI
             {
                 return;
             }
-            
+
             var scenario = m_NetworkSimulator.Scenario;
 
             if (scenario == null)
@@ -158,7 +158,7 @@ namespace Unity.Multiplayer.Tools.NetworkSimulator.Editor.UI
         {
             SetPauseResumeButtonString(isPaused ? k_ResumeString : k_PauseString);
         }
-        
+
         void SetPauseResumeButton(Runtime.NetworkSimulator.ScenarioPlaybackState state)
         {
             switch (state)
@@ -176,7 +176,7 @@ namespace Unity.Multiplayer.Tools.NetworkSimulator.Editor.UI
                     throw new ArgumentOutOfRangeException(nameof(state), state, "Not supported type");
             }
         }
-        
+
         void SetPauseResumeButtonString(string text)
         {
             PauseResumeButton.text = text;
@@ -186,12 +186,12 @@ namespace Unity.Multiplayer.Tools.NetworkSimulator.Editor.UI
         {
             AutoRunToggle.SetEnabled(!Application.isPlaying);
         }
-        
+
         void OnScenarioPlaybackStateChanged(Runtime.NetworkSimulator.ScenarioPlaybackState newState)
         {
             SetPauseResumeButton(newState);
         }
-        
+
         void OnScenarioChanged(NetworkScenario newScenario)
         {
             if (newScenario == null)
@@ -202,7 +202,7 @@ namespace Unity.Multiplayer.Tools.NetworkSimulator.Editor.UI
             {
                 SettingsContainer.SelectScenario(newScenario);
             }
-            
+
             UpdateScenarioDropdown();
         }
     }

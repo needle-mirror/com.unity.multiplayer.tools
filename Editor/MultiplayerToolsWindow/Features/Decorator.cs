@@ -7,11 +7,11 @@ namespace Unity.Multiplayer.Tools.Editor.MultiplayerToolsWindow
     class Decorator : IMultiplayerToolsFeature
     {
         public string Name => "Hierarchy Network Debug View";
-        
+
         public string ToolTip => "Add ownership info in the hierarchy view";
 
         public string DocumentationUrl => null;
-        
+
 #if UNITY_NETCODE_GAMEOBJECTS_1_1_ABOVE
         public bool IsAvailable => true;
         

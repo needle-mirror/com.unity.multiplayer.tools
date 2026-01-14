@@ -11,6 +11,7 @@ namespace Unity.Multiplayer.Tools.NetworkProfiler.Editor
                 $"{logLevel.ToString()} Log",
                 MetricType.ServerLog,
                 onSelectedCallback,
-                treeViewId) { }
+                treeViewId)
+        { }
     }
 }

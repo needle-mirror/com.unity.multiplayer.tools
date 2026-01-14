@@ -4,7 +4,7 @@ using Unity.Collections;
 namespace Unity.Multiplayer.Tools.MetricTypes
 {
     [Serializable]
-    struct SceneEventMetric : INetworkMetricEvent
+    internal struct SceneEventMetric : INetworkMetricEvent
     {
         /// String overload maintained for backwards compatibility
         public SceneEventMetric(ConnectionInfo connection, string sceneEventType, string sceneName, long bytesCount)
@@ -29,13 +29,15 @@ namespace Unity.Multiplayer.Tools.MetricTypes
         /// <summary>
         /// This is used to identify Rows that are selected or expanded in the TreeView
         /// </summary>
-        public ulong TreeViewId {
+        public ulong TreeViewId
+        {
             get
             {
-                return (ulong) Connection.GetHashCode() + (ulong) SceneEventType.GetHashCode() 
-                    + (ulong) SceneName.GetHashCode() + (ulong) BytesCount.GetHashCode();
+                return (ulong)Connection.GetHashCode() + (ulong)SceneEventType.GetHashCode()
+                    + (ulong)SceneName.GetHashCode() + (ulong)BytesCount.GetHashCode();
 
-            } }
-        
+            }
+        }
+
     }
 }

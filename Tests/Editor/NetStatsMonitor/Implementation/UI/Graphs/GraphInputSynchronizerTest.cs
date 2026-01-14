@@ -33,54 +33,54 @@ namespace Unity.Multiplayer.Tools.NetStatsMonitor.Tests.Implementation.Graphs
         /// </param>
 
         [TestCase(
-            new double[]{},                        // timeStamps
+            new double[] { },                        // timeStamps
             1,                                     // timeStampBufferCapacity
-            new []{ 1, 0, 2, 0, 1, 5, 0, 3, 7 },   // numberOfSamplesToEmitEachFrame
+            new[] { 1, 0, 2, 0, 1, 5, 0, 3, 7 },   // numberOfSamplesToEmitEachFrame
             1f,                                    // samplesPerPoint
-            new []{ 1, 0, 1, 0, 1, 1, 0, 1, 1 },   // expectedPointsToAdvanceEachFrame
+            new[] { 1, 0, 1, 0, 1, 1, 0, 1, 1 },   // expectedPointsToAdvanceEachFrame
             TestName = "Simplest Case"
         )]
 
         [TestCase(
-            new double[]{},                         // timeStamps
+            new double[] { },                         // timeStamps
             1,                                      // timeStampBufferCapacity
-            new []{ 0, 1, 0, 2, 0, 1, 5, 0, 3, 7 }, // numberOfSamplesToEmitEachFrame
+            new[] { 0, 1, 0, 2, 0, 1, 5, 0, 3, 7 }, // numberOfSamplesToEmitEachFrame
             1f,                                     // samplesPerPoint
-            new []{ 0, 1, 0, 1, 0, 1, 1, 0, 1, 1 }, // expectedPointsToAdvanceEachFrame
+            new[] { 0, 1, 0, 1, 0, 1, 1, 0, 1, 1 }, // expectedPointsToAdvanceEachFrame
             TestName = "No Input on First Frame"
         )]
 
         [TestCase(
-            new double[]{},                         // timeStamps
+            new double[] { },                         // timeStamps
             5,                                      // timeStampBufferCapacity
-            new []{ 0, 1, 0, 2, 0, 1, 5, 0, 3, 7 }, // numberOfSamplesToEmitEachFrame
+            new[] { 0, 1, 0, 2, 0, 1, 5, 0, 3, 7 }, // numberOfSamplesToEmitEachFrame
             1f,                                     // samplesPerPoint
-            new []{ 0, 1, 0, 2, 0, 1, 5, 0, 3, 5 }, // expectedPointsToAdvanceEachFrame
+            new[] { 0, 1, 0, 2, 0, 1, 5, 0, 3, 5 }, // expectedPointsToAdvanceEachFrame
             TestName = "Larger buffer size"
         )]
 
         [TestCase(
-            new double[]{},                         // timeStamps
+            new double[] { },                         // timeStamps
             13,                                     // timeStampBufferCapacity
-            new []{ 0, 1, 0, 2, 0, 1, 5, 0, 3, 7 }, // numberOfSamplesToEmitEachFrame
+            new[] { 0, 1, 0, 2, 0, 1, 5, 0, 3, 7 }, // numberOfSamplesToEmitEachFrame
             1.5f,                                   // samplesPerPoint
-            new []{ 0, 0, 0, 2, 0, 0, 4, 0, 2, 4 }, // expectedPointsToAdvanceEachFrame
+            new[] { 0, 0, 0, 2, 0, 0, 4, 0, 2, 4 }, // expectedPointsToAdvanceEachFrame
             TestName = "1.5 samples per point"
         )]
 
         [TestCase(
-            new double[]{},
+            new double[] { },
             13,                                     // timeStampBufferCapacity
-            new []{ 0, 1, 0, 2, 0, 1, 5, 0, 3, 7 }, // numberOfSamplesToEmitEachFrame
+            new[] { 0, 1, 0, 2, 0, 1, 5, 0, 3, 7 }, // numberOfSamplesToEmitEachFrame
             0.75f,                                  // samplesPerPoint
-            new []{ 0, 1, 0, 3, 0, 1, 7, 0, 4, 9 }, // expectedPointsToAdvanceEachFrame
+            new[] { 0, 1, 0, 3, 0, 1, 7, 0, 4, 9 }, // expectedPointsToAdvanceEachFrame
             TestName = "0.75 samples per point"
         )]
 
         [TestCase(
-            new double[]{},                         // timeStamps
+            new double[] { },                         // timeStamps
             13,                                     // timeStampBufferCapacity
-            new []
+            new[]
             {
                 0,
                 1, // 1    - 0 × 1.17 => 1
@@ -94,14 +94,14 @@ namespace Unity.Multiplayer.Tools.NetStatsMonitor.Tests.Implementation.Graphs
                 7  // 7.30 - 6 × 1.17 => 0.28
             },                                      // numberOfSamplesToEmitEachFrame
             1.17f,                                  // SamplesPerPoint
-            new []{ 0, 0, 0, 2, 0, 1, 4, 0, 3, 6 }, // expectedPointsToAdvanceEachFrame
+            new[] { 0, 0, 0, 2, 0, 1, 4, 0, 3, 6 }, // expectedPointsToAdvanceEachFrame
             TestName = "1.17 samples per point"
         )]
 
         [TestCase(
-            new double[]{},                         // timeStamps
+            new double[] { },                         // timeStamps
             13,                                     // timeStampBufferCapacity
-            new []
+            new[]
             {
                 0,
                 1, // 1   - 0 × 3.5 => 0
@@ -115,7 +115,7 @@ namespace Unity.Multiplayer.Tools.NetStatsMonitor.Tests.Implementation.Graphs
                 7  // 8.5 - 2 × 3.5 => 1.5
             },                                      // numberOfSamplesToEmitEachFrame
             3.5f,                                   // SamplesPerPoint
-            new []{ 0, 0, 0, 0, 0, 1, 1, 0, 1, 2 }, // expectedPointsToAdvanceEachFrame
+            new[] { 0, 0, 0, 0, 0, 1, 1, 0, 1, 2 }, // expectedPointsToAdvanceEachFrame
             TestName = "3.5 samples per point"
         )]
 

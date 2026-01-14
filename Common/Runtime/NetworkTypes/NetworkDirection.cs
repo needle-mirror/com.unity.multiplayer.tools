@@ -5,9 +5,9 @@ namespace Unity.Multiplayer.Tools.Common
     [Flags]
     enum NetworkDirection
     {
-        None            = 0,
-        Received        = 1 << 0,
-        Sent            = 1 << 1,
+        None = 0,
+        Received = 1 << 0,
+        Sent = 1 << 1,
         SentAndReceived = Received | Sent,
     }
 

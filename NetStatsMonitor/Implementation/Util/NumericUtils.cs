@@ -206,7 +206,7 @@ namespace Unity.Multiplayer.Tools.NetStatsMonitor.Implementation
             var (unitsNumerator, unitsDenominator) = units.NumeratorAndDenominatorDisplayStrings;
 
             return $"{leadingNumber}%"
-                + (unitsNumerator   == "" ? "" : $"{k_SmallSpace}{unitsNumerator}")
+                + (unitsNumerator == "" ? "" : $"{k_SmallSpace}{unitsNumerator}")
                 + (unitsDenominator == "" ? "" : $"{k_DivisionSlash}{unitsDenominator}");
         }
 
@@ -253,7 +253,7 @@ namespace Unity.Multiplayer.Tools.NetStatsMonitor.Implementation
         {
             return displayAsPercentage ? 1 :
                 inputBase1000.Mantissa >= 100f ? 3 :
-                inputBase1000.Mantissa >=  10f ? 2 :
+                inputBase1000.Mantissa >= 10f ? 2 :
                 1;
         }
 

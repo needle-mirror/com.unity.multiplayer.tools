@@ -46,7 +46,7 @@ namespace Unity.Multiplayer.Tools.NetVis.Editor.Visualization
             DebugUtil.TraceMethodName();
             SceneView.duringSceneGui -= DuringSceneGui;
             m_ConfigurationWithEvents.ConfigurationChanged -= OnConfigurationChanged;
-            
+
             EditorApplication.pauseStateChanged -= OnPauseStateChanged;
 
             m_MeshShading?.Dispose();

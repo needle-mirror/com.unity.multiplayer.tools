@@ -1,7 +1,7 @@
 {
   "name": "com.unity.multiplayer.tools",
   "displayName": "Multiplayer Tools",
-  "version": "2.2.6",
+  "version": "2.2.7",
   "unity": "6000.0",
   "description": "Adds a suite of tools that improve workflows for multiplayer development",
   "dependencies": {
@@ -27,15 +27,15 @@
     }
   ],
   "_upm": {
-    "changelog": "#### *Network Scene Visualization*\n- Fixed settings dropdown appearing at the wrong position in the scene view when close to an edge.\n- Unified the settings overlay to only use foldout."
+    "changelog": "### Changed\n\n- Added define to address updated API calls on newer editors.\n- Added define to address breaking API changes related to EntityID introduction on newer editors which would affect NGO.\n\n### Fixed\n\n- Reduced GC allocations in Adapters."
   },
   "upmCi": {
-    "footprint": "6670fc686e95668bdb6ec8ff667c6d059b727c61"
+    "footprint": "9e5663daf8a003a068fc4bdcc3178c5512fa1796"
   },
   "documentationUrl": "https://docs.unity3d.com/Packages/com.unity.multiplayer.tools@2.2/manual/index.html",
   "repository": {
     "url": "https://github.com/Unity-Technologies/com.unity.multiplayer.tools.git",
     "type": "git",
-    "revision": "ab36460379fa30068f17b98cbc4de4464874ac76"
+    "revision": "0cc1db3ea676b3e131da4547a4b2874db483fac8"
   }
 }

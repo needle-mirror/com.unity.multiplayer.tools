@@ -23,5 +23,5 @@ namespace Unity.Multiplayer.Tools.NetStats
     /// As an alternative, this second, internal attribute can be used to hide metrics
     /// from the inspector that are only intended for internal MP Tools testing.
     [AttributeUsage(AttributeTargets.Enum)]
-    internal class MetricTypeEnumHideInInspectorAttribute : Attribute {}
+    internal class MetricTypeEnumHideInInspectorAttribute : Attribute { }
 }

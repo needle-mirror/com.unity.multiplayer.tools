@@ -45,7 +45,7 @@ namespace Unity.Multiplayer.Tools.NetworkSimulator.Editor.UI.PropertyDrawers
 
             s_Presets ??= NetworkSimulatorPresets.Values
                 .Select(preset => preset.Name)
-                .Concat(new []{"Custom"})
+                .Concat(new[] { "Custom" })
                 .ToArray();
 
             var connectionType = property.FindPropertyRelative(nameof(RandomConnectionsSwap.Configuration.m_ClassPreset));

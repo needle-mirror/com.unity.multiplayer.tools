@@ -52,7 +52,7 @@ namespace Unity.Multiplayer.Tools.NetworkProfiler.Editor
             {
                 Keyword = keyword;
 
-                Operators = new List<string>{@operator};
+                Operators = new List<string> { @operator };
                 if (additionalOperator != null)
                 {
                     Operators.Add(additionalOperator);
@@ -85,7 +85,7 @@ namespace Unity.Multiplayer.Tools.NetworkProfiler.Editor
 
         static ParsedFilters()
         {
-            k_FilterTypes = new ReadOnlyCollection<FilterType>(new []
+            k_FilterTypes = new ReadOnlyCollection<FilterType>(new[]
             {
                 new FilterType("dir", ":", argument =>
                 {

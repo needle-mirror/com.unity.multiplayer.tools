@@ -12,7 +12,7 @@ namespace Unity.Multiplayer.Tools.Samples.NetworkScenario
     [UsedImplicitly, Serializable]
     public class UnstableConnection : NetworkScenarioTask
     {
-#region Scenario Event Configuration classes
+        #region Scenario Event Configuration classes
         [Serializable]
         abstract class EventConfiguration
         {
@@ -110,7 +110,7 @@ namespace Unity.Multiplayer.Tools.Samples.NetworkScenario
                 scenario.ScenarioConfiguration.PacketLossInterval = scenario.Randomizer.Next((int)m_MinimumInterval.x, (int)m_MinimumInterval.y);
             }
         }
-#endregion
+        #endregion
 
         [SerializeField, Min(0)]
         [Tooltip("Minimum time (in milliseconds) before an event happen. No event will happen until this amount of time has passed.")]

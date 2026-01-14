@@ -31,7 +31,7 @@ namespace Unity.Multiplayer.Tools.NetworkProfiler.Editor
         {
             if (m_Children != null)
             {
-                m_Children.Sort((a,b) => RowDataSorting.SortOperation(a.RowData, b.RowData, direction));
+                m_Children.Sort((a, b) => RowDataSorting.SortOperation(a.RowData, b.RowData, direction));
                 for (var i = 0; i < m_Children.Count; ++i)
                 {
                     m_Children[i].SortChildren(direction);

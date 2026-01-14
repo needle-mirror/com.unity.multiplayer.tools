@@ -18,7 +18,8 @@ namespace Unity.Multiplayer.Tools.NetworkProfiler.Editor
                 id: connectionInfo.Id,
                 connectionInfo,
                 localConnection
-            ) { }
+            )
+        { }
 
         static string GetName(ConnectionInfo connectionInfo)
         {

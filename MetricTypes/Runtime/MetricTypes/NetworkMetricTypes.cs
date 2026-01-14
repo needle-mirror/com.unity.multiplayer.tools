@@ -17,39 +17,39 @@
         public static readonly DirectionalMetricInfo RpcSent = new(DirectedMetricType.RpcSent);
         public static readonly DirectionalMetricInfo RpcReceived = new(DirectedMetricType.RpcReceived);
 
-        public static readonly DirectionalMetricInfo NamedMessageSent = new (DirectedMetricType.NamedMessageSent);
-        public static readonly DirectionalMetricInfo NamedMessageReceived = new (DirectedMetricType.NamedMessageReceived);
+        public static readonly DirectionalMetricInfo NamedMessageSent = new(DirectedMetricType.NamedMessageSent);
+        public static readonly DirectionalMetricInfo NamedMessageReceived = new(DirectedMetricType.NamedMessageReceived);
 
-        public static readonly DirectionalMetricInfo UnnamedMessageSent = new (DirectedMetricType.UnnamedMessageSent);
-        public static readonly DirectionalMetricInfo UnnamedMessageReceived = new (DirectedMetricType.UnnamedMessageReceived);
+        public static readonly DirectionalMetricInfo UnnamedMessageSent = new(DirectedMetricType.UnnamedMessageSent);
+        public static readonly DirectionalMetricInfo UnnamedMessageReceived = new(DirectedMetricType.UnnamedMessageReceived);
 
-        public static readonly DirectionalMetricInfo NetworkVariableDeltaSent = new (DirectedMetricType.NetworkVariableDeltaSent);
-        public static readonly DirectionalMetricInfo NetworkVariableDeltaReceived = new (DirectedMetricType.NetworkVariableDeltaReceived);
+        public static readonly DirectionalMetricInfo NetworkVariableDeltaSent = new(DirectedMetricType.NetworkVariableDeltaSent);
+        public static readonly DirectionalMetricInfo NetworkVariableDeltaReceived = new(DirectedMetricType.NetworkVariableDeltaReceived);
 
-        public static readonly DirectionalMetricInfo ObjectSpawnedSent = new (DirectedMetricType.ObjectSpawnedSent);
-        public static readonly DirectionalMetricInfo ObjectSpawnedReceived = new (DirectedMetricType.ObjectSpawnedReceived);
+        public static readonly DirectionalMetricInfo ObjectSpawnedSent = new(DirectedMetricType.ObjectSpawnedSent);
+        public static readonly DirectionalMetricInfo ObjectSpawnedReceived = new(DirectedMetricType.ObjectSpawnedReceived);
 
-        public static readonly DirectionalMetricInfo ObjectDestroyedSent = new (DirectedMetricType.ObjectDestroyedSent);
-        public static readonly DirectionalMetricInfo ObjectDestroyedReceived = new (DirectedMetricType.ObjectDestroyedReceived);
+        public static readonly DirectionalMetricInfo ObjectDestroyedSent = new(DirectedMetricType.ObjectDestroyedSent);
+        public static readonly DirectionalMetricInfo ObjectDestroyedReceived = new(DirectedMetricType.ObjectDestroyedReceived);
 
-        public static readonly DirectionalMetricInfo OwnershipChangeSent = new (DirectedMetricType.OwnershipChangeSent);
-        public static readonly DirectionalMetricInfo OwnershipChangeReceived = new (DirectedMetricType.OwnershipChangeReceived);
+        public static readonly DirectionalMetricInfo OwnershipChangeSent = new(DirectedMetricType.OwnershipChangeSent);
+        public static readonly DirectionalMetricInfo OwnershipChangeReceived = new(DirectedMetricType.OwnershipChangeReceived);
 
-        public static readonly DirectionalMetricInfo ServerLogSent = new (DirectedMetricType.ServerLogSent);
-        public static readonly DirectionalMetricInfo ServerLogReceived = new (DirectedMetricType.ServerLogReceived);
+        public static readonly DirectionalMetricInfo ServerLogSent = new(DirectedMetricType.ServerLogSent);
+        public static readonly DirectionalMetricInfo ServerLogReceived = new(DirectedMetricType.ServerLogReceived);
 
-        public static readonly DirectionalMetricInfo SceneEventSent = new (DirectedMetricType.SceneEventSent);
-        public static readonly DirectionalMetricInfo SceneEventReceived = new (DirectedMetricType.SceneEventReceived);
+        public static readonly DirectionalMetricInfo SceneEventSent = new(DirectedMetricType.SceneEventSent);
+        public static readonly DirectionalMetricInfo SceneEventReceived = new(DirectedMetricType.SceneEventReceived);
 
-        public static readonly DirectionalMetricInfo PacketsSent = new (DirectedMetricType.PacketsSent);
-        public static readonly DirectionalMetricInfo PacketsReceived = new (DirectedMetricType.PacketsReceived);
+        public static readonly DirectionalMetricInfo PacketsSent = new(DirectedMetricType.PacketsSent);
+        public static readonly DirectionalMetricInfo PacketsReceived = new(DirectedMetricType.PacketsReceived);
 
-        public static readonly DirectionalMetricInfo RttToServer = new (DirectedMetricType.RttToServer);
+        public static readonly DirectionalMetricInfo RttToServer = new(DirectedMetricType.RttToServer);
 
-        public static readonly DirectionalMetricInfo NetworkObjects = new (DirectedMetricType.NetworkObjects);
+        public static readonly DirectionalMetricInfo NetworkObjects = new(DirectedMetricType.NetworkObjects);
 
-        public static readonly DirectionalMetricInfo ConnectedClients = new (DirectedMetricType.Connections);
+        public static readonly DirectionalMetricInfo ConnectedClients = new(DirectedMetricType.Connections);
 
-        public static readonly DirectionalMetricInfo PacketLoss = new (DirectedMetricType.PacketLoss);
+        public static readonly DirectionalMetricInfo PacketLoss = new(DirectedMetricType.PacketLoss);
     }
 }

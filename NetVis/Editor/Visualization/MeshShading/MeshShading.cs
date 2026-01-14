@@ -62,7 +62,7 @@ namespace Unity.Multiplayer.Tools.NetVis.Editor.Visualization
                 ClearColors();
                 return;
             }
-            
+
             var currentSceneViewCamera = SceneViewCamera;
             if (m_NetVisRenderer?.Camera != SceneViewCamera)
             {
@@ -83,7 +83,7 @@ namespace Unity.Multiplayer.Tools.NetVis.Editor.Visualization
 
             m_NetVisRenderer.SetColorMapping(m_InstanceIdToColor);
         }
-        
+
         void ClearColors()
         {
             m_InstanceIdToColor.Clear();
@@ -93,7 +93,7 @@ namespace Unity.Multiplayer.Tools.NetVis.Editor.Visualization
         void ComputeNetworkedObjectColors(IReadOnlyList<ObjectId> objectIds)
         {
             ClearColors();
-            
+
             if (m_Configuration.Metric == NetVisMetric.Bandwidth && NetVisDataStore.IsBandwidthCacheEmpty)
             {
                 return;

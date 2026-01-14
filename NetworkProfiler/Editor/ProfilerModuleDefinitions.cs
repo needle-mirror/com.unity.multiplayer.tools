@@ -7,7 +7,7 @@ namespace Unity.Multiplayer.Tools.NetworkProfiler.Editor
     {
         internal static readonly ProfilerModuleDefinition ObjectsProfilerModule = new ProfilerModuleDefinition(
             ModuleNames.GameObjects,
-            new []
+            new[]
             {
                 ProfilerCounters.rpc.Bytes.Sent,
                 ProfilerCounters.rpc.Bytes.Received,
@@ -23,7 +23,7 @@ namespace Unity.Multiplayer.Tools.NetworkProfiler.Editor
 
         internal static readonly ProfilerModuleDefinition MessagesProfilerModule = new ProfilerModuleDefinition(
             ModuleNames.Message,
-            new []
+            new[]
             {
                 ProfilerCounters.totalBytes.Sent,
                 ProfilerCounters.totalBytes.Received,

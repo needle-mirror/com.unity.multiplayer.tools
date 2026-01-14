@@ -11,6 +11,7 @@ namespace Unity.Multiplayer.Tools.NetworkProfiler.Editor
                 $"{componentName}.{rpcName}",
                 MetricType.Rpc,
                 onSelectedCallback,
-                treeViewId) { }
+                treeViewId)
+        { }
     }
 }

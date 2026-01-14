@@ -9,7 +9,7 @@ namespace Unity.Multiplayer.Tools.NetStatsMonitor.Tests.Configuration.Util
 {
     internal class MetricsUtilsTests
     {
-        [TestCase(new DirectedMetricType[] {}, "")]
+        [TestCase(new DirectedMetricType[] { }, "")]
 
         // Single stats
         // --------------------------------------------------------------------

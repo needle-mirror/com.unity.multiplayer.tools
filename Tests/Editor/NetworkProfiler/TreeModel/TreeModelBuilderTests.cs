@@ -32,7 +32,7 @@ namespace Unity.Multiplayer.Tools.NetworkProfiler.Editor
             public ConnectionInfo Connection { get; }
             public long BytesCount { get; }
 
-            public TestMetric(ConnectionInfo connectionInfo, long bytes) : this(connectionInfo, default, bytes){}
+            public TestMetric(ConnectionInfo connectionInfo, long bytes) : this(connectionInfo, default, bytes) { }
 
             public TestMetric(ConnectionInfo connectionInfo, NetworkObjectIdentifier objectIdentifier, long bytes)
             {

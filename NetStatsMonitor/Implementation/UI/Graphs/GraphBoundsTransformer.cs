@@ -90,11 +90,11 @@ namespace Unity.Multiplayer.Tools.NetStatsMonitor.Implementation
             // 6.   a = (ΔY / ΔPx) * (ΔPx' / ΔY'),                             where a is the multiplier
             // 7.   b = ((-Px₋ * (ΔY / ΔPx) + Y₋ - Y₋') * (ΔPx' /  ΔY') + Px₋', where b is the additive constant
 
-            var oldYValuesPerPixel = oldGraphRange   / oldRenderHeight;
+            var oldYValuesPerPixel = oldGraphRange / oldRenderHeight;
             var newPixelsPerYValue = newRenderHeight / newGraphRange;
 
             var multiplier = oldYValuesPerPixel * newPixelsPerYValue;
-            var offset     = -m_BoundsYMin * multiplier + (m_YValueMin - newYValueMin) * newPixelsPerYValue + newBoundsYMin;
+            var offset = -m_BoundsYMin * multiplier + (m_YValueMin - newYValueMin) * newPixelsPerYValue + newBoundsYMin;
 
             m_BoundsYMin = newBoundsYMin;
             m_BoundsYMax = newBoundsYMax;

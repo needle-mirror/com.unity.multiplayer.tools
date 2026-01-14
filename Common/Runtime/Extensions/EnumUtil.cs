@@ -48,8 +48,8 @@ namespace Unity.Multiplayer.Tools.Common
         /// ~3.6 times faster than a dictionary, and allocates 8 times less.
         /// </remarks>
         public static unsafe TUnderlying UnsafeCastToUnderlying<TEnum, TUnderlying>(this TEnum enumValue)
-            where TEnum: unmanaged, Enum
-            where TUnderlying: unmanaged
+            where TEnum : unmanaged, Enum
+            where TUnderlying : unmanaged
         {
             return *(TUnderlying*)(&enumValue);
         }
@@ -71,7 +71,7 @@ namespace Unity.Multiplayer.Tools.Common
         /// ~3.6 times faster than a dictionary, and allocates 8 times less.
         /// </remarks>
         public static unsafe int UnsafeCastToInt<TEnum>(this TEnum enumValue)
-            where TEnum: unmanaged, Enum
+            where TEnum : unmanaged, Enum
         {
             return *(int*)(&enumValue);
         }
@@ -81,7 +81,7 @@ namespace Unity.Multiplayer.Tools.Common
         /// You must ensure that the underlying type is correct.
         /// </summary>
         public static unsafe TEnum UnsafeCastToEnum<TEnum>(this int value)
-            where TEnum: unmanaged, Enum
+            where TEnum : unmanaged, Enum
         {
             return *(TEnum*)(&value);
         }
@@ -91,8 +91,8 @@ namespace Unity.Multiplayer.Tools.Common
         /// You must ensure that the underlying type is correct.
         /// </summary>
         public static unsafe TEnum UnsafeCastToEnum<TUnderlying, TEnum>(this TUnderlying value)
-            where TUnderlying: unmanaged
-            where TEnum: unmanaged, Enum
+            where TUnderlying : unmanaged
+            where TEnum : unmanaged, Enum
         {
             return *(TEnum*)(&value);
         }
@@ -107,7 +107,7 @@ namespace Unity.Multiplayer.Tools.Common
         /// Is thrown if TEnum does not have the FlagsAttribute
         /// </exception>
         public static bool ContainsAny<TEnum>(this TEnum a, TEnum b)
-            where TEnum: unmanaged, Enum
+            where TEnum : unmanaged, Enum
         {
             return IntFlagEnumUtils<TEnum>.ContainsAny(a, b);
         }
@@ -119,7 +119,7 @@ namespace Unity.Multiplayer.Tools.Common
         /// Is thrown if TEnum does not have the FlagsAttribute
         /// </exception>
         public static bool ContainsAll<TEnum>(this TEnum a, TEnum b)
-            where TEnum: unmanaged, Enum
+            where TEnum : unmanaged, Enum
         {
             return IntFlagEnumUtils<TEnum>.ContainsAll(a, b);
         }
@@ -128,7 +128,7 @@ namespace Unity.Multiplayer.Tools.Common
         /// Is thrown if TEnum does not have the FlagsAttribute
         /// </exception>
         public static TEnum SetFlags<TEnum>(this TEnum a, TEnum b, bool value)
-            where TEnum: unmanaged, Enum
+            where TEnum : unmanaged, Enum
         {
             return IntFlagEnumUtils<TEnum>.SetFlags(a, b, value);
         }
@@ -137,7 +137,7 @@ namespace Unity.Multiplayer.Tools.Common
         /// Is thrown if TEnum does not have the FlagsAttribute
         /// </exception>
         public static void SetFlagsInPlace<TEnum>(ref this TEnum a, TEnum b, bool value)
-            where TEnum: unmanaged, Enum
+            where TEnum : unmanaged, Enum
         {
             a = IntFlagEnumUtils<TEnum>.SetFlags(a, b, value);
         }
@@ -217,7 +217,7 @@ namespace Unity.Multiplayer.Tools.Common
         public EnumWithoutFlagsAttributeException()
             : base($"Cannot use {nameof(EnumUtil.ContainsAny)}, {nameof(EnumUtil.SetFlags)}, or {nameof(EnumUtil.SetFlagsInPlace)} " +
                    $"on enum {nameof(TEnum)}, as it does not have the {nameof(FlagsAttribute)} attribute")
-        {}
+        { }
     }
 
     class UnhandledEnumUnderlyingTypeException<TEnum, TRequiredUnderlyingType> : Exception
@@ -227,6 +227,6 @@ namespace Unity.Multiplayer.Tools.Common
             : base($"Cannot use {nameof(EnumUtil.ContainsAny)}, {nameof(EnumUtil.SetFlags)}, or {nameof(EnumUtil.SetFlagsInPlace)} " +
                    $"on enum {nameof(TEnum)}, because its underlying type {typeof(TEnum).UnderlyingSystemType} is not the required" +
                    $" underlying type {typeof(TRequiredUnderlyingType)}")
-        {}
+        { }
     }
 }

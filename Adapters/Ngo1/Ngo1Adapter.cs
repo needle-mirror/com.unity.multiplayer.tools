@@ -79,7 +79,7 @@ namespace Unity.Multiplayer.Tools.Adapters.Ngo1
                 m_NetworkManager.OnClientStarted -= OnServerOrClientStarted;
                 m_NetworkManager.OnServerStopped -= OnServerOrClientStopped;
                 m_NetworkManager.OnClientStopped -= OnServerOrClientStopped;
-                
+
                 m_NetworkManager = null;
             }
 
@@ -109,9 +109,9 @@ namespace Unity.Multiplayer.Tools.Adapters.Ngo1
             if (m_NetworkManager.IsServer)
             {
                 m_ClientIds.Clear();
-                foreach (var clientId in m_NetworkManager.ConnectedClientsIds)
+                for (int i = 0; i < m_NetworkManager.ConnectedClientsIds.Count; ++i)
                 {
-                    m_ClientIds.Add((ClientId)clientId);
+                    m_ClientIds.Add((ClientId)m_NetworkManager.ConnectedClientsIds[i]);
                 }
             }
             else if (m_NetworkManager.SpawnManager != null)

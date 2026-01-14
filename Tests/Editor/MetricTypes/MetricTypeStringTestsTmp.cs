@@ -28,7 +28,7 @@ namespace Unity.Multiplayer.Tools.MetricTypes.Tests
             Func<T, FixedString64Bytes> publicAccessor)
         {
             T obj = default;
-            Assert.DoesNotThrow(()=> obj = constructor(string.Empty), $"Exception thrown when constructing {typeof(T).Name} with an empty string sent to parameter {parameterName}");
+            Assert.DoesNotThrow(() => obj = constructor(string.Empty), $"Exception thrown when constructing {typeof(T).Name} with an empty string sent to parameter {parameterName}");
             var publicValue = publicAccessor(obj);
             Assert.AreEqual(0, publicValue.Length);
         }
@@ -39,7 +39,7 @@ namespace Unity.Multiplayer.Tools.MetricTypes.Tests
             Func<T, FixedString64Bytes> publicAccessor)
         {
             T obj = default;
-            Assert.DoesNotThrow(()=> obj = constructor(null), $"Exception thrown when constructing {typeof(T).Name} with a null string sent to parameter {parameterName}");
+            Assert.DoesNotThrow(() => obj = constructor(null), $"Exception thrown when constructing {typeof(T).Name} with a null string sent to parameter {parameterName}");
             var publicValue = publicAccessor(obj);
             Assert.AreEqual(0, publicValue.Length);
         }
@@ -51,7 +51,7 @@ namespace Unity.Multiplayer.Tools.MetricTypes.Tests
         {
             const string regularString = "RegularString";
             T obj = default;
-            Assert.DoesNotThrow(()=> obj = constructor(regularString), $"Exception thrown when constructing {typeof(T).Name} with a regular string sent to parameter {parameterName}");
+            Assert.DoesNotThrow(() => obj = constructor(regularString), $"Exception thrown when constructing {typeof(T).Name} with a regular string sent to parameter {parameterName}");
             var publicValue = publicAccessor(obj);
             Assert.AreEqual(regularString, publicValue);
         }

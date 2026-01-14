@@ -14,7 +14,7 @@ namespace Unity.Multiplayer.Tools.NetVis.Editor.Visualization
     class NetVisDataStore : IGetConnectedClients
     {
         internal bool IsConnectedServerOrClient { get; private set; }
-        
+
         const float k_InvalidBandwidth = -1f;
 
         NetVisConfiguration m_Configuration;
@@ -45,7 +45,7 @@ namespace Unity.Multiplayer.Tools.NetVis.Editor.Visualization
 
         public bool IsBandwidthCacheEmpty => m_GetBandwidth is null || m_GetBandwidth.IsCacheEmpty ||
                             m_BandwidthSmoothingCache is null || m_BandwidthSmoothingCache.NeedsResetToImmediateValue;
-        
+
         public NetVisDataStore(
             NetVisConfiguration configuration,
             BandwidthStats bandwidthStats)
@@ -66,10 +66,10 @@ namespace Unity.Multiplayer.Tools.NetVis.Editor.Visualization
         {
             m_Configuration = configuration;
             UpdateNoDataState();
-            
+
             // We do not want to lose the data if we switch back and forth between the modes when paused.
             if (EditorApplication.isPaused && m_BandwidthSmoothingCache != null) return;
-            
+
             UpdateBandwidthBackend();
             m_BandwidthSmoothingCache?.OnConfigurationChanged(configuration.Settings.Bandwidth);
             OnBandwidthUpdated();
@@ -125,7 +125,7 @@ namespace Unity.Multiplayer.Tools.NetVis.Editor.Visualization
             {
                 m_GetConnectionStatus.ServerOrClientStarted -= OnServerOrClientStarted;
                 m_GetConnectionStatus.ServerOrClientStarted += OnServerOrClientStarted;
-                
+
                 m_GetConnectionStatus.ServerOrClientStopped -= OnServerOrClientStopped;
                 m_GetConnectionStatus.ServerOrClientStopped += OnServerOrClientStopped;
 

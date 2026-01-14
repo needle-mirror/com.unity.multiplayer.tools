@@ -9,7 +9,7 @@ namespace Unity.Multiplayer.Tools.NetworkProfiler.Tests.Editor
         public TestRowData(
             string objectName,
             string typeName,
-            ulong id=0,
+            ulong id = 0,
             long sent = 0,
             long received = 0,
             bool sentOverLocalConnection = false)

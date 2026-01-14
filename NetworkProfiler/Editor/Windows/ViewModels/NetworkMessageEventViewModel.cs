@@ -12,6 +12,7 @@ namespace Unity.Multiplayer.Tools.NetworkProfiler.Editor
                 MetricTypeExtensions.GetDisplayNameString(messageName), //Using messageName to clarify the type instead of just NetworkMessage
                 MetricTypeExtensions.GetTypeNameString(messageName),
                 onSelectedCallback,
-                treeViewId) { }
+                treeViewId)
+        { }
     }
 }

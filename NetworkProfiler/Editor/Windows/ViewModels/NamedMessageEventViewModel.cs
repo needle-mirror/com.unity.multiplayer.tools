@@ -11,6 +11,7 @@ namespace Unity.Multiplayer.Tools.NetworkProfiler.Editor
                 messageName,
                 MetricType.NamedMessage,
                 onSelectedCallback,
-                TreeViewId) { }
+                TreeViewId)
+        { }
     }
 }

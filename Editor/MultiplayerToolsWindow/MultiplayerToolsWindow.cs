@@ -16,7 +16,7 @@ namespace Unity.Multiplayer.Tools.Editor.MultiplayerToolsWindow
         const string k_PathInPackage = "Packages/com.unity.multiplayer.tools/Editor/MultiplayerToolsWindow";
         const string k_MainUxmlPath = k_PathInPackage + "/UI/MultiplayerToolsWindow.uxml";
         const string k_SectionUxmlPath = k_PathInPackage + "/UI/MultiplayerToolsWindowSection.uxml";
-        
+
         private readonly List<string> m_InstalledDependencies = new List<string>();
 
         /// <summary>
@@ -103,8 +103,8 @@ namespace Unity.Multiplayer.Tools.Editor.MultiplayerToolsWindow
         void AddOnePackageVersion(VisualElement parent, string packageId, string packageName, string docUrl)
         {
             var info = GetInfoString(packageId, packageName);
-            var line = new VisualElement() {style = {flexDirection = FlexDirection.Row}};
-            var textElement = new Label() {text = info};
+            var line = new VisualElement() { style = { flexDirection = FlexDirection.Row } };
+            var textElement = new Label() { text = info };
             var docButton = new VisualElement();
             docButton.AddToClassList("docIcon");
             docButton.tooltip = $"Installation documentation for {packageName}";

@@ -42,14 +42,14 @@ namespace Unity.Multiplayer.Tools.Common
         /// more responsive CEMA with less smoothing, whereas a smaller decay constant will result in a slower,
         /// less responsive CEMA with more smoothing.
         public static double GetDecayConstantForHalfLife(double halfLife) => k_ln2 / halfLife;
-        
-         /// <summary>
-         /// Computes the decay constant, which is λ = ln(2) / HalfLife (Unit: 1/s).
-         /// A larger decay constant will results in a faster, more responsive CEMA with less smoothing, whereas a
-         /// smaller decay constant will result in a slower, less responsive CEMA with more smoothing.
-         /// Returns a negative value in case of invalid input (halfLife <= 0).
-         /// </summary>
-         public static float GetDecayConstantForHalfLife(float halfLife) => halfLife > 0 ? k_ln2F / halfLife : -1f;
+
+        /// <summary>
+        /// Computes the decay constant, which is λ = ln(2) / HalfLife (Unit: 1/s).
+        /// A larger decay constant will results in a faster, more responsive CEMA with less smoothing, whereas a
+        /// smaller decay constant will result in a slower, less responsive CEMA with more smoothing.
+        /// Returns a negative value in case of invalid input (halfLife <= 0).
+        /// </summary>
+        public static float GetDecayConstantForHalfLife(float halfLife) => halfLife > 0 ? k_ln2F / halfLife : -1f;
 
         public ContinuousExponentialMovingAverage(double decayConstant, double value = 0d, double time = k_DefaultInitialTime)
         {

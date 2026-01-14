@@ -135,7 +135,7 @@ namespace Unity.Multiplayer.Tools.NetStatsMonitor.Implementation
             // special case handling because m_PlotRange.Min <= 0 and m_PlotRange.Max >= 0,
             // and so the next round number of greater magnitude works as an axis bound in both cases
             var (yAxisMinLabel, minPlotValue) = ComputeYAxisBound(m_PlotRange.Min, m_LastYValues.Min, m_YAxisLabels.MinLabel);
-            var (yAxisMaxLabel, maxPlotValue) = ComputeYAxisBound(m_PlotRange.Max, m_LastYValues.Max ,m_YAxisLabels.MaxLabel);
+            var (yAxisMaxLabel, maxPlotValue) = ComputeYAxisBound(m_PlotRange.Max, m_LastYValues.Max, m_YAxisLabels.MaxLabel);
 
             m_LastYValues.Min = minPlotValue;
             m_LastYValues.Max = maxPlotValue;

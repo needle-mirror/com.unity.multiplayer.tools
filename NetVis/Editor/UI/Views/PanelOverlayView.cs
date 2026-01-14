@@ -41,7 +41,7 @@ namespace Unity.Multiplayer.Tools.NetVis.Editor.UI
             var settingsIconTask = NetVisIcon.Settings.LoadAsync(editorTheme);
 
             await Task.WhenAll(bandwidthIconTask, ownershipIconTask, settingsIconTask);
-            
+
             BandwidthIcon.style.backgroundImage = bandwidthIconTask.Result;
             OwnershipIcon.style.backgroundImage = ownershipIconTask.Result;
             SettingsIcon.style.backgroundImage = settingsIconTask.Result;
@@ -87,7 +87,7 @@ namespace Unity.Multiplayer.Tools.NetVis.Editor.UI
             OwnershipToggle.SetValueWithoutNotify(metric == NetVisMetric.Ownership);
             BandwidthConfigurationView.SetInclude(metric == NetVisMetric.Bandwidth);
             OwnershipConfigurationView.SetInclude(metric == NetVisMetric.Ownership);
-            SettingsToggle.SetValueWithoutNotify(false); 
+            SettingsToggle.SetValueWithoutNotify(false);
             CommonSettingsView.SetInclude(false);
         }
 #if !UNITY_2023_3_OR_NEWER

@@ -48,7 +48,7 @@ namespace Unity.Multiplayer.Tools.NetVis.Editor.UI
             {
                 return null;
             }
-            
+
             var iconTexture = await AssetDatabaseHelper.LoadAssetAtPathAsync<Texture2D>(iconPath);
 #if UNITY_MP_TOOLS_DEV
             if (iconTexture == null)

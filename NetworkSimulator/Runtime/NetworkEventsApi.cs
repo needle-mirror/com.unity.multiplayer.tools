@@ -34,7 +34,7 @@ namespace Unity.Multiplayer.Tools.NetworkSimulator.Runtime
             {
                 return;
             }
-            
+
 #if UNITY_EDITOR && UNITY_2023_2_OR_NEWER
             EditorAnalytics.SendAnalytic(new ConnectionStateChangedAnalytic(m_NetworkSimulator.UsedEditorGUI, m_IsLageSpikeRunning));
 #endif
@@ -79,7 +79,7 @@ namespace Unity.Multiplayer.Tools.NetworkSimulator.Runtime
             {
                 return;
             }
-            
+
             m_NetworkSimulator.ConnectionPreset = newNetworkSimulatorPreset;
         }
 

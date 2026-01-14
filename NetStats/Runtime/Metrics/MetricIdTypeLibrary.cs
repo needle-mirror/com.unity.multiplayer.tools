@@ -70,7 +70,7 @@ namespace Unity.Multiplayer.Tools.NetStats
 
                 // Then by name
                 return StringComparer.InvariantCulture.Compare(a.FullName, b.FullName);
-           });
+            });
 
             foreach (var type in k_Types)
             {

@@ -28,7 +28,7 @@ namespace Unity.Multiplayer.Tools.NetworkSimulator.Runtime
         /// Preset that simulates a typical home broadband connection.
         /// </summary>
         public static readonly NetworkSimulatorPreset HomeBroadband;
-        
+
         /// <summary>
         /// Preset that simulates an optical home broadband connection.
         /// </summary>
@@ -38,17 +38,17 @@ namespace Unity.Multiplayer.Tools.NetworkSimulator.Runtime
         /// Preset that simulates a cable home broadband connection.
         /// </summary>
         public static readonly NetworkSimulatorPreset HomeCable;
-        
+
         /// <summary> 
         /// Preset that simulates a DSL home connection.
         /// </summary>
         public static readonly NetworkSimulatorPreset HomeDSL;
-        
+
         /// <summary> 
         /// Preset that simulates a satellite home connection.
         /// </summary>
         public static readonly NetworkSimulatorPreset HomeSatellite;
-        
+
         /// <summary>
         /// Preset that simulates a congested home broadband connection which is being used around its maximum capacity by multiple devices.
         /// </summary>
@@ -207,7 +207,7 @@ namespace Unity.Multiplayer.Tools.NetworkSimulator.Runtime
                 packetJitterMs: 20,
                 packetLossPercent: 4
             );
-            Values = new []{
+            Values = new[]{
                 None,
                 HomeBroadband,
                 HomeOptical,

@@ -3,6 +3,8 @@ using System.Runtime.CompilerServices;
 [assembly: InternalsVisibleTo("Unity.Netcode.Runtime")]
 [assembly: InternalsVisibleTo("Unity.Netcode.RuntimeTests")]
 [assembly: InternalsVisibleTo("Unity.Netcode.EditorTests")]
+[assembly: InternalsVisibleTo("Unity.Netcode.Runtime.Tests")]
+[assembly: InternalsVisibleTo("Unity.Netcode.Editor.Tests")]
 [assembly: InternalsVisibleTo("Unity.Multiplayer.Tools.Adapters")]
 [assembly: InternalsVisibleTo("Unity.Multiplayer.Tools.Adapters.Ngo1")]
 [assembly: InternalsVisibleTo("Unity.Multiplayer.Tools.MetricEvents")]
@@ -19,14 +21,17 @@ using System.Runtime.CompilerServices;
 [assembly: InternalsVisibleTo("Unity.Multiplayer.Tools.NetVis.Editor.Visualization")]
 [assembly: InternalsVisibleTo("Unity.Netcode.TestHelpers.Runtime")]
 [assembly: InternalsVisibleTo("TestProject.RuntimeTests")]
+[assembly: InternalsVisibleTo("TestProject.Runtime.Tests")]
 [assembly: InternalsVisibleTo("TestProject.ToolsIntegration.RuntimeTests")]
 
 #if UNITY_EDITOR
 [assembly: InternalsVisibleTo("TestProject.EditorTests")]
+[assembly: InternalsVisibleTo("TestProject.Editor.Tests")]
 #endif
 
 // Test assemblies
 #if UNITY_INCLUDE_TESTS
+[assembly: InternalsVisibleTo("Unity.Multiplayer.Tools.GameObjects.Tests")]
 [assembly: InternalsVisibleTo("Unity.Multiplayer.Tools.NetStats.Tests.Editor")]
 [assembly: InternalsVisibleTo("Unity.Multiplayer.Tools.NetworkProfiler.Tests.Editor")]
 [assembly: InternalsVisibleTo("Unity.Multiplayer.Tools.NetStatsMonitor.Implementation.Tests.Editor")]

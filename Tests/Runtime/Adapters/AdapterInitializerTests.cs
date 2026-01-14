@@ -11,9 +11,24 @@ using UnityEngine.TestTools;
 
 namespace Unity.Multiplayer.Tools.Adapters.Tests
 {
-    class AdapterInitializerTests
+    internal class AdapterInitializerTests
     {
         GameObject m_NetworkGameObject;
+
+        /// <summary>
+        /// In the event any tests run prior to this test, we want
+        /// to remove any adapters before proceeding with these tests.
+        /// </summary>
+        [OneTimeSetUp]
+        public void OneTimeSetup()
+        {
+            var adapters = NetworkAdapters.Adapters.ToList();
+            foreach (var adapter in adapters)
+            {
+                NetworkAdapters.RemoveAdapter(adapter);
+            }
+        }
+
 
         [SetUp]
         public void SetUp()
@@ -26,7 +41,7 @@ namespace Unity.Multiplayer.Tools.Adapters.Tests
         {
             Object.DestroyImmediate(m_NetworkGameObject);
         }
-        
+
         [UnityTest]
         public IEnumerator Ngo1AdapterInitializer_RegistersAdapter()
         {
@@ -55,7 +70,7 @@ namespace Unity.Multiplayer.Tools.Adapters.Tests
         public IEnumerator Ngo1WithUtp2AdapterInitializer_RegistersAdapter()
         {
             Assert.IsEmpty(Ngo1WithUtp2AdapterInitializer.s_Adapters, "Expected no Ngo1WithUtp2Adapter exists before the test.");
-            
+
             var utp2AdapterAdded = false;
 
             NetworkAdapters.OnAdapterAdded += networkAdapter =>

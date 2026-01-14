@@ -11,6 +11,7 @@ namespace Unity.Multiplayer.Tools.NetworkProfiler.Editor
                 $"{componentName}.{variableName}",
                 MetricType.NetworkVariableDelta,
                 onSelectedCallback,
-                treeViewId) { }
+                treeViewId)
+        { }
     }
 }

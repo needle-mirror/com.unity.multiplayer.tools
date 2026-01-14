@@ -55,9 +55,9 @@ namespace Unity.Multiplayer.Tools.NetVis.Configuration
                     return;
                 }
 
-                #if UNITY_EDITOR && UNITY_2023_2_OR_NEWER
+#if UNITY_EDITOR && UNITY_2023_2_OR_NEWER
                 EditorAnalytics.SendAnalytic(new MetricChangedAnalytic(value.ToString()));
-                #endif
+#endif
                 Configuration.Metric = value;
                 MetricChanged?.Invoke(m_Configuration.Metric);
                 ConfigurationChanged?.Invoke(m_Configuration);

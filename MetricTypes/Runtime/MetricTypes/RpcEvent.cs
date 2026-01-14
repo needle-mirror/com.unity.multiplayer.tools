@@ -37,11 +37,11 @@ namespace Unity.Multiplayer.Tools.MetricTypes
         {
             get
             {
-                var nameHash = (ulong) Name.GetHashCode();
-                var networkIDHash = (ulong) NetworkId.GetHashCode();
-                var networkBehaviourNameHash = (ulong) NetworkBehaviourName.GetHashCode();
-                var bytesCountHash = (ulong) BytesCount.GetHashCode();
-                var connectionHash = (ulong) Connection.GetHashCode();
+                var nameHash = (ulong)Name.GetHashCode();
+                var networkIDHash = (ulong)NetworkId.GetHashCode();
+                var networkBehaviourNameHash = (ulong)NetworkBehaviourName.GetHashCode();
+                var bytesCountHash = (ulong)BytesCount.GetHashCode();
+                var connectionHash = (ulong)Connection.GetHashCode();
                 return nameHash + networkIDHash + networkBehaviourNameHash + bytesCountHash + connectionHash;
             }
         }

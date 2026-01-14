@@ -52,6 +52,6 @@ namespace Unity.Multiplayer.Tools.NetStatsMonitor.Implementation
 
         float MaxPointsPerPixel { get; }
 
-        void UpdateConfiguration(DisplayElementConfiguration config){}
+        void UpdateConfiguration(DisplayElementConfiguration config) { }
     }
 }

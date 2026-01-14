@@ -77,15 +77,15 @@ namespace Unity.Multiplayer.Tools.Common.Tests
     [TestFixture]
     class EnumMapTests
     {
-        [TestCase((EmptyEnum)0                 , int.MaxValue, int.MinValue, 0)]
-        [TestCase(SingleValueEnum.A            ,  0,   0,  1)]
-        [TestCase(ContinuousEnum.A             ,  0,   7,  8)]
-        [TestCase(ContinuousEnumShiftedUp.A    ,  7,  14,  8)]
-        [TestCase(ContinuousEnumShiftedDown.A  , -5,   2,  8)]
-        [TestCase(EnumWithDuplicates.A         ,  0,   3,  4)]
-        [TestCase(EnumWithHoles.A              ,  0,   6,  4)]
-        [TestCase(EnumWithHolesAndDuplicates.A ,  0,   6,  4)]
-        [TestCase(EnumWithFlags.A              ,  0, 128,  9)]
+        [TestCase((EmptyEnum)0, int.MaxValue, int.MinValue, 0)]
+        [TestCase(SingleValueEnum.A, 0, 0, 1)]
+        [TestCase(ContinuousEnum.A, 0, 7, 8)]
+        [TestCase(ContinuousEnumShiftedUp.A, 7, 14, 8)]
+        [TestCase(ContinuousEnumShiftedDown.A, -5, 2, 8)]
+        [TestCase(EnumWithDuplicates.A, 0, 3, 4)]
+        [TestCase(EnumWithHoles.A, 0, 6, 4)]
+        [TestCase(EnumWithHolesAndDuplicates.A, 0, 6, 4)]
+        [TestCase(EnumWithFlags.A, 0, 128, 9)]
         public void TestEnumCounts<TEnum>(TEnum _, int min, int max, int unique)
             where TEnum : unmanaged, Enum
         {
@@ -104,62 +104,62 @@ namespace Unity.Multiplayer.Tools.Common.Tests
             DiscontinuousEnum,
         }
 
-        [TestCase((EmptyEnum)0                 , ExpectedExceptionType.EmptyEnum)]
-        [TestCase(SingleValueEnum.A            , ExpectedExceptionType.None)]
-        [TestCase(ContinuousEnum.A             , ExpectedExceptionType.None)]
-        [TestCase(ContinuousEnum_U8.A          , ExpectedExceptionType.UnhandledBackingType)]
-        [TestCase(ContinuousEnum_I16.A         , ExpectedExceptionType.UnhandledBackingType)]
-        [TestCase(ContinuousEnum_U32.A         , ExpectedExceptionType.UnhandledBackingType)]
-        [TestCase(ContinuousEnum_I64.A         , ExpectedExceptionType.UnhandledBackingType)]
-        [TestCase(ContinuousEnumShiftedUp.A    , ExpectedExceptionType.NonZeroEnumMinimumValue)]
-        [TestCase(ContinuousEnumShiftedDown.A  , ExpectedExceptionType.NonZeroEnumMinimumValue)]
-        [TestCase(EnumWithDuplicates.A         , ExpectedExceptionType.None)]
-        [TestCase(EnumWithHoles.A              , ExpectedExceptionType.DiscontinuousEnum)]
-        [TestCase(EnumWithHolesAndDuplicates.A , ExpectedExceptionType.DiscontinuousEnum)]
-        [TestCase(EnumWithFlags.A              , ExpectedExceptionType.DiscontinuousEnum)]
+        [TestCase((EmptyEnum)0, ExpectedExceptionType.EmptyEnum)]
+        [TestCase(SingleValueEnum.A, ExpectedExceptionType.None)]
+        [TestCase(ContinuousEnum.A, ExpectedExceptionType.None)]
+        [TestCase(ContinuousEnum_U8.A, ExpectedExceptionType.UnhandledBackingType)]
+        [TestCase(ContinuousEnum_I16.A, ExpectedExceptionType.UnhandledBackingType)]
+        [TestCase(ContinuousEnum_U32.A, ExpectedExceptionType.UnhandledBackingType)]
+        [TestCase(ContinuousEnum_I64.A, ExpectedExceptionType.UnhandledBackingType)]
+        [TestCase(ContinuousEnumShiftedUp.A, ExpectedExceptionType.NonZeroEnumMinimumValue)]
+        [TestCase(ContinuousEnumShiftedDown.A, ExpectedExceptionType.NonZeroEnumMinimumValue)]
+        [TestCase(EnumWithDuplicates.A, ExpectedExceptionType.None)]
+        [TestCase(EnumWithHoles.A, ExpectedExceptionType.DiscontinuousEnum)]
+        [TestCase(EnumWithHolesAndDuplicates.A, ExpectedExceptionType.DiscontinuousEnum)]
+        [TestCase(EnumWithFlags.A, ExpectedExceptionType.DiscontinuousEnum)]
         public void TestEnumContinuity<TEnum>(TEnum _, ExpectedExceptionType expectedExceptionType)
             where TEnum : unmanaged, Enum
         {
             switch (expectedExceptionType)
             {
-            case ExpectedExceptionType.UnhandledBackingType:
-            {
-                Assert.Throws<UnhandledEnumBackingTypeException<TEnum, int>>(() =>
-                {
-                    EnumContinuity.ValidateEnumForEnumMap<TEnum, int>();
-                });
-                break;
-            }
-            case ExpectedExceptionType.EmptyEnum:
-            {
-                Assert.Throws<EmptyEnumException<TEnum, int>>(() =>
-                {
-                    EnumContinuity.ValidateEnumForEnumMap<TEnum, int>();
-                });
-                break;
-            }
-            case ExpectedExceptionType.NonZeroEnumMinimumValue:
-            {
-                Assert.Throws<NonZeroEnumMinimumValueException<TEnum, int>>(() =>
-                {
-                    EnumContinuity.ValidateEnumForEnumMap<TEnum, int>();
-                });
-                break;
-            }
-            case ExpectedExceptionType.DiscontinuousEnum:
-            {
-                Assert.Throws<DiscontinuousEnumException<TEnum, int>>(() =>
-                {
-                    EnumContinuity.ValidateEnumForEnumMap<TEnum, int>();
-                });
-                break;
-            }
-            default:
-                Assert.DoesNotThrow(() =>
-                {
-                    EnumContinuity.ValidateEnumForEnumMap<TEnum, int>();
-                });
-                break;
+                case ExpectedExceptionType.UnhandledBackingType:
+                    {
+                        Assert.Throws<UnhandledEnumBackingTypeException<TEnum, int>>(() =>
+                        {
+                            EnumContinuity.ValidateEnumForEnumMap<TEnum, int>();
+                        });
+                        break;
+                    }
+                case ExpectedExceptionType.EmptyEnum:
+                    {
+                        Assert.Throws<EmptyEnumException<TEnum, int>>(() =>
+                        {
+                            EnumContinuity.ValidateEnumForEnumMap<TEnum, int>();
+                        });
+                        break;
+                    }
+                case ExpectedExceptionType.NonZeroEnumMinimumValue:
+                    {
+                        Assert.Throws<NonZeroEnumMinimumValueException<TEnum, int>>(() =>
+                        {
+                            EnumContinuity.ValidateEnumForEnumMap<TEnum, int>();
+                        });
+                        break;
+                    }
+                case ExpectedExceptionType.DiscontinuousEnum:
+                    {
+                        Assert.Throws<DiscontinuousEnumException<TEnum, int>>(() =>
+                        {
+                            EnumContinuity.ValidateEnumForEnumMap<TEnum, int>();
+                        });
+                        break;
+                    }
+                default:
+                    Assert.DoesNotThrow(() =>
+                    {
+                        EnumContinuity.ValidateEnumForEnumMap<TEnum, int>();
+                    });
+                    break;
             }
         }
 
@@ -185,11 +185,11 @@ namespace Unity.Multiplayer.Tools.Common.Tests
             map[G] = map[E] + map[F];
             map[H] = map[F] + map[G];
 
-            Assert.AreEqual( 1, map[A]);
-            Assert.AreEqual( 2, map[B]);
-            Assert.AreEqual( 3, map[C]);
-            Assert.AreEqual( 5, map[D]);
-            Assert.AreEqual( 8, map[E]);
+            Assert.AreEqual(1, map[A]);
+            Assert.AreEqual(2, map[B]);
+            Assert.AreEqual(3, map[C]);
+            Assert.AreEqual(5, map[D]);
+            Assert.AreEqual(8, map[E]);
             Assert.AreEqual(13, map[F]);
             Assert.AreEqual(21, map[G]);
             Assert.AreEqual(34, map[H]);
@@ -209,11 +209,11 @@ namespace Unity.Multiplayer.Tools.Common.Tests
                 { G, 21 },
                 { H, 34 },
             };
-            Assert.AreEqual( 1, map[A]);
-            Assert.AreEqual( 2, map[B]);
-            Assert.AreEqual( 3, map[C]);
-            Assert.AreEqual( 5, map[D]);
-            Assert.AreEqual( 8, map[E]);
+            Assert.AreEqual(1, map[A]);
+            Assert.AreEqual(2, map[B]);
+            Assert.AreEqual(3, map[C]);
+            Assert.AreEqual(5, map[D]);
+            Assert.AreEqual(8, map[E]);
             Assert.AreEqual(13, map[F]);
             Assert.AreEqual(21, map[G]);
             Assert.AreEqual(34, map[H]);
@@ -231,11 +231,11 @@ namespace Unity.Multiplayer.Tools.Common.Tests
             map[F] = 13;
             map[G] = 21;
             map[H] = 34;
-            Assert.AreEqual( 1, map[A]);
-            Assert.AreEqual( 2, map[B]);
-            Assert.AreEqual( 3, map[C]);
-            Assert.AreEqual( 5, map[D]);
-            Assert.AreEqual( 8, map[E]);
+            Assert.AreEqual(1, map[A]);
+            Assert.AreEqual(2, map[B]);
+            Assert.AreEqual(3, map[C]);
+            Assert.AreEqual(5, map[D]);
+            Assert.AreEqual(8, map[E]);
             Assert.AreEqual(13, map[F]);
             Assert.AreEqual(21, map[G]);
             Assert.AreEqual(34, map[H]);

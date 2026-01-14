@@ -12,9 +12,9 @@ namespace Unity.Multiplayer.Tools.Common
         /// <summary>
         /// Bandwidth that doesn't fall into any of the other categories
         /// </summary>
-        Other  = 1 << 0,
+        Other = 1 << 0,
         NetVar = 1 << 1,
-        Rpc    = 1 << 2,
+        Rpc = 1 << 2,
 
         All = Other | NetVar | Rpc
     }

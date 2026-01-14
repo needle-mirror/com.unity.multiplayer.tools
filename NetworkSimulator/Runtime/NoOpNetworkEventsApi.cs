@@ -31,6 +31,6 @@ namespace Unity.Multiplayer.Tools.NetworkSimulator.Runtime
         public void ChangeConnectionPreset(INetworkSimulatorPreset preset) => this.NoEffectWarning();
 
         /// <inheritdoc />
-        public INetworkSimulatorPreset CurrentPreset  => this.NoEffectWarning<INetworkSimulatorPreset>();
+        public INetworkSimulatorPreset CurrentPreset => this.NoEffectWarning<INetworkSimulatorPreset>();
     }
 }

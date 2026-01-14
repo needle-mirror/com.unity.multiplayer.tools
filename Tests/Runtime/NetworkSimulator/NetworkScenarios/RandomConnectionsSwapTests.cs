@@ -51,7 +51,7 @@ namespace Unity.Multiplayer.Tools.Tests.NetworkSimulator
                 ConnectionPreset = NetworkSimulatorPresets.None
             });
             m_NetworkSimulator = ScenariosHelper.CreateNetworkSimulator(); // Initializing this in Setup fails to assign the scenario before Start is called.
-            
+
             Assert.False(Equals(m_ConnectionsSwitch, m_NetworkSimulator.Scenario));
             ScenariosHelper.AssertScenarioInitialState(m_ConnectionsSwitch, false);
             Assert.DoesNotThrow(() =>
@@ -152,7 +152,7 @@ namespace Unity.Multiplayer.Tools.Tests.NetworkSimulator
             });
 
             m_NetworkSimulator.m_PropertyChanged -= AssertPresetChange;
-            
+
             void AssertPresetChange(object sender, PropertyChangedEventArgs args)
             {
                 if (args.PropertyName != nameof(m_NetworkSimulator.ConnectionPreset))

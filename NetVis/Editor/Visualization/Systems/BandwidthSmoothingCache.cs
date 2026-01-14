@@ -53,7 +53,7 @@ namespace Unity.Multiplayer.Tools.NetVis.Editor.Visualization
                 m_LastUpdateTime = time;
                 return;
             }
-            
+
             var deltaTime = time - m_LastUpdateTime;
             m_LastUpdateTime = time;
 

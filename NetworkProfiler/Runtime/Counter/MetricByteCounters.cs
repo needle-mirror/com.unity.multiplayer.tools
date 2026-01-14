@@ -26,7 +26,7 @@ namespace Unity.Multiplayer.Tools.NetworkProfiler.Runtime
             IReadOnlyList<TEventData> receivedMetrics)
             where TEventData : struct, INetworkMetricEvent
         {
-            var sentValue  = 0L;
+            var sentValue = 0L;
             for (var i = 0; i < sentMetrics.Count; i++)
             {
                 var metric = sentMetrics[i];

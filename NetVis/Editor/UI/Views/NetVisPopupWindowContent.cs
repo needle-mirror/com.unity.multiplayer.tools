@@ -22,11 +22,11 @@ namespace Unity.Multiplayer.Tools.NetVis.Editor.UI
                     paddingTop = new StyleLength(new Length(4, LengthUnit.Pixel)),
                 },
             };
-            
+
             // Set initial content height large enough to fit all content, it will be updated dynamically in OnGUI.
             m_WindowContentSize = new Vector2(width, 4096);
         }
-        
+
         public override Vector2 GetWindowSize()
         {
             return m_WindowContentSize;

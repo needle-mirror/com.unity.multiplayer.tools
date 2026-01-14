@@ -32,7 +32,7 @@ namespace Unity.Multiplayer.Tools.NetStats
 
         internal static void RegisterType<T>() where T : unmanaged
         {
-            if(k_TypeNames.ContainsKey(typeof(T)))
+            if (k_TypeNames.ContainsKey(typeof(T)))
             {
                 return;
             }

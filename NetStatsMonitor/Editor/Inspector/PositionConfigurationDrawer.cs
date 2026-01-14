@@ -48,7 +48,7 @@ namespace Unity.Multiplayer.Tools.NetStatsMonitor.Editor
             var (overrideProp, overrideField) = Content.AddFieldForProperty(property, k_OverrideFieldName);
 
             var (_, posLeftField) = Content.AddFieldForProperty(property, k_PositionLeftFieldName);
-            var (_, posTopField)  = Content.AddFieldForProperty(property, k_PositionTopFieldName);
+            var (_, posTopField) = Content.AddFieldForProperty(property, k_PositionTopFieldName);
 
             void UpdateFieldVisibility()
             {

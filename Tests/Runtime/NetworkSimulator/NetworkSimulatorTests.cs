@@ -7,14 +7,17 @@ using UnityEngine.TestTools;
 
 namespace Unity.Multiplayer.Tools.Tests.NetworkSimulator
 {
-    class NetworkSimulatorTests
+    internal class NetworkSimulatorTests
     {
         Tools.NetworkSimulator.Runtime.NetworkSimulator m_NetworkSimulator;
 
         [SetUp]
         public void Setup()
         {
-            m_NetworkSimulator = new GameObject().AddComponent<Tools.NetworkSimulator.Runtime.NetworkSimulator>();
+            if (m_NetworkSimulator == null)
+            {
+                m_NetworkSimulator = new GameObject().AddComponent<Tools.NetworkSimulator.Runtime.NetworkSimulator>();
+            }
         }
 
         [Test]
@@ -31,7 +34,7 @@ namespace Unity.Multiplayer.Tools.Tests.NetworkSimulator
             m_NetworkSimulator.ConnectionPreset = preset;
             Assert.AreEqual(preset, m_NetworkSimulator.ConnectionPreset);
         }
-        
+
         [Test]
         public void SetConnectionPreset_TestingAllValidPresets()
         {
@@ -41,38 +44,38 @@ namespace Unity.Multiplayer.Tools.Tests.NetworkSimulator
                 Assert.AreEqual(preset, m_NetworkSimulator.ConnectionPreset);
             }
         }
-        
+
         [Test]
         public void ConnectionPresets_SpecificPresetsExist()
         {
             var presets = ScenariosHelper.GetAllValidPresetsArray();
 
             Assert.IsTrue(presets.Any(nonePreset => nonePreset.Name == "None"));
-            Assert.IsTrue(presets.Any(homeBroadbandPreset => homeBroadbandPreset.Name == "Home Broadband [WIFI, Cable, Console, PC]" 
+            Assert.IsTrue(presets.Any(homeBroadbandPreset => homeBroadbandPreset.Name == "Home Broadband [WIFI, Cable, Console, PC]"
                                                                 && homeBroadbandPreset.Description == "Typical of desktop and console platforms (and generally speaking most mobile players too)."
                                                                 && homeBroadbandPreset.PacketDelayMs == 32
                                                                 && homeBroadbandPreset.PacketJitterMs == 12
                                                                 && homeBroadbandPreset.PacketLossPercent == 2
                                                                 && homeBroadbandPreset.PacketLossInterval == 0));
         }
-        
+
         [Test]
         public void SetConnectionPreset_CorrectCallbacksCalled()
         {
             var preset = new NetworkSimulatorPreset();
             var propertyChangedCallbackIsCalled = false;
-            
+
             m_NetworkSimulator.m_PropertyChanged += (_, args) =>
             {
                 Assert.AreEqual(nameof(m_NetworkSimulator.ConnectionPreset), args.PropertyName);
                 propertyChangedCallbackIsCalled = true;
             };
-            
+
             m_NetworkSimulator.ScenarioChangedEvent += (_) =>
             {
                 Assert.Fail("ScenarioChangedEvent should not be called");
             };
-            
+
             m_NetworkSimulator.ConnectionPreset = preset;
             Assert.AreEqual(preset, m_NetworkSimulator.ConnectionPreset);
             Assert.True(propertyChangedCallbackIsCalled);
@@ -92,26 +95,26 @@ namespace Unity.Multiplayer.Tools.Tests.NetworkSimulator
             m_NetworkSimulator.Scenario = scenario;
             Assert.AreEqual(scenario, m_NetworkSimulator.Scenario);
         }
-        
+
         [Test]
         public void SetScenario_CorrectCallbacksCalled()
         {
             var scenario = new MockNetworkScenario();
             var propertyChangedCallbackIsCalled = false;
             var scenarioChangedCallbackIsCalled = false;
-            
+
             m_NetworkSimulator.m_PropertyChanged += (_, args) =>
             {
-                Assert.Contains(args.PropertyName, new List<string> { nameof(m_NetworkSimulator.Scenario), nameof(m_NetworkSimulator.ConnectionPreset) } );
+                Assert.Contains(args.PropertyName, new List<string> { nameof(m_NetworkSimulator.Scenario), nameof(m_NetworkSimulator.ConnectionPreset) });
                 propertyChangedCallbackIsCalled = true;
             };
-            
+
             m_NetworkSimulator.ScenarioChangedEvent += (newScenario) =>
             {
                 Assert.AreEqual(scenario, newScenario);
                 scenarioChangedCallbackIsCalled = true;
             };
-            
+
             m_NetworkSimulator.Scenario = scenario;
             Assert.AreEqual(scenario, m_NetworkSimulator.Scenario);
             Assert.True(propertyChangedCallbackIsCalled);
@@ -138,6 +141,17 @@ namespace Unity.Multiplayer.Tools.Tests.NetworkSimulator
             if (m_NetworkSimulator != null)
             {
                 Object.DestroyImmediate(m_NetworkSimulator.gameObject);
+                m_NetworkSimulator = null;
+            }
+        }
+
+        [OneTimeTearDown]
+        public void OneTimeTearDown()
+        {
+            var remainingObjects = Object.FindObjectsByType<Tools.NetworkSimulator.Runtime.NetworkSimulator>(FindObjectsInactive.Include, FindObjectsSortMode.None);
+            foreach (var networkSimulator in remainingObjects)
+            {
+                Object.DestroyImmediate(networkSimulator.gameObject);
             }
         }
     }

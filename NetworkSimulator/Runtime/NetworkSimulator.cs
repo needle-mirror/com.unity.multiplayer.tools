@@ -31,7 +31,7 @@ namespace Unity.Multiplayer.Tools.NetworkSimulator.Runtime
         {
             scenarioPlaybackState = isPaused ? ScenarioPlaybackState.Paused : ScenarioPlaybackState.Running;
         }
-        
+
         [SerializeField]
         internal NetworkSimulatorPresetAsset m_PresetAsset;
 
@@ -55,7 +55,7 @@ namespace Unity.Multiplayer.Tools.NetworkSimulator.Runtime
         INetworkSimulatorPreset m_CachedPreset;
         bool m_CachedScenarioIsPaused;
         ScenarioPlaybackState m_ScenarioPlaybackState = ScenarioPlaybackState.Initial;
-        
+
         // Analytics
         internal bool UsedEditorGUI;
         private string m_LastPresetName;
@@ -160,7 +160,7 @@ namespace Unity.Multiplayer.Tools.NetworkSimulator.Runtime
                 }
 
                 scenarioPlaybackState = ScenarioPlaybackState.Initial;
-                
+
                 if (Application.isPlaying)
                 {
                     previousValue?.Dispose();
@@ -213,7 +213,7 @@ namespace Unity.Multiplayer.Tools.NetworkSimulator.Runtime
             }
 
             Analytic(forceUpdate);
-            
+
             m_NetworkTransportApi.UpdateNetworkParameters(
                 new()
                 {
@@ -259,12 +259,12 @@ namespace Unity.Multiplayer.Tools.NetworkSimulator.Runtime
             };
 #endif
         }
-        
+
         void OnEnable()
         {
 
             SetUsedEditorReset();
-            
+
             if (m_CachedPreset != null)
             {
                 ConnectionPreset = m_CachedPreset;
@@ -296,12 +296,12 @@ namespace Unity.Multiplayer.Tools.NetworkSimulator.Runtime
             m_CachedPreset = ConnectionPreset;
             ConnectionPreset = NetworkSimulatorPresets.None;
             UpdateLiveParameters(true);
-            
+
             if (Scenario != null)
             {
                 Scenario.PauseStateChangedEvent -= OnPauseStateChangedEvent;
             }
-            
+
             NetworkAdapters.OnAdapterAdded -= NetworkAdapterAdded;
         }
 

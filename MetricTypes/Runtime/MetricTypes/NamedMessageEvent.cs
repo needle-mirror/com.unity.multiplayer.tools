@@ -31,9 +31,9 @@ namespace Unity.Multiplayer.Tools.MetricTypes
         {
             get
             {
-                ulong connectionHash = (ulong) Connection.GetHashCode();
-                ulong nameHash = (ulong) Name.GetHashCode();
-                ulong bytesCountHash = (ulong) BytesCount.GetHashCode();
+                ulong connectionHash = (ulong)Connection.GetHashCode();
+                ulong nameHash = (ulong)Name.GetHashCode();
+                ulong bytesCountHash = (ulong)BytesCount.GetHashCode();
 
                 return connectionHash + nameHash + bytesCountHash;
             }

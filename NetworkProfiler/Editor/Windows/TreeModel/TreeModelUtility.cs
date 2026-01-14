@@ -66,7 +66,7 @@ namespace Unity.Multiplayer.Tools.NetworkProfiler.Editor
                 .AddUnderConnection(
                     MetricType.NetworkMessage,
                     (NetworkMessageEvent metric, TreeModelNode node)
-                        => new NetworkMessageEventViewModel(metric.TreeViewId,metric.Name.ToString(), node.RowData),
+                        => new NetworkMessageEventViewModel(metric.TreeViewId, metric.Name.ToString(), node.RowData),
                     metric => !k_ExcludedNetworkMessageTypeNames.Contains(metric.Name.ToString()))
                 .Build();
         }
@@ -79,7 +79,7 @@ namespace Unity.Multiplayer.Tools.NetworkProfiler.Editor
             }
 
             return new TreeModelBuilder(metrics)
-                
+
                 .AddUnderNetworkObject(
                     MetricType.ObjectSpawned,
                     (ObjectSpawnedEvent metric, TreeModelNode node)

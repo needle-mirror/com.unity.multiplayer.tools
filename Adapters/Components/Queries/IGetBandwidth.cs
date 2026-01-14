@@ -11,7 +11,7 @@ namespace Unity.Multiplayer.Tools.Adapters
         /// <summary>
         /// Returns the types of bandwidth that are supported by this adapter
         /// </summary>
-         BandwidthTypes SupportedBandwidthTypes { get; }
+        BandwidthTypes SupportedBandwidthTypes { get; }
 
         /// <summary>
         /// Returns the amount of bandwidth related to this object, filtered by bandwidth type and direction.
@@ -36,7 +36,7 @@ namespace Unity.Multiplayer.Tools.Adapters
         /// by the underlying implementation.
         /// </summary>
         event Action OnBandwidthUpdated;
-        
+
         /// <summary>
         /// Returns true if the bandwidth cache is empty, which might happen short after starting recording metrics.
         /// </summary>

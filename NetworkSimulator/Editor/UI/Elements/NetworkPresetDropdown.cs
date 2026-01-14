@@ -28,7 +28,7 @@ namespace Unity.Multiplayer.Tools.NetworkSimulator.Editor.UI
             return choices.IndexOf(choice);
         }
 
-        internal void UpdatePresetDropdown([CanBeNull]string configurationName)
+        internal void UpdatePresetDropdown([CanBeNull] string configurationName)
         {
             configurationName = string.IsNullOrEmpty(configurationName)
                 ? Custom

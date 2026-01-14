@@ -33,7 +33,7 @@ namespace Unity.Multiplayer.Tools.Common
             ((direction & NetworkDirection.Received) != NetworkDirection.None ? Received : 0);
 
         public NetworkDirection Direction =>
-            (Sent     > 0f ? NetworkDirection.Sent : NetworkDirection.None) |
+            (Sent > 0f ? NetworkDirection.Sent : NetworkDirection.None) |
             (Received > 0f ? NetworkDirection.Received : NetworkDirection.None);
 
         public long Total => Sent + Received;

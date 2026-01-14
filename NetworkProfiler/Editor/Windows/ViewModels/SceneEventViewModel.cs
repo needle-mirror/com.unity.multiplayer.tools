@@ -11,7 +11,8 @@ namespace Unity.Multiplayer.Tools.NetworkProfiler.Editor
                 GenerateName(sceneName, eventType),
                 MetricType.SceneEvent,
                 onSelectedCallback,
-                treeViewid) { }
+                treeViewid)
+        { }
 
         static string GenerateName(string sceneName, string eventType)
         {

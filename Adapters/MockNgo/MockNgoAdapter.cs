@@ -212,7 +212,7 @@ namespace Unity.Multiplayer.Tools.Adapters.MockNgo
         }
 
         public bool IsCacheEmpty => false;
-        
+
         public BandwidthTypes SupportedBandwidthTypes =>
             BandwidthTypes.Other | BandwidthTypes.NetVar | BandwidthTypes.Rpc;
 
