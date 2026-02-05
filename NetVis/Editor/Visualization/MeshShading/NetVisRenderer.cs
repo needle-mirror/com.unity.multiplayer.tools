@@ -237,8 +237,14 @@ namespace Unity.Multiplayer.Tools.NetVis.Editor.Visualization
                     objectIdToColors[objectId] = Color.clear;
                     continue;
                 }
-                var instanceId = obj.GetInstanceID();
-                if (m_InstanceIdToColor.TryGetValue(instanceId, out var color))
+
+                int instanceID;
+#if UNITY_6000_4_OR_NEWER
+                instanceID = obj.GetEntityId().GetHashCode();
+#else
+                instanceID = obj.GetInstanceID();
+#endif
+                if (m_InstanceIdToColor.TryGetValue(instanceID, out var color))
                 {
                     objectIdToColors[objectId] = color;
                 }

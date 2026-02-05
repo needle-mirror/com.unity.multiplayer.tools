@@ -1,4 +1,5 @@
 using System;
+using Unity.Multiplayer.Tools.Common.Helpers;
 using Unity.Multiplayer.Tools.Editor.MultiplayerToolsWindow.Analytics;
 using UnityEditor;
 
@@ -10,7 +11,7 @@ namespace Unity.Multiplayer.Tools.Editor.MultiplayerToolsWindow
 
         public string ToolTip => "Add ownership info in the hierarchy view";
 
-        public string DocumentationUrl => null;
+        public string DocumentationUrl => Doc.HierarchyWindowDecorator;
 
 #if UNITY_NETCODE_GAMEOBJECTS_1_1_ABOVE
         public bool IsAvailable => true;

@@ -41,8 +41,13 @@ namespace Unity.Multiplayer.Tools.Editor.MultiplayerToolsWindow
         static HierarchyWindowDecorator()
         {
             s_Enabled = EditorPrefs.GetBool(k_EditorPrefsKey, false);
-            EditorApplication.hierarchyWindowItemOnGUI -= DecoratorHandler;
-            EditorApplication.hierarchyWindowItemOnGUI += DecoratorHandler;
+#if UNITY_6000_4_OR_NEWER
+            EditorApplication.hierarchyWindowItemByEntityIdOnGUI -= EntityDecoratorHandler;
+            EditorApplication.hierarchyWindowItemByEntityIdOnGUI += EntityDecoratorHandler;
+#else
+            EditorApplication.hierarchyWindowItemOnGUI -= InstanceDecoratorHandler;
+            EditorApplication.hierarchyWindowItemOnGUI += InstanceDecoratorHandler;
+#endif
 
             // Load icons based on dark/light theme
             if (EditorGUIUtility.isProSkin)
@@ -56,8 +61,20 @@ namespace Unity.Multiplayer.Tools.Editor.MultiplayerToolsWindow
                 s_OwnershipInActiveIcon = AssetDatabase.LoadAssetAtPath<Texture2D>(k_NonOwnerLightIconPath);
             }
         }
+#if UNITY_6000_4_OR_NEWER
+        static void EntityDecoratorHandler(EntityId entityId, Rect rect)
+        {
+            if (!s_Enabled) return;
+            s_TextStyle ??= new GUIStyle(EditorStyles.label) {padding = new RectOffset(0, 0, 0, 0)};
 
-        static void DecoratorHandler(int instanceID, Rect rect)
+            var gameObject = EditorUtility.EntityIdToObject(entityId) as GameObject;
+            if (gameObject == null)
+                return;
+
+            RenderNetworkObjectIcon(rect, gameObject);
+        }
+#else
+        static void InstanceDecoratorHandler(int instanceID, Rect rect)
         {
             if (!s_Enabled) return;
             s_TextStyle ??= new GUIStyle(EditorStyles.label) {padding = new RectOffset(0, 0, 0, 0)};
@@ -68,7 +85,7 @@ namespace Unity.Multiplayer.Tools.Editor.MultiplayerToolsWindow
 
             RenderNetworkObjectIcon(rect, gameObject);
         }
-
+#endif
         static void RenderNetworkObjectIcon(Rect rect, GameObject go)
         {
             if (!go.TryGetComponent<NetworkObject>(out var no)) return;

@@ -1,4 +1,5 @@
 using System;
+using Unity.Multiplayer.Tools.Common.Helpers;
 using Unity.Multiplayer.Tools.Editor.MultiplayerToolsWindow.Analytics;
 using Unity.Multiplayer.Tools.NetStatsMonitor;
 using UnityEditor;
@@ -10,8 +11,8 @@ namespace Unity.Multiplayer.Tools.Editor.MultiplayerToolsWindow
     {
         public string Name => "Runtime Network Stats Monitor";
         public string ToolTip => "The Runtime Network Stats Monitor enables you to monitor the bandwidth usage of your game at runtime.";
-        public string ButtonText => "Add to scene";
-        public string DocumentationUrl => "https://docs-multiplayer.unity3d.com/tools/current/RNSM/";
+        public string ButtonText => "Add to Scene";
+        public string DocumentationUrl => Doc.RuntimeNetStatsMonitor;
 
 #if UNITY_NETCODE_GAMEOBJECTS_1_1_ABOVE
         public bool IsAvailable => true;

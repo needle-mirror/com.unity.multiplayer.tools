@@ -1,5 +1,4 @@
 .docIcon {
-    background-image: url('Icons/Help@2x.png');
     -unity-background-scale-mode: scale-to-fit;
     min-width: 16px;
     min-height: 16px;

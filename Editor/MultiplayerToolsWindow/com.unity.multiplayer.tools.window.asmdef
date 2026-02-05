@@ -36,6 +36,11 @@
             "name": "Unity",
             "expression": "2023.1.14f1",
             "define": "NETVIS_AVAILABLE"
+        },
+        {
+            "name": "Unity",
+            "expression": "6000.4.0b5",
+            "define": "UNITY_6000_4_OR_NEWER"
         }
     ],
     "noEngineReferences": false

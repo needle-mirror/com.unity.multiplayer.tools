@@ -1,7 +1,7 @@
 {
   "name": "com.unity.multiplayer.tools",
   "displayName": "Multiplayer Tools",
-  "version": "2.2.7",
+  "version": "2.2.8",
   "unity": "6000.0",
   "description": "Adds a suite of tools that improve workflows for multiplayer development",
   "dependencies": {
@@ -27,15 +27,15 @@
     }
   ],
   "_upm": {
-    "changelog": "### Changed\n\n- Added define to address updated API calls on newer editors.\n- Added define to address breaking API changes related to EntityID introduction on newer editors which would affect NGO.\n\n### Fixed\n\n- Reduced GC allocations in Adapters."
+    "changelog": "### Fixed\n\n- Fixed Settings Panel in the Network Visualization Overlay closing when switching between Bandwidth or Ownership Panels even though the Settings do not depend on either one.\n- Addressing InstanceID deprecation on 6000.4 and higher editors.\n- Blurry light theme icons.\n- Light theme doc icons in dark theme.\n- Broken doc links.\n- Capitalization on `Add to Scene` buttons."
   },
   "upmCi": {
-    "footprint": "9e5663daf8a003a068fc4bdcc3178c5512fa1796"
+    "footprint": "c6704e6e5e9bb4a2d8137e246bd7afbbed0f8751"
   },
   "documentationUrl": "https://docs.unity3d.com/Packages/com.unity.multiplayer.tools@2.2/manual/index.html",
   "repository": {
     "url": "https://github.com/Unity-Technologies/com.unity.multiplayer.tools.git",
     "type": "git",
-    "revision": "0cc1db3ea676b3e131da4547a4b2874db483fac8"
+    "revision": "c5c4b58a30d521eb711755dd7b5d4d9eee440163"
   }
 }

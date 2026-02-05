@@ -1,4 +1,5 @@
 using System;
+using Unity.Multiplayer.Tools.Common.Helpers;
 using Unity.Multiplayer.Tools.Editor.MultiplayerToolsWindow.Analytics;
 using UnityEditor;
 using UnityEngine;
@@ -13,7 +14,7 @@ namespace Unity.Multiplayer.Tools.Editor.MultiplayerToolsWindow
         public string Name => "Network Scene Visualization";
         public string ToolTip => "Overlay info in the scene view (ownership, bandwidth)";
         public string ButtonText => "Open";
-        public string DocumentationUrl => "https://docs-multiplayer.unity3d.com/tools/current/netscenevis/";
+        public string DocumentationUrl => Doc.NetSceneVis;
 
 #if NETVIS_AVAILABLE && UNITY_NETCODE_GAMEOBJECTS_1_1_ABOVE
         public bool IsAvailable => true;

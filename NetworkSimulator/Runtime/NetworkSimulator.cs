@@ -3,6 +3,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using Unity.Multiplayer.Tools.Adapters;
+using Unity.Multiplayer.Tools.Common.Helpers;
 using UnityEngine;
 #if UNITY_EDITOR && UNITY_2023_2_OR_NEWER
 using UnityEditor;
@@ -15,6 +16,7 @@ namespace Unity.Multiplayer.Tools.NetworkSimulator.Runtime
     /// Add this component to any game object to configure network simulation parameters.
     /// </summary>
     [AddComponentMenu("Netcode/Network Simulator")]
+    [HelpURL(Doc.NetworkSimulator)]
     public partial class NetworkSimulator : MonoBehaviour, INotifyPropertyChanged
     {
         /// <summary>

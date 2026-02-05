@@ -21,6 +21,7 @@
 [assembly: InternalsVisibleTo("Unity.Multiplayer.Tools.NetVis.Editor.Visualization")]
 [assembly: InternalsVisibleTo("Unity.Multiplayer.Tools.DependencyInjection")]
 [assembly: InternalsVisibleTo("Unity.Multiplayer.Tools.DependencyInjection.UIElements")]
+[assembly: InternalsVisibleTo("com.unity.multiplayer.tools.window")]
 
 // Test assemblies
 #if UNITY_INCLUDE_TESTS

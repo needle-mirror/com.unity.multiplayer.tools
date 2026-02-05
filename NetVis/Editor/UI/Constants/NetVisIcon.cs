@@ -1,5 +1,6 @@
 using System.Threading.Tasks;
 using Unity.Multiplayer.Tools.Editor;
+using UnityEditor;
 using UnityEngine;
 
 namespace Unity.Multiplayer.Tools.NetVis.Editor.UI
@@ -40,7 +41,7 @@ namespace Unity.Multiplayer.Tools.NetVis.Editor.UI
         public static string GetPathWithExtension(this NetVisIcon icon, EditorTheme theme, bool selected = false)
             => GetPath(icon, theme, selected) + ".png";
 
-        public static async Task<Texture2D> LoadAsync(this NetVisIcon icon, EditorTheme theme, bool selected = false)
+        public static Texture2D LoadIcon(this NetVisIcon icon, EditorTheme theme, bool selected = false)
         {
             var iconPath = icon.GetPathWithExtension(theme, selected);
 
@@ -48,15 +49,15 @@ namespace Unity.Multiplayer.Tools.NetVis.Editor.UI
             {
                 return null;
             }
-
-            var iconTexture = await AssetDatabaseHelper.LoadAssetAtPathAsync<Texture2D>(iconPath);
+            
+            var iconTexture = EditorGUIUtility.IconContent(iconPath).image;
 #if UNITY_MP_TOOLS_DEV
             if (iconTexture == null)
             {
                 Debug.LogError($"Unable to load NetVis icon at {iconPath}");
             }
 #endif
-            return iconTexture;
+            return iconTexture as Texture2D;
         }
     }
 }

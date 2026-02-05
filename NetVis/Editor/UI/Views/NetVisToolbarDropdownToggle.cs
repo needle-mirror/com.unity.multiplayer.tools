@@ -15,7 +15,7 @@ namespace Unity.Multiplayer.Tools.NetVis.Editor.UI
             this.tooltip = tooltip;
 
             var editorTheme = EditorGUIUtility.isProSkin ? EditorTheme.Dark : EditorTheme.Light;
-            LoadIcon(icon, editorTheme).Forget();
+            this.icon = icon.LoadIcon(editorTheme);
 
             this.text = text;
 
@@ -24,11 +24,6 @@ namespace Unity.Multiplayer.Tools.NetVis.Editor.UI
             OnMetricChanged(ConfigurationWithEvents.Metric);
             dropdownClicked += ShowOverlayPopUp;
             this.RegisterValueChangedCallback(OnStateChange);
-        }
-
-        async Task LoadIcon(NetVisIcon icon, EditorTheme editorTheme)
-        {
-            this.icon = await icon.LoadAsync(editorTheme);
         }
 
         protected NetVisConfigurationWithEvents ConfigurationWithEvents { get; }

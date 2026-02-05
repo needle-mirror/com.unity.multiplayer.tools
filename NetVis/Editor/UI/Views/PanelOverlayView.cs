@@ -1,4 +1,4 @@
-﻿using System.Threading.Tasks;
+using System.Threading.Tasks;
 using Unity.Multiplayer.Tools.Common;
 using Unity.Multiplayer.Tools.DependencyInjection;
 using Unity.Multiplayer.Tools.DependencyInjection.UIElements;
@@ -13,6 +13,8 @@ namespace Unity.Multiplayer.Tools.NetVis.Editor.UI
     [LoadUxmlView(NetVisEditorPaths.k_UxmlRoot)]
     class PanelOverlayView : InjectedVisualElement<PanelOverlayView>
     {
+        const string k_SettingsPanelOpenKey = "NetVis.SettingsPanelOpen";
+        
         [UxmlQuery] BandwidthConfigurationView BandwidthConfigurationView;
         [UxmlQuery] OwnershipConfigurationView OwnershipConfigurationView;
         [UxmlQuery] CommonSettingsView CommonSettingsView;
@@ -27,24 +29,21 @@ namespace Unity.Multiplayer.Tools.NetVis.Editor.UI
 
         protected override void Initialized()
         {
-            LoadIcons().Forget();
+            LoadIcons();
             SetupBindings();
             OnMetricChanged(Configuration.Metric);
+            bool settingsPanelWasOpen = EditorPrefs.GetBool(k_SettingsPanelOpenKey, false);
+            SettingsToggle.SetValueWithoutNotify(settingsPanelWasOpen);
+            CommonSettingsView.SetInclude(settingsPanelWasOpen);
             this.AddEventLifecycle(OnAttach, OnDetach);
         }
 
-        async Task LoadIcons()
+        void LoadIcons()
         {
             var editorTheme = EditorGUIUtility.isProSkin ? EditorTheme.Dark : EditorTheme.Light;
-            var bandwidthIconTask = NetVisIcon.Bandwidth.LoadAsync(editorTheme);
-            var ownershipIconTask = NetVisIcon.Ownership.LoadAsync(editorTheme);
-            var settingsIconTask = NetVisIcon.Settings.LoadAsync(editorTheme);
-
-            await Task.WhenAll(bandwidthIconTask, ownershipIconTask, settingsIconTask);
-
-            BandwidthIcon.style.backgroundImage = bandwidthIconTask.Result;
-            OwnershipIcon.style.backgroundImage = ownershipIconTask.Result;
-            SettingsIcon.style.backgroundImage = settingsIconTask.Result;
+            BandwidthIcon.style.backgroundImage = NetVisIcon.Bandwidth.LoadIcon(editorTheme);
+            OwnershipIcon.style.backgroundImage = NetVisIcon.Ownership.LoadIcon(editorTheme);
+            SettingsIcon.style.backgroundImage = NetVisIcon.Settings.LoadIcon(editorTheme);
         }
 
         void SetupBindings()
@@ -79,6 +78,7 @@ namespace Unity.Multiplayer.Tools.NetVis.Editor.UI
         void OnSettingsToggled(ChangeEvent<bool> evt)
         {
             CommonSettingsView.SetInclude(evt.newValue);
+            EditorPrefs.SetBool(k_SettingsPanelOpenKey, evt.newValue);
         }
 
         void OnMetricChanged(NetVisMetric metric)
@@ -87,8 +87,6 @@ namespace Unity.Multiplayer.Tools.NetVis.Editor.UI
             OwnershipToggle.SetValueWithoutNotify(metric == NetVisMetric.Ownership);
             BandwidthConfigurationView.SetInclude(metric == NetVisMetric.Bandwidth);
             OwnershipConfigurationView.SetInclude(metric == NetVisMetric.Ownership);
-            SettingsToggle.SetValueWithoutNotify(false);
-            CommonSettingsView.SetInclude(false);
         }
 #if !UNITY_2023_3_OR_NEWER
         public new class UxmlFactory : UxmlFactory<PanelOverlayView, UxmlTraits> { }

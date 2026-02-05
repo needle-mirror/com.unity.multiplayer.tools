@@ -148,7 +148,11 @@ namespace Unity.Multiplayer.Tools.Tests.NetworkSimulator
         [OneTimeTearDown]
         public void OneTimeTearDown()
         {
+#if UNITY_6000_4_OR_NEWER
+            var remainingObjects = Object.FindObjectsByType<Tools.NetworkSimulator.Runtime.NetworkSimulator>(FindObjectsInactive.Include);
+#else
             var remainingObjects = Object.FindObjectsByType<Tools.NetworkSimulator.Runtime.NetworkSimulator>(FindObjectsInactive.Include, FindObjectsSortMode.None);
+#endif
             foreach (var networkSimulator in remainingObjects)
             {
                 Object.DestroyImmediate(networkSimulator.gameObject);

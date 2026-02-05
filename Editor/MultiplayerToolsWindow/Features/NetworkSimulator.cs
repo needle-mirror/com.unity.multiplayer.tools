@@ -1,4 +1,5 @@
 using System;
+using Unity.Multiplayer.Tools.Common.Helpers;
 using Unity.Multiplayer.Tools.Editor.MultiplayerToolsWindow.Analytics;
 using UnityEditor;
 using UnityEngine;
@@ -9,8 +10,8 @@ namespace Unity.Multiplayer.Tools.Editor.MultiplayerToolsWindow
     {
         public string Name => "Network Simulator";
         public string ToolTip => "Enables to simulate adverse network conditions, including in a build";
-        public string ButtonText => "Add to scene";
-        public string DocumentationUrl => "https://docs-multiplayer.unity3d.com/tools/current/tools-network-simulator/";
+        public string ButtonText => "Add to Scene";
+        public string DocumentationUrl => Doc.NetworkSimulator;
 
 #if UTP_TRANSPORT_2_0_ABOVE && UNITY_NETCODE_GAMEOBJECTS_1_1_ABOVE
         public bool IsAvailable => true;

@@ -1,4 +1,5 @@
 using System;
+using Unity.Multiplayer.Tools.Common.Helpers;
 using Unity.Multiplayer.Tools.Editor.MultiplayerToolsWindow.Analytics;
 using UnityEditor;
 
@@ -12,7 +13,7 @@ namespace Unity.Multiplayer.Tools.Editor.MultiplayerToolsWindow
 
         public string ButtonText => "Open";
 
-        public string DocumentationUrl => "https://docs-multiplayer.unity3d.com/tools/current/profiler/";
+        public string DocumentationUrl => Doc.NetworkProfiler;
 
 #if UNITY_NETCODE_GAMEOBJECTS_1_1_ABOVE
         public bool IsAvailable => true;

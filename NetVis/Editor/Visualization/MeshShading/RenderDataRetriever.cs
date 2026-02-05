@@ -18,7 +18,13 @@ namespace Unity.Multiplayer.Tools.NetVis.Editor.Visualization
             gameObject.GetComponentsInChildren(m_RenderersPin);
             foreach (var renderer in m_RenderersPin)
             {
-                dictionary[renderer.GetInstanceID()] = value;
+                int instanceID;
+#if UNITY_6000_4_OR_NEWER
+                instanceID = renderer.GetEntityId().GetHashCode();
+#else
+                instanceID = renderer.GetInstanceID();
+#endif
+                dictionary[instanceID] = value;
             }
         }
     }

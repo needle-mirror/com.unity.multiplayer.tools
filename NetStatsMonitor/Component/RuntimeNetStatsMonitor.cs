@@ -3,6 +3,7 @@ using JetBrains.Annotations;
 using Unity.Multiplayer.Tools.NetStats;
 using UnityEngine;
 using UnityEngine.UIElements;
+using Unity.Multiplayer.Tools.Common.Helpers;
 using Unity.Multiplayer.Tools.NetStatsMonitor.Implementation;
 
 namespace Unity.Multiplayer.Tools.NetStatsMonitor
@@ -12,6 +13,7 @@ namespace Unity.Multiplayer.Tools.NetStatsMonitor
     /// Add this component to a game object in a scene to display network statistics on screen.
     /// </summary>
     [AddComponentMenu("Netcode/Runtime Network Stats Monitor")]
+    [HelpURL(Doc.RuntimeNetStatsMonitor)]
     public class RuntimeNetStatsMonitor : MonoBehaviour
     {
         /// Visibility toggle to hide or show the on-screen display.

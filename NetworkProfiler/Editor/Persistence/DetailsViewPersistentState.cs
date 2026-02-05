@@ -38,48 +38,37 @@ namespace Unity.Multiplayer.Tools.NetworkProfiler.Editor
 
         public static MostRecentlySelectedItem s_mostRecentlySelectedItem;
 #endif
-
-        static int? StateObjectInstanceId
+        
+        static int StateObjectHashCode
         {
-            get
-            {
-                var stateObjectInstanceId = SessionState.GetInt(nameof(DetailsViewPersistentState), -1);
-                if (stateObjectInstanceId == -1)
-                {
-                    return null;
-                }
-
-                return stateObjectInstanceId;
-            }
-            set
-            {
-                if (!value.HasValue)
-                {
-                    throw new ArgumentNullException(nameof(value));
-                }
-
-                SessionState.SetInt(nameof(DetailsViewPersistentState), value.Value);
-            }
+            get => SessionState.GetInt(nameof(DetailsViewPersistentState), -1);
+            set => SessionState.SetInt(nameof(DetailsViewPersistentState), value);
         }
-
+        
         static DetailsViewPersistentState GetOrCreateStateObject()
         {
             if (s_StateObject)
             {
                 return s_StateObject;
             }
-
-            var maybeInstanceId = StateObjectInstanceId;
-            if (maybeInstanceId.HasValue)
+            
+            if(StateObjectHashCode != -1)
             {
-                s_StateObject = EditorUtility.InstanceIDToObject(maybeInstanceId.Value) as DetailsViewPersistentState;
+                var allStateObjects = Resources.FindObjectsOfTypeAll<DetailsViewPersistentState>();
+                foreach(var stateObject in allStateObjects)
+                {
+                    if (stateObject.GetHashCode() == StateObjectHashCode)
+                    {
+                        return s_StateObject = stateObject;
+                    }
+                }
             }
-
+            
             if (!s_StateObject)
             {
                 s_StateObject = CreateInstance<DetailsViewPersistentState>();
                 s_StateObject.hideFlags = HideFlags.HideAndDontSave;
-                StateObjectInstanceId = s_StateObject.GetInstanceID();
+                StateObjectHashCode = s_StateObject.GetHashCode();
             }
 
             return s_StateObject;

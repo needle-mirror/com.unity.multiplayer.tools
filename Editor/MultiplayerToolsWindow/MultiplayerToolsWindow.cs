@@ -63,6 +63,7 @@ namespace Unity.Multiplayer.Tools.Editor.MultiplayerToolsWindow
             var docIcon = root.Q("DocButton");
             docIcon.tooltip = $"Open documentation for {feature.Name}";
             docIcon.style.display = feature.DocumentationUrl == null ? DisplayStyle.None : DisplayStyle.Flex;
+            docIcon.style.backgroundImage = EditorGUIUtility.IconContent("_Help").image as Texture2D;
             var clickable = new Clickable(() => Application.OpenURL(feature.DocumentationUrl));
             docIcon.AddManipulator(clickable);
             var button = root.Q<Button>("OpenButton");
@@ -109,6 +110,7 @@ namespace Unity.Multiplayer.Tools.Editor.MultiplayerToolsWindow
             docButton.AddToClassList("docIcon");
             docButton.tooltip = $"Installation documentation for {packageName}";
             docButton.AddManipulator(new Clickable(() => Application.OpenURL(docUrl)));
+            docButton.style.backgroundImage = EditorGUIUtility.IconContent("_Help").image as Texture2D;
             line.Add(textElement);
             line.Add(docButton);
             parent.Add(line);

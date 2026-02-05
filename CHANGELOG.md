@@ -4,6 +4,17 @@ All notable changes to this package will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
+## [2.2.8] - 2026-02-05
+
+### Fixed
+
+- Fixed Settings Panel in the Network Visualization Overlay closing when switching between Bandwidth or Ownership Panels even though the Settings do not depend on either one.
+- Addressing InstanceID deprecation on 6000.4 and higher editors.
+- Blurry light theme icons.
+- Light theme doc icons in dark theme.
+- Broken doc links.
+- Capitalization on `Add to Scene` buttons.
+
 ## [2.2.7] - 2026-01-14
 
 ### Changed
