@@ -5,9 +5,7 @@ namespace Unity.Multiplayer.Tools.Context
 {
     static class ContextsDefinition
     {
-        internal static IContext[] Contexts { get; }
-
-        static ContextsDefinition()
+        internal static IContext[] GetContextsDefinitions()
         {
             var contexts = new List<IContext>();
 
@@ -15,12 +13,12 @@ namespace Unity.Multiplayer.Tools.Context
 
             InitializeNetVisContexts(runtimeUpdater, contexts);
 
-            Contexts = contexts.ToArray();
+            return contexts.ToArray();
         }
 
         static void InitializeNetVisContexts(IRuntimeUpdater runtimeUpdater, List<IContext> contexts)
         {
-#if NETVIS_AVAILABLE && UNITY_EDITOR
+#if UNITY_EDITOR
             var netVisRuntimeContext = NetVis.Editor.Visualization.NetVisContext.InitializeInstance(runtimeUpdater);
             contexts.Add(netVisRuntimeContext);
             var netVisPresentationContext = NetVis.Editor.UI.PresentationContext.InitializeInstance(

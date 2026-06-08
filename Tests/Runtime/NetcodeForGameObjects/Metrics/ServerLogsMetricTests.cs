@@ -38,8 +38,8 @@ namespace Unity.Multiplayer.Tools.GameObjects.Tests
         [UnityTest]
         public IEnumerator TrackServerLogSentMetric()
         {
-            // Set the client NetworkManager to assure the log is sent
-            NetworkLog.NetworkManagerOverride = Client;
+            // Configure NetworkLog to use the client so the log is sent over the wire
+            NetworkLog.ConfigureIntegrationTestLogging(Client);
             var waitForSentMetric = new WaitForEventMetricValues<ServerLogEvent>(ClientMetrics.Dispatcher, NetworkMetricTypes.ServerLogSent);
 
             var message = Guid.NewGuid().ToString();
@@ -55,7 +55,7 @@ namespace Unity.Multiplayer.Tools.GameObjects.Tests
 
             var sentMetric = sentMetrics.First();
             Assert.AreEqual(Server.LocalClientId, sentMetric.Connection.Id);
-            Assert.AreEqual((uint)NetworkLog.LogType.Warning, (uint)sentMetric.LogLevel);
+            Assert.AreEqual((uint)UnityEngine.LogType.Warning, (uint)sentMetric.LogLevel);
 
             var serializedLength = GetWriteSizeForLog(NetworkLog.LogType.Warning, message);
             Assert.AreEqual(serializedLength + k_MessageHeaderSize, sentMetric.BytesCount);
@@ -64,6 +64,10 @@ namespace Unity.Multiplayer.Tools.GameObjects.Tests
         [UnityTest]
         public IEnumerator TrackServerLogReceivedMetric()
         {
+            // Configure NetworkLog to use the client so the log is actually sent over the wire.
+            // NetcodeIntegrationTest base class configures NetworkLog with the server, which would
+            // cause LogWarningServer to short-circuit and never dispatch a ServerLogMessage.
+            NetworkLog.ConfigureIntegrationTestLogging(Client);
             var waitForReceivedMetric = new WaitForEventMetricValues<ServerLogEvent>(ServerMetrics.Dispatcher, NetworkMetricTypes.ServerLogReceived);
 
             var message = Guid.NewGuid().ToString();
@@ -84,12 +88,6 @@ namespace Unity.Multiplayer.Tools.GameObjects.Tests
 
             var serializedLength = GetWriteSizeForLog(NetworkLog.LogType.Warning, message);
             Assert.AreEqual(serializedLength, receivedMetric.BytesCount);
-        }
-
-        protected override IEnumerator OnTearDown()
-        {
-            NetworkLog.NetworkManagerOverride = null;
-            return base.OnTearDown();
         }
     }
 }

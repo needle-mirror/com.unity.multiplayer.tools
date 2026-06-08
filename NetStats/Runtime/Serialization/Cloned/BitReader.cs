@@ -15,7 +15,7 @@ namespace Unity.Multiplayer.Tools.NetStats
         private readonly unsafe byte* m_BufferPointer;
         private readonly int m_Position;
         private int m_BitPosition;
-#if DEVELOPMENT_BUILD || UNITY_EDITOR
+#if UNITY_ENABLE_CHECKS || UNITY_EDITOR
         private int m_AllowedBitwiseReadMark;
 #endif
 
@@ -37,7 +37,7 @@ namespace Unity.Multiplayer.Tools.NetStats
             m_BufferPointer = m_Reader.Handle->BufferPointer + m_Reader.Handle->Position;
             m_Position = m_Reader.Handle->Position;
             m_BitPosition = 0;
-#if DEVELOPMENT_BUILD || UNITY_EDITOR
+#if UNITY_ENABLE_CHECKS || UNITY_EDITOR
             m_AllowedBitwiseReadMark = (m_Reader.Handle->AllowedReadMark - m_Position) * k_BitsPerByte;
 #endif
         }
@@ -79,7 +79,7 @@ namespace Unity.Multiplayer.Tools.NetStats
             {
                 return false;
             }
-#if DEVELOPMENT_BUILD || UNITY_EDITOR
+#if UNITY_ENABLE_CHECKS || UNITY_EDITOR
             m_AllowedBitwiseReadMark = (int)newBitPosition;
 #endif
             return true;
@@ -92,7 +92,7 @@ namespace Unity.Multiplayer.Tools.NetStats
         /// <param name="bitCount">Amount of bits to read</param>
         public unsafe void ReadBits(out ulong value, uint bitCount)
         {
-#if DEVELOPMENT_BUILD || UNITY_EDITOR
+#if UNITY_ENABLE_CHECKS || UNITY_EDITOR
             if (bitCount > 64)
             {
                 throw new ArgumentOutOfRangeException(nameof(bitCount), "Cannot read more than 64 bits from a 64-bit value!");
@@ -139,7 +139,7 @@ namespace Unity.Multiplayer.Tools.NetStats
         /// <param name="bitCount">Amount of bits to read.</param>
         public void ReadBits(out byte value, uint bitCount)
         {
-#if DEVELOPMENT_BUILD || UNITY_EDITOR
+#if UNITY_ENABLE_CHECKS || UNITY_EDITOR
             int checkPos = (int)(m_BitPosition + bitCount);
             if (checkPos > m_AllowedBitwiseReadMark)
             {
@@ -156,7 +156,7 @@ namespace Unity.Multiplayer.Tools.NetStats
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public unsafe void ReadBit(out bool bit)
         {
-#if DEVELOPMENT_BUILD || UNITY_EDITOR
+#if UNITY_ENABLE_CHECKS || UNITY_EDITOR
             int checkPos = (m_BitPosition + 1);
             if (checkPos > m_AllowedBitwiseReadMark)
             {

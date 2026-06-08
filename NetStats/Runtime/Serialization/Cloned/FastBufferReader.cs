@@ -13,7 +13,7 @@ namespace Unity.Multiplayer.Tools.NetStats
             internal int Position;
             internal int Length;
             internal Allocator Allocator;
-#if DEVELOPMENT_BUILD || UNITY_EDITOR
+#if UNITY_ENABLE_CHECKS || UNITY_EDITOR
             internal int AllowedReadMark;
             internal bool InBitwiseContext;
 #endif
@@ -43,7 +43,7 @@ namespace Unity.Multiplayer.Tools.NetStats
         internal unsafe void CommitBitwiseReads(int amount)
         {
             Handle->Position += amount;
-#if DEVELOPMENT_BUILD || UNITY_EDITOR
+#if UNITY_ENABLE_CHECKS || UNITY_EDITOR
             Handle->InBitwiseContext = false;
 #endif
         }
@@ -67,7 +67,7 @@ namespace Unity.Multiplayer.Tools.NetStats
 
             readerHandle->Length = length;
             readerHandle->Allocator = allocator;
-#if DEVELOPMENT_BUILD || UNITY_EDITOR
+#if UNITY_ENABLE_CHECKS || UNITY_EDITOR
             readerHandle->AllowedReadMark = 0;
             readerHandle->InBitwiseContext = false;
 #endif
@@ -217,7 +217,7 @@ namespace Unity.Multiplayer.Tools.NetStats
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal unsafe void MarkBytesRead(int amount)
         {
-#if DEVELOPMENT_BUILD || UNITY_EDITOR
+#if UNITY_ENABLE_CHECKS || UNITY_EDITOR
             if (Handle->InBitwiseContext)
             {
                 throw new InvalidOperationException(
@@ -239,7 +239,7 @@ namespace Unity.Multiplayer.Tools.NetStats
         /// <returns>A BitReader</returns>
         public unsafe BitReader EnterBitwiseContext()
         {
-#if DEVELOPMENT_BUILD || UNITY_EDITOR
+#if UNITY_ENABLE_CHECKS || UNITY_EDITOR
             Handle->InBitwiseContext = true;
 #endif
             return new BitReader(this);
@@ -262,7 +262,7 @@ namespace Unity.Multiplayer.Tools.NetStats
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public unsafe bool TryBeginRead(int bytes)
         {
-#if DEVELOPMENT_BUILD || UNITY_EDITOR
+#if UNITY_ENABLE_CHECKS || UNITY_EDITOR
             if (Handle->InBitwiseContext)
             {
                 throw new InvalidOperationException(
@@ -273,7 +273,7 @@ namespace Unity.Multiplayer.Tools.NetStats
             {
                 return false;
             }
-#if DEVELOPMENT_BUILD || UNITY_EDITOR
+#if UNITY_ENABLE_CHECKS || UNITY_EDITOR
             Handle->AllowedReadMark = Handle->Position + bytes;
 #endif
             return true;
@@ -296,7 +296,7 @@ namespace Unity.Multiplayer.Tools.NetStats
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public unsafe bool TryBeginReadValue<T>(in T value) where T : unmanaged
         {
-#if DEVELOPMENT_BUILD || UNITY_EDITOR
+#if UNITY_ENABLE_CHECKS || UNITY_EDITOR
             if (Handle->InBitwiseContext)
             {
                 throw new InvalidOperationException(
@@ -308,7 +308,7 @@ namespace Unity.Multiplayer.Tools.NetStats
             {
                 return false;
             }
-#if DEVELOPMENT_BUILD || UNITY_EDITOR
+#if UNITY_ENABLE_CHECKS || UNITY_EDITOR
             Handle->AllowedReadMark = Handle->Position + len;
 #endif
             return true;
@@ -324,7 +324,7 @@ namespace Unity.Multiplayer.Tools.NetStats
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal unsafe bool TryBeginReadInternal(int bytes)
         {
-#if DEVELOPMENT_BUILD || UNITY_EDITOR
+#if UNITY_ENABLE_CHECKS || UNITY_EDITOR
             if (Handle->InBitwiseContext)
             {
                 throw new InvalidOperationException(
@@ -335,7 +335,7 @@ namespace Unity.Multiplayer.Tools.NetStats
             {
                 return false;
             }
-#if DEVELOPMENT_BUILD || UNITY_EDITOR
+#if UNITY_ENABLE_CHECKS || UNITY_EDITOR
             if (Handle->Position + bytes > Handle->AllowedReadMark)
             {
                 Handle->AllowedReadMark = Handle->Position + bytes;
@@ -448,7 +448,7 @@ namespace Unity.Multiplayer.Tools.NetStats
         /// <param name="oneByteChars">Whether or not to use one byte per character. This will only allow ASCII</param>
         public unsafe void ReadValueSafe(out string s, bool oneByteChars = false)
         {
-#if DEVELOPMENT_BUILD || UNITY_EDITOR
+#if UNITY_ENABLE_CHECKS || UNITY_EDITOR
             if (Handle->InBitwiseContext)
             {
                 throw new InvalidOperationException(
@@ -515,7 +515,7 @@ namespace Unity.Multiplayer.Tools.NetStats
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public unsafe void ReadValueSafe<T>(out T[] array) where T : unmanaged
         {
-#if DEVELOPMENT_BUILD || UNITY_EDITOR
+#if UNITY_ENABLE_CHECKS || UNITY_EDITOR
             if (Handle->InBitwiseContext)
             {
                 throw new InvalidOperationException(
@@ -553,7 +553,7 @@ namespace Unity.Multiplayer.Tools.NetStats
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public unsafe void ReadPartialValue<T>(out T value, int bytesToRead, int offsetBytes = 0) where T : unmanaged
         {
-#if DEVELOPMENT_BUILD || UNITY_EDITOR
+#if UNITY_ENABLE_CHECKS || UNITY_EDITOR
             if (Handle->InBitwiseContext)
             {
                 throw new InvalidOperationException(
@@ -581,7 +581,7 @@ namespace Unity.Multiplayer.Tools.NetStats
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public unsafe void ReadByte(out byte value)
         {
-#if DEVELOPMENT_BUILD || UNITY_EDITOR
+#if UNITY_ENABLE_CHECKS || UNITY_EDITOR
             if (Handle->InBitwiseContext)
             {
                 throw new InvalidOperationException(
@@ -605,7 +605,7 @@ namespace Unity.Multiplayer.Tools.NetStats
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public unsafe void ReadByteSafe(out byte value)
         {
-#if DEVELOPMENT_BUILD || UNITY_EDITOR
+#if UNITY_ENABLE_CHECKS || UNITY_EDITOR
             if (Handle->InBitwiseContext)
             {
                 throw new InvalidOperationException(
@@ -629,7 +629,7 @@ namespace Unity.Multiplayer.Tools.NetStats
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public unsafe void ReadBytes(byte* value, int size, int offset = 0)
         {
-#if DEVELOPMENT_BUILD || UNITY_EDITOR
+#if UNITY_ENABLE_CHECKS || UNITY_EDITOR
             if (Handle->InBitwiseContext)
             {
                 throw new InvalidOperationException(
@@ -656,7 +656,7 @@ namespace Unity.Multiplayer.Tools.NetStats
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public unsafe void ReadBytesSafe(byte* value, int size, int offset = 0)
         {
-#if DEVELOPMENT_BUILD || UNITY_EDITOR
+#if UNITY_ENABLE_CHECKS || UNITY_EDITOR
             if (Handle->InBitwiseContext)
             {
                 throw new InvalidOperationException(
@@ -716,7 +716,7 @@ namespace Unity.Multiplayer.Tools.NetStats
         {
             int len = sizeof(T);
 
-#if DEVELOPMENT_BUILD || UNITY_EDITOR
+#if UNITY_ENABLE_CHECKS || UNITY_EDITOR
             if (Handle->InBitwiseContext)
             {
                 throw new InvalidOperationException(
@@ -749,7 +749,7 @@ namespace Unity.Multiplayer.Tools.NetStats
         {
             int len = sizeof(T);
 
-#if DEVELOPMENT_BUILD || UNITY_EDITOR
+#if UNITY_ENABLE_CHECKS || UNITY_EDITOR
             if (Handle->InBitwiseContext)
             {
                 throw new InvalidOperationException(

@@ -44,11 +44,7 @@ namespace Unity.Multiplayer.Tools.NetStatsMonitor
 
         void Start()
         {
-#if UNITY_2023_1_OR_NEWER
-            m_Rnsm = FindFirstObjectByType<RuntimeNetStatsMonitor>();
-#else
-            m_Rnsm = FindObjectOfType<RuntimeNetStatsMonitor>();
-#endif
+            m_Rnsm = FindAnyObjectByType<RuntimeNetStatsMonitor>();
         }
 
         void Update()

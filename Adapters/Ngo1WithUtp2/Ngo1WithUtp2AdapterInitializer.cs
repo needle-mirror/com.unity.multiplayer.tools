@@ -19,24 +19,31 @@ namespace Unity.Multiplayer.Tools.Adapters.Ngo1WithUtp2
         // Use the InstanceId key'd table
         internal static readonly IDictionary<int, Utp2Adapter> s_Adapters = new Dictionary<int, Utp2Adapter>();
 #endif
-
-        [RuntimeInitializeOnLoadMethod]
+        
+        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterAssembliesLoaded)]
         internal static void InitializeAdapter()
         {
-            if (!s_Initialized)
+            if (s_Initialized)
             {
-                s_Initialized = true;
-
 #if UNITY_NETCODE_GAMEOBJECTS_2_8_ABOVE && UNITY_6000_2_OR_NEWER
-                // Use the EntityId updated actions
-                UnityTransport.OnDriverInitialized += AddAdapter;
-                UnityTransport.OnDisposingDriver += RemoveAdapter;
+            UnityTransport.OnDriverInitialized -= AddAdapter;
+            UnityTransport.OnDisposingDriver -= RemoveAdapter;
 #else
-                // Use the legacy InstanceId actions
-                UnityTransport.TransportInitialized += AddAdapter;
-                UnityTransport.TransportDisposed += RemoveAdapter;
+            UnityTransport.TransportInitialized -= AddAdapter;
+            UnityTransport.TransportDisposed -= RemoveAdapter;
 #endif
             }
+            s_Adapters.Clear();
+#if UNITY_NETCODE_GAMEOBJECTS_2_8_ABOVE && UNITY_6000_2_OR_NEWER
+            // Use the EntityId updated actions
+            UnityTransport.OnDriverInitialized += AddAdapter;
+            UnityTransport.OnDisposingDriver += RemoveAdapter;
+#else
+            // Use the legacy InstanceId actions
+            UnityTransport.TransportInitialized += AddAdapter;
+            UnityTransport.TransportDisposed += RemoveAdapter;
+#endif
+            s_Initialized = true;
         }
 
 #if UNITY_NETCODE_GAMEOBJECTS_2_8_ABOVE && UNITY_6000_2_OR_NEWER

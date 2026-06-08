@@ -1,5 +1,6 @@
 using System;
 using Unity.Multiplayer.Tools.NetStats;
+using UnityEngine;
 
 namespace Unity.Multiplayer.Tools.MetricEvents
 {
@@ -13,5 +14,13 @@ namespace Unity.Multiplayer.Tools.MetricEvents
         {
             OnMetricsReceived?.Invoke(metricCollection);
         }
+
+#if UNITY_EDITOR
+        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterAssembliesLoaded)]
+        static void ResetStaticsOnLoad()
+        {
+            OnMetricsReceived = null;
+        }
+#endif
     }
 }

@@ -176,17 +176,21 @@ namespace Unity.Multiplayer.Tools.Tests.NetworkSimulator
                     return;
                 }
 
-                if (configurations.Count == 0)
+                var configsCopy = new ConnectionsCycle.Configuration[configurations.Count];
+                configurations.CopyTo(configsCopy, 0);
+                var connectionCyclesConfigsCopy = new ConnectionsCycle.Configuration[m_ConnectionsCycle.Configurations.Count];
+                m_ConnectionsCycle.Configurations.CopyTo(connectionCyclesConfigsCopy, 0);
+                if (configsCopy.Length == 0)
                 {
                     return;
                 }
 
-                DebugUtil.Trace($"Expected Count: {configurations.Count}, actual count: {m_ConnectionsCycle.Configurations.Count}." +
-                    $"Expected Items: {string.Join(',', configurations.Select(c => c.ConnectionPreset))}," +
-                    $"actual items: {string.Join(',', m_ConnectionsCycle.Configurations.Select(c => c.ConnectionPreset))}");
+                DebugUtil.Trace($"Expected Count: {configsCopy.Length}, actual count: {connectionCyclesConfigsCopy.Length}." +
+                    $"Expected Items: {string.Join(',', configsCopy.Select(c => c.ConnectionPreset))}," +
+                    $"actual items: {string.Join(',', connectionCyclesConfigsCopy.Select(c => c.ConnectionPreset))}");
 
-                Assert.AreEqual(configurations.Count, m_ConnectionsCycle.Configurations.Count);
-                Assert.That(configurations, Is.EquivalentTo(m_ConnectionsCycle.Configurations));
+                Assert.AreEqual(configsCopy.Length, connectionCyclesConfigsCopy.Length);
+                Assert.That(configsCopy, Is.EquivalentTo(connectionCyclesConfigsCopy));
                 propertyChangedCallbackIsCalled = true;
             }
 

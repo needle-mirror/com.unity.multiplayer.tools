@@ -1,4 +1,6 @@
-﻿namespace Unity.Multiplayer.Tools
+﻿using UnityEngine;
+
+namespace Unity.Multiplayer.Tools
 {
     struct NetworkSolutionInterfaceParameters
     {
@@ -16,5 +18,13 @@
         }
 
         internal static INetworkObjectProvider NetworkObjectProvider => s_Parameters.NetworkObjectProvider;
+        
+#if UNITY_EDITOR
+        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterAssembliesLoaded)]
+        static void ResetStaticsOnLoad()
+        {
+            s_Parameters = default;
+        }
+#endif
     }
 }

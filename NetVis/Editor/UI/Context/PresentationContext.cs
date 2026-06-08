@@ -16,14 +16,11 @@ namespace Unity.Multiplayer.Tools.NetVis.Editor.UI
         /// </remarks>>
         public static PresentationContext Instance { get; private set; }
 
-        [NotNull]
-        public NetVisConfigurationWithEvents ConfigurationWithEvents { get; }
+        [NotNull] public NetVisConfigurationWithEvents ConfigurationWithEvents { get; }
 
-        [NotNull]
-        IReadonlyBandwidthStats BandwidthStats { get; }
+        [NotNull] IReadonlyBandwidthStats BandwidthStats { get; }
 
-        [NotNull]
-        IGetConnectedClients ConnectedClientsRepository { get; }
+        [NotNull] IGetConnectedClients ConnectedClientsRepository { get; }
 
         public static PresentationContext InitializeInstance(
             [NotNull] NetVisConfigurationWithEvents configurationWithEvents,
@@ -51,10 +48,7 @@ namespace Unity.Multiplayer.Tools.NetVis.Editor.UI
                 ConfigurationWithEvents.Configuration = configLoaded;
             }
 
-            ConfigurationWithEvents.ConfigurationChanged += configuration =>
-            {
-                SaveLoadEditorPrefs.Save(configuration);
-            };
+            ConfigurationWithEvents.ConfigurationChanged += configuration => { SaveLoadEditorPrefs.Save(configuration); };
         }
 
         protected override void Setup()
@@ -64,6 +58,7 @@ namespace Unity.Multiplayer.Tools.NetVis.Editor.UI
                 .AddSingleton(BandwidthStats)
                 .AddSingleton(ConnectedClientsRepository);
         }
+    }
 
 #if UNITY_MP_TOOLS_DEV
         [MenuItem("Window/Multiplayer/Multiplayer Tools Dev/Reset NetVis Configuration")]
@@ -73,5 +68,4 @@ namespace Unity.Multiplayer.Tools.NetVis.Editor.UI
             Instance.ConfigurationWithEvents.Configuration = new NetVisConfiguration();
         }
 #endif
-    }
 }

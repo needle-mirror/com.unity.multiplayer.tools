@@ -16,7 +16,7 @@ namespace Unity.Multiplayer.Tools.NetStats
             internal int MaxCapacity;
             internal Allocator Allocator;
             internal bool BufferGrew;
-#if DEVELOPMENT_BUILD || UNITY_EDITOR
+#if UNITY_ENABLE_CHECKS || UNITY_EDITOR
             internal int AllowedWriteMark;
             internal bool InBitwiseContext;
 #endif
@@ -65,7 +65,7 @@ namespace Unity.Multiplayer.Tools.NetStats
         internal unsafe void CommitBitwiseWrites(int amount)
         {
             Handle->Position += amount;
-#if DEVELOPMENT_BUILD || UNITY_EDITOR
+#if UNITY_ENABLE_CHECKS || UNITY_EDITOR
             Handle->InBitwiseContext = false;
 #endif
         }
@@ -79,7 +79,7 @@ namespace Unity.Multiplayer.Tools.NetStats
         public unsafe FastBufferWriter(int size, Allocator allocator, int maxSize = -1)
         {
             Handle = (WriterHandle*)UnsafeUtility.Malloc(sizeof(WriterHandle) + size, UnsafeUtility.AlignOf<WriterHandle>(), allocator);
-#if DEVELOPMENT_BUILD || UNITY_EDITOR
+#if UNITY_ENABLE_CHECKS || UNITY_EDITOR
             UnsafeUtility.MemSet(Handle, 0, sizeof(WriterHandle) + size);
 #endif
             Handle->BufferPointer = (byte*)(Handle + 1);
@@ -89,7 +89,7 @@ namespace Unity.Multiplayer.Tools.NetStats
             Handle->Allocator = allocator;
             Handle->MaxCapacity = maxSize < size ? size : maxSize;
             Handle->BufferGrew = false;
-#if DEVELOPMENT_BUILD || UNITY_EDITOR
+#if UNITY_ENABLE_CHECKS || UNITY_EDITOR
             Handle->AllowedWriteMark = 0;
             Handle->InBitwiseContext = false;
 #endif
@@ -166,7 +166,7 @@ namespace Unity.Multiplayer.Tools.NetStats
         /// <returns>A BitWriter</returns>
         public unsafe BitWriter EnterBitwiseContext()
         {
-#if DEVELOPMENT_BUILD || UNITY_EDITOR
+#if UNITY_ENABLE_CHECKS || UNITY_EDITOR
             Handle->InBitwiseContext = true;
 #endif
             return new BitWriter(this);
@@ -182,7 +182,7 @@ namespace Unity.Multiplayer.Tools.NetStats
 
             var newSize = Math.Min(desiredSize, Handle->MaxCapacity);
             byte* newBuffer = (byte*)UnsafeUtility.Malloc(newSize, UnsafeUtility.AlignOf<byte>(), Handle->Allocator);
-#if DEVELOPMENT_BUILD || UNITY_EDITOR
+#if UNITY_ENABLE_CHECKS || UNITY_EDITOR
             UnsafeUtility.MemSet(newBuffer, 0, sizeof(WriterHandle) + newSize);
 #endif
             UnsafeUtility.MemCpy(newBuffer, Handle->BufferPointer, Length);
@@ -213,7 +213,7 @@ namespace Unity.Multiplayer.Tools.NetStats
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public unsafe bool TryBeginWrite(int bytes)
         {
-#if DEVELOPMENT_BUILD || UNITY_EDITOR
+#if UNITY_ENABLE_CHECKS || UNITY_EDITOR
             if (Handle->InBitwiseContext)
             {
                 throw new InvalidOperationException(
@@ -236,7 +236,7 @@ namespace Unity.Multiplayer.Tools.NetStats
                     return false;
                 }
             }
-#if DEVELOPMENT_BUILD || UNITY_EDITOR
+#if UNITY_ENABLE_CHECKS || UNITY_EDITOR
             Handle->AllowedWriteMark = Handle->Position + bytes;
 #endif
             return true;
@@ -260,7 +260,7 @@ namespace Unity.Multiplayer.Tools.NetStats
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public unsafe bool TryBeginWriteValue<T>(in T value) where T : unmanaged
         {
-#if DEVELOPMENT_BUILD || UNITY_EDITOR
+#if UNITY_ENABLE_CHECKS || UNITY_EDITOR
             if (Handle->InBitwiseContext)
             {
                 throw new InvalidOperationException(
@@ -284,7 +284,7 @@ namespace Unity.Multiplayer.Tools.NetStats
                     return false;
                 }
             }
-#if DEVELOPMENT_BUILD || UNITY_EDITOR
+#if UNITY_ENABLE_CHECKS || UNITY_EDITOR
             Handle->AllowedWriteMark = Handle->Position + len;
 #endif
             return true;
@@ -300,7 +300,7 @@ namespace Unity.Multiplayer.Tools.NetStats
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public unsafe bool TryBeginWriteInternal(int bytes)
         {
-#if DEVELOPMENT_BUILD || UNITY_EDITOR
+#if UNITY_ENABLE_CHECKS || UNITY_EDITOR
             if (Handle->InBitwiseContext)
             {
                 throw new InvalidOperationException(
@@ -323,7 +323,7 @@ namespace Unity.Multiplayer.Tools.NetStats
                     return false;
                 }
             }
-#if DEVELOPMENT_BUILD || UNITY_EDITOR
+#if UNITY_ENABLE_CHECKS || UNITY_EDITOR
             if (Handle->Position + bytes > Handle->AllowedWriteMark)
             {
                 Handle->AllowedWriteMark = Handle->Position + bytes;
@@ -444,7 +444,7 @@ namespace Unity.Multiplayer.Tools.NetStats
         /// <param name="oneByteChars">Whether or not to use one byte per character. This will only allow ASCII</param>
         public unsafe void WriteValueSafe(string s, bool oneByteChars = false)
         {
-#if DEVELOPMENT_BUILD || UNITY_EDITOR
+#if UNITY_ENABLE_CHECKS || UNITY_EDITOR
             if (Handle->InBitwiseContext)
             {
                 throw new InvalidOperationException(
@@ -524,7 +524,7 @@ namespace Unity.Multiplayer.Tools.NetStats
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public unsafe void WriteValueSafe<T>(T[] array, int count = -1, int offset = 0) where T : unmanaged
         {
-#if DEVELOPMENT_BUILD || UNITY_EDITOR
+#if UNITY_ENABLE_CHECKS || UNITY_EDITOR
             if (Handle->InBitwiseContext)
             {
                 throw new InvalidOperationException(
@@ -559,7 +559,7 @@ namespace Unity.Multiplayer.Tools.NetStats
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public unsafe void WritePartialValue<T>(T value, int bytesToWrite, int offsetBytes = 0) where T : unmanaged
         {
-#if DEVELOPMENT_BUILD || UNITY_EDITOR
+#if UNITY_ENABLE_CHECKS || UNITY_EDITOR
             if (Handle->InBitwiseContext)
             {
                 throw new InvalidOperationException(
@@ -585,7 +585,7 @@ namespace Unity.Multiplayer.Tools.NetStats
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public unsafe void WriteByte(byte value)
         {
-#if DEVELOPMENT_BUILD || UNITY_EDITOR
+#if UNITY_ENABLE_CHECKS || UNITY_EDITOR
             if (Handle->InBitwiseContext)
             {
                 throw new InvalidOperationException(
@@ -609,7 +609,7 @@ namespace Unity.Multiplayer.Tools.NetStats
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public unsafe void WriteByteSafe(byte value)
         {
-#if DEVELOPMENT_BUILD || UNITY_EDITOR
+#if UNITY_ENABLE_CHECKS || UNITY_EDITOR
             if (Handle->InBitwiseContext)
             {
                 throw new InvalidOperationException(
@@ -633,7 +633,7 @@ namespace Unity.Multiplayer.Tools.NetStats
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public unsafe void WriteBytes(byte* value, int size, int offset = 0)
         {
-#if DEVELOPMENT_BUILD || UNITY_EDITOR
+#if UNITY_ENABLE_CHECKS || UNITY_EDITOR
             if (Handle->InBitwiseContext)
             {
                 throw new InvalidOperationException(
@@ -660,7 +660,7 @@ namespace Unity.Multiplayer.Tools.NetStats
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public unsafe void WriteBytesSafe(byte* value, int size, int offset = 0)
         {
-#if DEVELOPMENT_BUILD || UNITY_EDITOR
+#if UNITY_ENABLE_CHECKS || UNITY_EDITOR
             if (Handle->InBitwiseContext)
             {
                 throw new InvalidOperationException(
@@ -766,7 +766,7 @@ namespace Unity.Multiplayer.Tools.NetStats
         {
             int len = sizeof(T);
 
-#if DEVELOPMENT_BUILD || UNITY_EDITOR
+#if UNITY_ENABLE_CHECKS || UNITY_EDITOR
             if (Handle->InBitwiseContext)
             {
                 throw new InvalidOperationException(
@@ -799,7 +799,7 @@ namespace Unity.Multiplayer.Tools.NetStats
         {
             int len = sizeof(T);
 
-#if DEVELOPMENT_BUILD || UNITY_EDITOR
+#if UNITY_ENABLE_CHECKS || UNITY_EDITOR
             if (Handle->InBitwiseContext)
             {
                 throw new InvalidOperationException(

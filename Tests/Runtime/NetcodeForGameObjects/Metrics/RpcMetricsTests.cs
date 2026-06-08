@@ -105,6 +105,7 @@ namespace Unity.Multiplayer.Tools.GameObjects.Tests
         }
 
         [UnityTest]
+        [Ignore("https://jira.unity3d.com/browse/MTT-15089")]
         public IEnumerator TrackRpcReceivedMetricOnServer()
         {
             var waitForServerMetricsValues = new WaitForEventMetricValues<RpcEvent>(ServerMetrics.Dispatcher, NetworkMetricTypes.RpcReceived);
@@ -123,6 +124,7 @@ namespace Unity.Multiplayer.Tools.GameObjects.Tests
         }
 
         [UnityTest]
+        [Ignore("https://jira.unity3d.com/browse/MTT-15089")]
         public IEnumerator TrackRpcReceivedMetricOnClient()
         {
             var waitForClientMetricsValues = new WaitForEventMetricValues<RpcEvent>(FirstClientMetrics.Dispatcher, NetworkMetricTypes.RpcReceived);

@@ -22,20 +22,32 @@ namespace Unity.Multiplayer.Tools.Context
 #endif
     static class ContextsInitializer
     {
-        static readonly IContext[] s_Contexts;
+        static IContext[] s_Contexts;
+        static bool s_RuntimeContextsEnabled;
 
-        static ContextsInitializer()
+#if UNITY_EDITOR
+        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterAssembliesLoaded)]
+#endif
+        static void ReinitializeEditorContexts()
         {
             DebugUtil.TraceMethodName();
-
-            Application.quitting += DisableRuntimeContexts;
-
-            s_Contexts = ContextsDefinition.Contexts;
-
+            if (s_Contexts != null && s_RuntimeContextsEnabled)
+            {
+                Application.quitting -= DisableRuntimeContexts;
+                DisableRuntimeContexts();
+            }
+            
+            s_Contexts = ContextsDefinition.GetContextsDefinitions();
 #if UNITY_EDITOR && !UNITY_MP_TOOLS_SIMULATE_BUILD
             EnableEditorContexts();
 #endif
         }
+
+        static ContextsInitializer()
+        {
+            ReinitializeEditorContexts();
+        }
+
 
         static void EnableEditorContexts()
         {
@@ -55,6 +67,8 @@ namespace Unity.Multiplayer.Tools.Context
         {
             DebugUtil.TraceMethodName();
 
+            Application.quitting += DisableRuntimeContexts;
+            s_RuntimeContextsEnabled = true;
             foreach (var context in s_Contexts)
             {
                 if (context is IRuntimeSetupHandler runtimeContext)
@@ -68,6 +82,7 @@ namespace Unity.Multiplayer.Tools.Context
         {
             DebugUtil.TraceMethodName();
 
+            s_RuntimeContextsEnabled = false;
             foreach (var context in s_Contexts)
             {
                 if (context is IRuntimeSetupHandler runtimeContext)

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using UnityEngine;
 
 namespace Unity.Multiplayer.Tools.Adapters
 {
@@ -13,6 +14,14 @@ namespace Unity.Multiplayer.Tools.Adapters
 
         public static event Action<INetworkAdapter> OnAdapterAdded;
         public static event Action<INetworkAdapter> OnAdapterRemoved;
+
+#if UNITY_EDITOR
+        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterAssembliesLoaded)]
+        static void ResetStaticsOnLoad()
+        {
+            s_Adapters.Clear();
+        }
+#endif
 
         public static void AddAdapter(INetworkAdapter adapter)
         {

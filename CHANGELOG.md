@@ -4,6 +4,17 @@ All notable changes to this package will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
+## [2.2.9] - 2026-06-08
+
+### Added
+- Support for fast enter playmode (no domain reload)
+
+### Changed
+- Replaced DEVELOPMENT_BUILD define with UNITY_ENABLE_CHECKS
+
+### Fixed
+- Updated NetStatsMonitor APIs to work properly on newer editors (6000.5+)
+
 ## [2.2.8] - 2026-02-05
 
 ### Fixed

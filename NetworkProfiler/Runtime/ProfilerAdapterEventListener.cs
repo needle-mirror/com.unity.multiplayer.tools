@@ -11,17 +11,34 @@ namespace Unity.Multiplayer.Tools.NetworkProfiler.Runtime
     static class ProfilerAdapterEventListener
     {
         static bool s_Initialized;
+        static UnsubscribeFromAllAdapters s_UnsubscribeFromAllAdapters;
 
-        [RuntimeInitializeOnLoadMethod]
+#if UNITY_EDITOR
+        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterAssembliesLoaded)]
+        static void ResetStaticsOnLoad()
+        {            
+            s_Initialized = false;
+            s_UnsubscribeFromAllAdapters = null;
+        }
+#endif
+        
+        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
         static void SubscribeToAdapterAndMetricEvents()
         {
             if (!s_Initialized)
             {
                 s_Initialized = true;
-                _ = NetworkAdapters.SubscribeToAll(
+                s_UnsubscribeFromAllAdapters = NetworkAdapters.SubscribeToAll(
                     OnAdapterAdded,
                     OnAdapterRemoved);
+                Application.quitting += OnApplicationExit;
             }
+        }
+
+        static void OnApplicationExit()
+        {
+            s_UnsubscribeFromAllAdapters?.Invoke();
+            Application.quitting -= OnApplicationExit;
         }
 
         static void OnAdapterAdded(INetworkAdapter adapter)

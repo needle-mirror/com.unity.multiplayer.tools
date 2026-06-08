@@ -16,6 +16,20 @@ namespace Unity.Multiplayer.Tools.NetStats
         static bool s_TypeRegistrationComplete;
         static readonly object s_LockObject = new object();
 
+#if UNITY_EDITOR
+        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterAssembliesLoaded)]
+        static void ResetStaticsOnLoad()
+        {
+            MetricIdTypeLibrary.ClearState();
+            EventMetricFactory.ClearState();
+            lock (s_LockObject)
+            {
+                s_TypeRegistrationComplete = false;
+            }
+            RunIfNeeded();
+        }
+#endif
+
         public static void RunIfNeeded()
         {
             lock (s_LockObject)

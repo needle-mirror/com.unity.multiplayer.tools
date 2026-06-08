@@ -1,5 +1,6 @@
 using Unity.Multiplayer.Tools.MetricTypes;
 using Unity.Multiplayer.Tools.NetStats;
+using UnityEngine;
 
 namespace Unity.Multiplayer.Tools.NetworkProfiler.Runtime
 {
@@ -7,6 +8,14 @@ namespace Unity.Multiplayer.Tools.NetworkProfiler.Runtime
     {
         static ProfilerCounters s_Singleton;
         public static ProfilerCounters Instance => s_Singleton ??= new ProfilerCounters();
+
+#if UNITY_EDITOR
+        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterAssembliesLoaded)]
+        static void ResetStaticsOnLoad()
+        {
+            s_Singleton = null;
+        }
+#endif
 
         public readonly MetricByteCounters totalBytes;
         public readonly MetricCounters rpc;

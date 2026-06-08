@@ -93,7 +93,7 @@ namespace Unity.Multiplayer.Tools.Adapters.Ngo1
         void RefreshObjectIds()
         {
             m_ObjectIds.Clear();
-            var spawnedObjects = m_NetworkManager.SpawnManager?.SpawnedObjectsList;
+            var spawnedObjects = m_NetworkManager?.SpawnManager?.SpawnedObjectsList;
             if (spawnedObjects == null)
             {
                 return;

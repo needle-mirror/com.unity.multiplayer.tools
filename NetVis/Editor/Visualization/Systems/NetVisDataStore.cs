@@ -151,14 +151,35 @@ namespace Unity.Multiplayer.Tools.NetVis.Editor.Visualization
             if (getBandwidth != null)
             {
                 getBandwidth.OnBandwidthUpdated -= OnBandwidthUpdated;
+                if (m_GetBandwidth == getBandwidth)
+                    m_GetBandwidth = null;
             }
 
-            var connectionEvents = adapter?.GetComponent<IGetConnectedClients>();
-            if (connectionEvents != null)
+            var connectedClients = adapter?.GetComponent<IGetConnectedClients>();
+            if (connectedClients != null)
             {
-                connectionEvents.ClientConnectionEvent -= OnClientConnected;
-                connectionEvents.ClientDisconnectionEvent -= OnClientDisconnected;
+                connectedClients.ClientConnectionEvent -= OnClientConnected;
+                connectedClients.ClientDisconnectionEvent -= OnClientDisconnected;
+                if (m_GetConnectedClients == connectedClients)
+                    m_GetConnectedClients = null;
             }
+
+            var connectionStatus = adapter?.GetComponent<IGetConnectionStatus>();
+            if (connectionStatus != null)
+            {
+                connectionStatus.ServerOrClientStarted -= OnServerOrClientStarted;
+                connectionStatus.ServerOrClientStopped -= OnServerOrClientStopped;
+                if (m_GetConnectionStatus == connectionStatus)
+                    m_GetConnectionStatus = null;
+            }
+
+            if (m_GetObjectIds == adapter?.GetComponent<IGetObjectIds>())
+                m_GetObjectIds = null;
+            if (m_GetGameObject == adapter?.GetComponent<IGetGameObject>())
+                m_GetGameObject = null;
+            if (m_GetOwnership == adapter?.GetComponent<IGetOwnership>())
+                m_GetOwnership = null;
+
             UpdateBandwidthBackend();
         }
 

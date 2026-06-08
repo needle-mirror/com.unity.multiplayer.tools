@@ -20,7 +20,6 @@ namespace Unity.Multiplayer.Tools.NetStatsMonitor
         [field: SerializeField]
         public List<DisplayElementConfiguration> DisplayElements { get; set; } = new();
 
-        [field: SerializeField]
         internal int? ConfigurationHash { get; private set; } = null;
 
         /// <summary>

@@ -15,7 +15,7 @@ namespace Unity.Multiplayer.Tools.NetStats
         private unsafe byte* m_BufferPointer;
         private readonly int m_Position;
         private int m_BitPosition;
-#if DEVELOPMENT_BUILD || UNITY_EDITOR
+#if UNITY_ENABLE_CHECKS || UNITY_EDITOR
         private int m_AllowedBitwiseWriteMark;
 #endif
         private const int k_BitsPerByte = 8;
@@ -35,7 +35,7 @@ namespace Unity.Multiplayer.Tools.NetStats
             m_BufferPointer = writer.Handle->BufferPointer + writer.Handle->Position;
             m_Position = writer.Handle->Position;
             m_BitPosition = 0;
-#if DEVELOPMENT_BUILD || UNITY_EDITOR
+#if UNITY_ENABLE_CHECKS || UNITY_EDITOR
             m_AllowedBitwiseWriteMark = (m_Writer.Handle->AllowedWriteMark - m_Writer.Handle->Position) * k_BitsPerByte;
 #endif
         }
@@ -95,7 +95,7 @@ namespace Unity.Multiplayer.Tools.NetStats
                     return false;
                 }
             }
-#if DEVELOPMENT_BUILD || UNITY_EDITOR
+#if UNITY_ENABLE_CHECKS || UNITY_EDITOR
             m_AllowedBitwiseWriteMark = newBitPosition;
 #endif
             return true;
@@ -108,7 +108,7 @@ namespace Unity.Multiplayer.Tools.NetStats
         /// <param name="bitCount">Amount of bits to write</param>
         public unsafe void WriteBits(ulong value, uint bitCount)
         {
-#if DEVELOPMENT_BUILD || UNITY_EDITOR
+#if UNITY_ENABLE_CHECKS || UNITY_EDITOR
             if (bitCount > 64)
             {
                 throw new ArgumentOutOfRangeException(nameof(bitCount), "Cannot write more than 64 bits from a 64-bit value!");
@@ -151,7 +151,7 @@ namespace Unity.Multiplayer.Tools.NetStats
         /// <param name="bitCount">Amount of bits to write.</param>
         public void WriteBits(byte value, uint bitCount)
         {
-#if DEVELOPMENT_BUILD || UNITY_EDITOR
+#if UNITY_ENABLE_CHECKS || UNITY_EDITOR
             int checkPos = (int)(m_BitPosition + bitCount);
             if (checkPos > m_AllowedBitwiseWriteMark)
             {
@@ -172,7 +172,7 @@ namespace Unity.Multiplayer.Tools.NetStats
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public unsafe void WriteBit(bool bit)
         {
-#if DEVELOPMENT_BUILD || UNITY_EDITOR
+#if UNITY_ENABLE_CHECKS || UNITY_EDITOR
             int checkPos = (m_BitPosition + 1);
             if (checkPos > m_AllowedBitwiseWriteMark)
             {

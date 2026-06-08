@@ -16,25 +16,12 @@
     "overrideReferences": false,
     "precompiledReferences": [],
     "autoReferenced": true,
-    "defineConstraints": [
-        "UNITY_2022_3_OR_NEWER",
-        "NETVIS_AVAILABLE"
-    ],
+    "defineConstraints": [],
     "versionDefines": [
         {
             "name": "com.unity.render-pipelines.core",
             "expression": "14",
             "define": "UNITY_SRP_CORE_14_OR_HIGHER"
-        },
-        {
-            "name": "Unity",
-            "expression": "[2022.3.11f1,2023)",
-            "define": "NETVIS_AVAILABLE"
-        },
-        {
-            "name": "Unity",
-            "expression": "2023.1.14f1",
-            "define": "NETVIS_AVAILABLE"
         }
     ],
     "noEngineReferences": false

@@ -122,6 +122,18 @@ namespace Unity.Multiplayer.Tools.NetStats
             }
         }
 
+        internal static void ClearState()
+        {
+            k_Types.Clear();
+            k_TypeDisplayNames.Clear();
+            k_EnumValues.Clear();
+            k_EnumNames.Clear();
+            k_EnumDisplayNames.Clear();
+            k_MetricKinds.Clear();
+            k_Units.Clear();
+            k_DisplayAsPercentage.Clear();
+        }
+
         internal static bool IsValidTypeIndex(int index)
         {
             return 0 <= index && index < k_Types.Count;

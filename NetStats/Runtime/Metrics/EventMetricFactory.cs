@@ -42,6 +42,12 @@ namespace Unity.Multiplayer.Tools.NetStats
             k_TypeNames.Add(typeof(T), uniqueName);
         }
 
+        internal static void ClearState()
+        {
+            k_FactoriesByName.Clear();
+            k_TypeNames.Clear();
+        }
+
         public bool TryConstruct(MetricHeader header, out IMetric metric)
         {
             if (!k_FactoriesByName.TryGetValue(header.EventFactoryTypeName, out var factory))
