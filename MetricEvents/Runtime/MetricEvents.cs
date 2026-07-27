@@ -16,7 +16,7 @@ namespace Unity.Multiplayer.Tools.MetricEvents
         }
 
 #if UNITY_EDITOR
-        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterAssembliesLoaded)]
+        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
         static void ResetStaticsOnLoad()
         {
             OnMetricsReceived = null;

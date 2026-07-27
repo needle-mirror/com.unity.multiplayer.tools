@@ -16,7 +16,7 @@ namespace Unity.Multiplayer.Tools.Adapters
         public static event Action<INetworkAdapter> OnAdapterRemoved;
 
 #if UNITY_EDITOR
-        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterAssembliesLoaded)]
+        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
         static void ResetStaticsOnLoad()
         {
             s_Adapters.Clear();
